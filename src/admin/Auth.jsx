@@ -4,26 +4,34 @@ import { Tabs, Form, Input, Button, notification, Divider } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, registerUser } from "../store/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
 export default function Auth() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { loading } = useSelector((state) => state.users);
 
   const openNotification = (type, message, description = "") => {
     notification[type]({ message, description });
   };
 
-  // --- LOGIN HANDLER ---
   const handleLogin = async (values) => {
     const res = await dispatch(loginUser(values));
 
     if (loginUser.fulfilled.match(res)) {
-      // clear login fields
-      loginFormRef.current?.resetFields();
-      // NO NOTIFICATION
+      const user = res.payload;
+      console.log("user", user);
+
+      if (user.logout === true && user.role === "admin") {
+        navigate("/admin"); // just call it
+      } else {
+        notification.error({
+          message: "Login blocked",
+          description: "Your account is logged out or role not allowed",
+        });
+      }
     }
   };
 

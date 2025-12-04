@@ -24,6 +24,10 @@ export const loginUser = createApiThunk("loginUser", {
   method: "post",
   url: "/users/login",
 });
+export const logOutUser = createApiThunk("logOutUser", {
+  method: "post",
+  url: "/users/logout",
+});
 export const registerUser = createApiThunk("registerUser", {
   method: "post",
   url: "/users/register",
@@ -52,6 +56,7 @@ const userSlice = createSlice({
       loginUser: false,
       registerUser: false,
       fetchMe: false,
+      logOutUser: false,
     },
     error: {}, // e.g., { fetchUsers: null, loginUser: null }
   },
@@ -107,7 +112,11 @@ const userSlice = createSlice({
               // Optional: push new user to list if admin created it
               state.list.push(action.payload);
               break;
+            case "logOutUser":
+              // Optional: push new user to list if admin created it
+              state.list.push(action.payload);
               break;
+          
             case "fetchMe":
               // Optional: push new user to list if admin created it
               state.list.push(action.payload);
