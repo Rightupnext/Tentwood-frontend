@@ -14,7 +14,6 @@ import { fetchCountries } from "../store/slices/countrySlice";
 
 import {
   Form,
-  Input,
   Select,
   Button,
   Table,
@@ -23,10 +22,19 @@ import {
   Popconfirm,
   Modal,
   notification,
+  Input,
+  Tabs,
 } from "antd";
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+const DESTINATION_OPTIONS = [
+  "International Trips",
+  "India Trips",
+  "Group Tours",
+  "Honeymoon Packages",
+];
 
 const DestinationManagement = () => {
   const dispatch = useDispatch();
@@ -41,15 +49,14 @@ const DestinationManagement = () => {
   const [form] = Form.useForm();
   const [editId, setEditId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("All");
 
   useEffect(() => {
     dispatch(fetchDestinations());
     dispatch(fetchCountries());
   }, [dispatch]);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const openModal = () => setIsModalOpen(true);
 
   const closeModal = () => {
     form.resetFields();
@@ -70,14 +77,20 @@ const DestinationManagement = () => {
         .unwrap()
         .then(() => notification.success({ message: "Destination Updated" }))
         .catch((err) =>
-          notification.error({ message: "Update Failed", description: err.message })
+          notification.error({
+            message: "Update Failed",
+            description: err.message,
+          })
         );
     } else {
       dispatch(createDestination(payload))
         .unwrap()
         .then(() => notification.success({ message: "Destination Created" }))
         .catch((err) =>
-          notification.error({ message: "Create Failed", description: err.message })
+          notification.error({
+            message: "Create Failed",
+            description: err.message,
+          })
         );
     }
 
@@ -100,7 +113,10 @@ const DestinationManagement = () => {
       .unwrap()
       .then(() => notification.success({ message: "Destination Deleted" }))
       .catch((err) =>
-        notification.error({ message: "Delete Failed", description: err.message })
+        notification.error({
+          message: "Delete Failed",
+          description: err.message,
+        })
       );
   };
 
@@ -138,17 +154,34 @@ const DestinationManagement = () => {
 
   const loading = destLoading || countryLoading;
 
+  // Filter destinations by active tab
+  const filteredDestinations =
+    activeTab === "All"
+      ? destinations
+      : destinations.filter((d) => d.name === activeTab);
+
   return (
     <div className="p-6">
-
-      {/* Title */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Destination Management</h2>
-
         <Button type="primary" onClick={openModal}>
           + Add Destination
         </Button>
       </div>
+
+      {/* Tabs Filter */}
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        className="mb-4"
+        type="card"
+      >
+        <Tabs.TabPane tab="All" key="All" />
+        {DESTINATION_OPTIONS.map((dest) => (
+          <Tabs.TabPane tab={dest} key={dest} />
+        ))}
+      </Tabs>
 
       {/* Table */}
       <div className="bg-white p-6 rounded-md shadow">
@@ -158,7 +191,7 @@ const DestinationManagement = () => {
           </div>
         ) : (
           <Table
-            dataSource={destinations}
+            dataSource={filteredDestinations}
             columns={columns}
             rowKey="_id"
             pagination={{ pageSize: 10 }}
@@ -175,20 +208,32 @@ const DestinationManagement = () => {
         destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
+          {/* Destination Name as Select */}
           <Form.Item
             label="Destination Name"
             name="name"
-            rules={[{ required: true, message: "Name is required" }]}
+            rules={[{ required: true, message: "Destination is required" }]}
           >
-            <Input placeholder="Enter destination name" />
+            <Select placeholder="Select destination" allowClear>
+              {DESTINATION_OPTIONS.map((dest) => (
+                <Option key={dest} value={dest}>
+                  {dest}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
+          {/* Country */}
           <Form.Item
             label="Country"
             name="country"
             rules={[{ required: true, message: "Country is required" }]}
           >
-            <Select placeholder="Select country" showSearch optionFilterProp="children">
+            <Select
+              placeholder="Select country"
+              showSearch
+              optionFilterProp="children"
+            >
               {countries.map((c) => (
                 <Option key={c._id} value={c._id}>
                   {c.name}
@@ -197,6 +242,7 @@ const DestinationManagement = () => {
             </Select>
           </Form.Item>
 
+          {/* Type */}
           <Form.Item
             label="Type"
             name="type"
@@ -211,10 +257,12 @@ const DestinationManagement = () => {
             </Select>
           </Form.Item>
 
+          {/* Description */}
           <Form.Item label="Description" name="description">
             <TextArea rows={3} placeholder="Optional description" />
           </Form.Item>
 
+          {/* Buttons */}
           <div className="flex justify-end mt-4">
             <Button onClick={closeModal} className="mr-2">
               Cancel
