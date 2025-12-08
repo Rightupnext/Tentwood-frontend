@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -10,23 +10,37 @@ import {
 } from "@ant-design/icons";
 
 import { Button, Layout, Menu, theme, Dropdown, Avatar, Space } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { logOutUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
+
 const { Header, Sider, Content } = Layout;
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKey, setSelectedKey] = useState("1"); // active menu key
   const navigate = useNavigate();
+  const location = useLocation(); // get current path
   const { token } = theme.useToken();
   const dispatch = useDispatch();
 
-  const Logout = async () => {
+  // Update selected menu key based on path
+  useEffect(() => {
+    if (location.pathname.includes("/admin/countries")) {
+      setSelectedKey("2");
+    } else if (location.pathname === "/admin") {
+      setSelectedKey("1");
+    } else {
+      setSelectedKey(""); // default
+    }
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
     await dispatch(logOutUser());
     navigate("/login");
   };
-  // 🔥 **Dropdown Items (same structure as your sample)**
-  const items = [
+
+  const dropdownItems = [
     {
       key: "1",
       label: "Profile",
@@ -41,9 +55,7 @@ const DashboardLayout = () => {
       label: "Logout",
       icon: <LogoutOutlined />,
       danger: true,
-      onClick: async () => {
-        await Logout();
-      },
+      onClick: handleLogout,
     },
   ];
 
@@ -54,11 +66,26 @@ const DashboardLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          selectedKeys={[selectedKey]} // highlight active
           items={[
-            { key: "1", icon: <UserOutlined />, label: "nav 1" },
-            { key: "2", icon: <VideoCameraOutlined />, label: "nav 2" },
-            { key: "3", icon: <UploadOutlined />, label: "nav 3" },
+            {
+              key: "1",
+              icon: <UserOutlined />,
+              label: "Dashboard",
+              onClick: () => navigate("/admin"),
+            },
+            {
+              key: "2",
+              icon: <VideoCameraOutlined />,
+              label: "Country Management",
+              onClick: () => navigate("/admin/countries"),
+            },
+            {
+              key: "3",
+              icon: <UploadOutlined />,
+              label: "Destinations",
+              onClick: () => navigate("/admin/destinations"),
+            },
           ]}
         />
       </Sider>
@@ -73,7 +100,6 @@ const DashboardLayout = () => {
             alignItems: "center",
           }}
         >
-          {/* Menu Toggle */}
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -81,8 +107,7 @@ const DashboardLayout = () => {
             style={{ fontSize: 16, width: 64, height: 64 }}
           />
 
-          {/* 🔥 Right Side Dropdown (same style + behavior as your sample) */}
-          <Dropdown menu={{ items }} trigger={["click"]}>
+          <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
             <div style={{ cursor: "pointer" }}>
               <Space>
                 <Avatar icon={<UserOutlined />} />
@@ -96,7 +121,7 @@ const DashboardLayout = () => {
           style={{
             margin: "24px 16px",
             padding: 24,
-            height: "100vh",
+            minHeight: "100vh",
             background: token.colorBgContainer,
             borderRadius: token.borderRadiusLG,
           }}

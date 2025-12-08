@@ -4,8 +4,8 @@ import { notification } from "antd";
 import api from "./api";
 
 // Generic thunk creator
-export const createApiThunk = (name, { method, url }) =>
-  createAsyncThunk(name, async (data = {}, { rejectWithValue }) => {
+export const createApiThunk = (name, { method, url, onSuccessDispatch }) =>
+  createAsyncThunk(name, async (data = {}, { rejectWithValue, dispatch }) => {
     try {
       let response;
 
@@ -13,7 +13,9 @@ export const createApiThunk = (name, { method, url }) =>
         response = await api.get(url, { params: data });
       } else {
         // Replace :id in dynamic URL
-        const finalUrl = url.includes(":id") ? url.replace(":id", data.id) : url;
+        const finalUrl = url.includes(":id")
+          ? url.replace(":id", data.id)
+          : url;
 
         response = await api[method.toLowerCase()](finalUrl, data);
       }
@@ -22,12 +24,19 @@ export const createApiThunk = (name, { method, url }) =>
       if (response.data?.message) {
         notification.success({ message: response.data.message });
       }
-
+      // 🔥 Auto-dispatch extra thunk after success
+      if (onSuccessDispatch) {
+        dispatch(onSuccessDispatch());
+      }
       // For fetchMe, return user object directly if it exists
       return response.data.user || response.data;
     } catch (err) {
       // Extract proper backend message
-      const backendMsg = err.response?.data?.error || err.response?.data?.message || err.message || "Something went wrong";
+      const backendMsg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong";
 
       // Show error notification
       notification.error({ message: backendMsg });
