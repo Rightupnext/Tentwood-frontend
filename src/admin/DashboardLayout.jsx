@@ -15,25 +15,12 @@ import { logOutUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
 
 const { Header, Sider, Content } = Layout;
-
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("1"); // active menu key
   const navigate = useNavigate();
-  const location = useLocation(); // get current path
+  const location = useLocation();
   const { token } = theme.useToken();
   const dispatch = useDispatch();
-
-  // Update selected menu key based on path
-  useEffect(() => {
-    if (location.pathname.includes("/admin/countries")) {
-      setSelectedKey("2");
-    } else if (location.pathname === "/admin") {
-      setSelectedKey("1");
-    } else {
-      setSelectedKey(""); // default
-    }
-  }, [location.pathname]);
 
   const handleLogout = async () => {
     await dispatch(logOutUser());
@@ -47,9 +34,7 @@ const DashboardLayout = () => {
       icon: <SettingOutlined />,
       onClick: () => navigate("/profile"),
     },
-    {
-      type: "divider",
-    },
+    { type: "divider" },
     {
       key: "2",
       label: "Logout",
@@ -59,6 +44,15 @@ const DashboardLayout = () => {
     },
   ];
 
+  // Compute selected key directly from pathname
+  const getSelectedKey = () => {
+    if (location.pathname.startsWith("/admin/countries")) return "2";
+    if (location.pathname.startsWith("/admin/destinations")) return "3";
+    if (location.pathname.startsWith("/admin/travel")) return "4";
+    if (location.pathname === "/admin") return "1";
+    return "";
+  };
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -66,7 +60,7 @@ const DashboardLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          selectedKeys={[selectedKey]} // highlight active
+          selectedKeys={[getSelectedKey()]}
           items={[
             {
               key: "1",
@@ -85,6 +79,12 @@ const DashboardLayout = () => {
               icon: <UploadOutlined />,
               label: "Destinations",
               onClick: () => navigate("/admin/destinations"),
+            },
+            {
+              key: "4",
+              icon: <UploadOutlined />,
+              label: "Travel Packages",
+              onClick: () => navigate("/admin/travel"),
             },
           ]}
         />
@@ -106,7 +106,6 @@ const DashboardLayout = () => {
             onClick={() => setCollapsed(!collapsed)}
             style={{ fontSize: 16, width: 64, height: 64 }}
           />
-
           <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
             <div style={{ cursor: "pointer" }}>
               <Space>
