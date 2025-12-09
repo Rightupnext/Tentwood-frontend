@@ -31,14 +31,14 @@ export default function PackageBasicInfo({
       reader.onloadend = () => {
         if (type === "banner") {
           setBannerPreview(reader.result);
-          setBannerImage(file);
+          setBannerImage(file); // ✅ this is correct
         } else {
           setCardPreview(reader.result);
-          setCardImage(file);
+          setCardImage(file); // ✅ this is correct
         }
       };
       reader.readAsDataURL(file);
-      return false;
+      return false; // prevent auto upload
     },
   });
 
@@ -57,7 +57,11 @@ export default function PackageBasicInfo({
         label="Destination"
         rules={[{ required: true, message: "Destination is required" }]}
       >
-        <Select placeholder="Select destination" loading={destLoading} allowClear>
+        <Select
+          placeholder="Select destination"
+          loading={destLoading}
+          allowClear
+        >
           {destinations?.map((d) => (
             <Option key={d._id} value={d._id}>
               {d.Destination}
@@ -110,7 +114,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="pickup"
-            label={<><PushpinOutlined /> Pickup Location</>}
+            label={
+              <>
+                <PushpinOutlined /> Pickup Location
+              </>
+            }
             rules={[{ required: true, message: "Enter pickup location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -119,7 +127,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="drop"
-            label={<><PushpinOutlined /> Drop Location</>}
+            label={
+              <>
+                <PushpinOutlined /> Drop Location
+              </>
+            }
             rules={[{ required: true, message: "Enter drop location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -131,7 +143,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="duration"
-            label={<><ClockCircleOutlined /> Duration</>}
+            label={
+              <>
+                <ClockCircleOutlined /> Duration
+              </>
+            }
             rules={[{ required: true, message: "Enter duration" }]}
           >
             <Input placeholder="e.g., 5N - 6D" />
@@ -141,7 +157,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="price"
-            label={<><DollarCircleOutlined /> Price</>}
+            label={
+              <>
+                <DollarCircleOutlined /> Price
+              </>
+            }
             rules={[{ required: true, message: "Enter price" }]}
           >
             <Input placeholder="e.g., 75,000" />
@@ -151,13 +171,27 @@ export default function PackageBasicInfo({
 
       <Form.Item
         name="locations"
-        label={<><GlobalOutlined /> Locations Covered</>}
+        label={
+          <>
+            <GlobalOutlined /> Locations Covered
+          </>
+        }
       >
         <Input placeholder="e.g., Phuket - Krabi - Bangkok" />
       </Form.Item>
 
-      <Form.Item name="overview" label={<><FileTextOutlined /> Overview</>}>
-        <Input.TextArea rows={4} placeholder="Describe the package overview..." />
+      <Form.Item
+        name="overview"
+        label={
+          <>
+            <FileTextOutlined /> Overview
+          </>
+        }
+      >
+        <Input.TextArea
+          rows={4}
+          placeholder="Describe the package overview..."
+        />
       </Form.Item>
     </Card>
   );

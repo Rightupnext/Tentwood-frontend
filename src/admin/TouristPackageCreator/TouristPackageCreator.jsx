@@ -63,35 +63,30 @@ export default function TouristPackageCreator() {
     dispatch(fetchDestinations());
   }, []);
 
-const handleSave = async () => {
-  try {
-    await form.validateFields();
-    const values = form.getFieldsValue(true);
+  const handleSave = async () => {
+    try {
+      await form.validateFields(); // validates only visible tab
+      const allValues = form.getFieldsValue(true); // gets ALL TAB DATA
 
-    const formData = new FormData();
+      const finalData = {
+        ...allValues,
+        bannerImage,
+        cardImage,
+      };
+      // Now send images separately using FormData
+      const imageData = new FormData();
+      if (bannerImage) imageData.append("bannerImage", bannerImage);
+      if (cardImage) imageData.append("cardImage", cardImage);
 
-    // Append text fields
-    Object.keys(values).forEach((key) => {
-      if (typeof values[key] === "object") {
-        formData.append(key, JSON.stringify(values[key])); // arrays/objects as JSON string
-      } else {
-        formData.append(key, values[key]);
-      }
-    });
-
-    // Append images
-    if (bannerImage) formData.append("bannerImage", bannerImage);
-    if (cardImage) formData.append("cardImage", cardImage);
-
-    // Dispatch action (make sure backend expects FormData)
-    await dispatch(createPackage(formData));
-
-    console.log("FormData ready for backend:", formData);
-  } catch (err) {
-    message.error("Please fill required fields!");
-  }
-};
-
+      // Dispatch action (make sure backend expects FormData)
+      await dispatch(createPackage(finalData));
+      console.log("FINAL FULL PACKAGE DATA:", finalData);
+      message.success("Package saved successfully!");
+    } catch (error) {
+      console.log("Validation Failed:", error);
+      message.error("Please fill required fields!");
+    }
+  };
 
   const sections = [
     { id: "basic", label: "Basic Info", icon: <StarOutlined /> },
