@@ -6,6 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 import CountryManagement from "./admin/CountryManagement";
 import DestinationManagement from "./admin/DestinationManagement";
 import TravelForm from "./admin/TravelForm";
+import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageCreator";
 function App() {
   return (
     <Routes>
@@ -31,7 +32,8 @@ function App() {
         {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
         <Route path="countries" element={<CountryManagement />} />
         <Route path="destinations" element={<DestinationManagement />} />
-        <Route path="travel" element={<TravelForm />} />
+        {/* <Route path="travel" element={<TravelForm />} /> */}
+        <Route path="travel" element={<TouristPackageCreator />} />
         
       </Route>
     </Routes>

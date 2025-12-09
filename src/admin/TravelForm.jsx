@@ -1,719 +1,718 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Layout,
+  Menu,
+  Button,
+  Form,
+  Input,
+  Upload,
+  message,
+  Card,
+  Row,
+  Col,
+  Space,
+  List,
+  Typography,
+  Select,
+} from "antd";
+import {
+  SaveOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+  StarOutlined,
+  CalendarOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ContainerOutlined,
+  GlobalOutlined,
+  DollarCircleOutlined,
+  ClockCircleOutlined,
+  PushpinOutlined,
+  FileTextOutlined,
+  WarningOutlined,
+} from "@ant-design/icons";
+import { fetchDestinations } from "../store/slices/destinationSlice";
+import { useDispatch, useSelector } from "react-redux";
+const { Header, Content } = Layout;
+const { Option } = Select;
+const { Title, Text } = Typography;
+
+// Initial state structure for Antd's Form.List, which expects arrays of objects/strings.
+const initialValues = {
+  packageTitle: "",
+  pickup: "",
+  drop: "",
+  duration: "",
+  locations: "",
+  overview: "",
+  price: "",
+  highlights: [""], // Initialize with one empty field
+  itinerary: [{ dayTitle: "", activities: [""] }], // Initialize with Day 1
+  inclusions: [""],
+  exclusions: [""],
+  notes: [""],
+  travelEssentials: {
+    mustCarry: [""],
+    gears: [""],
+    clothes: [""],
+    footwear: [""],
+    medication: [""],
+    personalAccessories: [""],
+  },
+};
 
 export default function TouristPackageCreator() {
-  const [formData, setFormData] = useState({
-    packageTitle: "",
-    bannerImage: null,
-    cardImage: null,
-    pickup: "",
-    drop: "",
-    duration: "",
-    locations: "",
-    overview: "",
-    highlights: [],
-    itinerary: [],
-    inclusions: [],
-    exclusions: [],
-    notes: [],
-    travelEssentials: {
-      mustCarry: [],
-      gears: [],
-      clothes: [],
-      footwear: [],
-      medication: [],
-      personalAccessories: [],
-    },
-    price: "",
-  });
+  const dispatch = useDispatch();
+  const { list: destinations, loading: destLoading } = useSelector(
+    (state) => state.destinations
+  );
+  console.log("destinations", destinations);
+  const [activeSection, setActiveSection] = useState("basic");
+  const [form] = Form.useForm(); // Antd form instance
 
+  // Local state for non-form elements (Images)
+  const [bannerImage, setBannerImage] = useState(null);
+  const [cardImage, setCardImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
   const [cardPreview, setCardPreview] = useState(null);
-  const [activeSection, setActiveSection] = useState("basic");
+  useEffect(() => {
+    dispatch(fetchDestinations());
+  }, [dispatch]);
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleMenuClick = (e) => {
+    setActiveSection(e.key);
   };
 
-  const handleImageUpload = (e, type) => {
-    const file = e.target.files[0];
-    if (file) {
+  // Image Upload Handler
+  const uploadProps = (type) => ({
+    name: "file",
+    listType: "picture-card",
+    accept: "image/*",
+    showUploadList: false,
+    beforeUpload: (file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (type === "banner") {
           setBannerPreview(reader.result);
-          setFormData((prev) => ({ ...prev, bannerImage: file }));
+          setBannerImage(file);
         } else {
           setCardPreview(reader.result);
-          setFormData((prev) => ({ ...prev, cardImage: file }));
+          setCardImage(file);
         }
       };
       reader.readAsDataURL(file);
+      message.success(`${file.name} image selected for preview`);
+      return false; // Prevent automatic upload
+    },
+  });
+
+  const handleSave = async () => {
+    try {
+      await form.validateFields(); // validates only visible tab
+      const allValues = form.getFieldsValue(true); // gets ALL TAB DATA
+
+      const finalData = {
+        ...allValues,
+        bannerImage,
+        cardImage,
+      };
+
+      console.log("FINAL FULL PACKAGE DATA:", finalData);
+      message.success("Package saved successfully!");
+    } catch (error) {
+      console.log("Validation Failed:", error);
+      message.error("Please fill required fields!");
     }
   };
 
-  const addArrayItem = (field, item = "") => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: [...prev[field], item],
-    }));
-  };
-
-  const updateArrayItem = (field, index, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field].map((item, i) => (i === index ? value : item)),
-    }));
-  };
-
-  const removeArrayItem = (field, index) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
-    }));
-  };
-
-  const addItineraryDay = () => {
-    addArrayItem("itinerary", {
-      day: formData.itinerary.length + 1,
-      title: "",
-      activities: [""],
-    });
-  };
-
-  const updateItinerary = (index, field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      itinerary: prev.itinerary.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
-      ),
-    }));
-  };
-
-  const addItineraryActivity = (dayIndex) => {
-    setFormData((prev) => ({
-      ...prev,
-      itinerary: prev.itinerary.map((item, i) =>
-        i === dayIndex
-          ? { ...item, activities: [...item.activities, ""] }
-          : item
-      ),
-    }));
-  };
-
-  const updateItineraryActivity = (dayIndex, actIndex, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      itinerary: prev.itinerary.map((item, i) =>
-        i === dayIndex
-          ? {
-              ...item,
-              activities: item.activities.map((act, j) =>
-                j === actIndex ? value : act
-              ),
-            }
-          : item
-      ),
-    }));
-  };
-
-  const removeItineraryActivity = (dayIndex, actIndex) => {
-    setFormData((prev) => ({
-      ...prev,
-      itinerary: prev.itinerary.map((item, i) =>
-        i === dayIndex
-          ? {
-              ...item,
-              activities: item.activities.filter((_, j) => j !== actIndex),
-            }
-          : item
-      ),
-    }));
-  };
-
-  const updateTravelEssential = (category, index, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      travelEssentials: {
-        ...prev.travelEssentials,
-        [category]: prev.travelEssentials[category].map((item, i) =>
-          i === index ? value : item
-        ),
-      },
-    }));
-  };
-
-  const addTravelEssential = (category) => {
-    setFormData((prev) => ({
-      ...prev,
-      travelEssentials: {
-        ...prev.travelEssentials,
-        [category]: [...prev.travelEssentials[category], ""],
-      },
-    }));
-  };
-
-  const removeTravelEssential = (category, index) => {
-    setFormData((prev) => ({
-      ...prev,
-      travelEssentials: {
-        ...prev.travelEssentials,
-        [category]: prev.travelEssentials[category].filter(
-          (_, i) => i !== index
-        ),
-      },
-    }));
-  };
-
-  const handleSave = () => {
-    console.log("Package Data:", formData);
-    alert("Package saved successfully! Check console for data.");
-  };
-
   const sections = [
-    { id: "basic", label: "✨ Basic Info" },
-    { id: "highlights", label: "⭐ Highlights" },
-    { id: "itinerary", label: "📅 Itinerary" },
-    { id: "inclusions", label: "✓ Inclusions" },
-    { id: "essentials", label: "🎒 Essentials" },
+    { id: "basic", label: "Basic Info", icon: <StarOutlined /> },
+    { id: "highlights", label: "Highlights", icon: <StarOutlined /> },
+    { id: "itinerary", label: "Itinerary", icon: <CalendarOutlined /> },
+    {
+      id: "inclusions",
+      label: "Inclusions/Exclusions",
+      icon: <CheckCircleOutlined />,
+    },
+    { id: "essentials", label: "Essentials", icon: <ContainerOutlined /> },
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Create Tourist Package
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Design your perfect travel experience
-              </p>
-            </div>
-            <button
-              onClick={handleSave}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-            >
-              💾 Save Package
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex max-w-7xl mx-auto">
-        {/* Left Side - Form */}
-        <div className="w-full p-6 overflow-y-auto h-screen">
-          {/* Section Navigation */}
-          <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 sticky top-0 z-10">
-            <div className="flex gap-2 overflow-x-auto">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => setActiveSection(section.id)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
-                    activeSection === section.id
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+  // Helper function for rendering an Array-based list section using Form.List
+  const renderListSection = (name, title, icon, placeholder) => (
+    <Card
+      title={
+        <>
+          {icon} {title}
+        </>
+      }
+      bordered={false}
+      style={{ borderRadius: "8px" }}
+    >
+      <Form.List name={name}>
+        {(fields, { add, remove }) => (
+          <>
+            <List
+              dataSource={fields}
+              renderItem={({ key, name: fieldName, ...restField }) => (
+                <List.Item
+                  key={key}
+                  actions={[
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => remove(fieldName)}
+                    />,
+                  ]}
                 >
-                  {section.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Basic Information */}
-          {activeSection === "basic" && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
-                  ✨ Basic Information
-                </h2>
-
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Package Title *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.packageTitle}
-                      onChange={(e) =>
-                        handleInputChange("packageTitle", e.target.value)
-                      }
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
-                      placeholder="e.g., Fantastic Thailand Vacation"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Banner Image *
-                      </label>
-                      <div className="relative border-2 border-dashed border-purple-300 rounded-xl p-6 text-center bg-gradient-to-br from-purple-50 to-blue-50 hover:border-purple-500 transition-all duration-300 cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleImageUpload(e, "banner")}
-                          className="hidden"
-                          id="banner-upload"
-                        />
-                        <label
-                          htmlFor="banner-upload"
-                          className="cursor-pointer"
-                        >
-                          {bannerPreview ? (
-                            <img
-                              src={bannerPreview}
-                              alt="Banner"
-                              className="w-full h-32 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <>
-                              <svg
-                                className="mx-auto h-10 w-10 text-purple-400 mb-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                              </svg>
-                              <span className="text-sm text-gray-600">
-                                Upload Banner
-                              </span>
-                            </>
-                          )}
-                        </label>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Card Image *
-                      </label>
-                      <div className="relative border-2 border-dashed border-blue-300 rounded-xl p-6 text-center bg-gradient-to-br from-blue-50 to-purple-50 hover:border-blue-500 transition-all duration-300 cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleImageUpload(e, "card")}
-                          className="hidden"
-                          id="card-upload"
-                        />
-                        <label htmlFor="card-upload" className="cursor-pointer">
-                          {cardPreview ? (
-                            <img
-                              src={cardPreview}
-                              alt="Card"
-                              className="w-full h-32 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <>
-                              <svg
-                                className="mx-auto h-10 w-10 text-blue-400 mb-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                              </svg>
-                              <span className="text-sm text-gray-600">
-                                Upload Card
-                              </span>
-                            </>
-                          )}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        📍 Pickup Location
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.pickup}
-                        onChange={(e) =>
-                          handleInputChange("pickup", e.target.value)
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="e.g., Phuket Airport"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        📍 Drop Location
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.drop}
-                        onChange={(e) =>
-                          handleInputChange("drop", e.target.value)
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        placeholder="e.g., Phuket Airport"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        ⏱️ Duration
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.duration}
-                        onChange={(e) =>
-                          handleInputChange("duration", e.target.value)
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="e.g., 6N - 7D"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        💰 Price (₹)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.price}
-                        onChange={(e) =>
-                          handleInputChange("price", e.target.value)
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                        placeholder="e.g., 74,999"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🌍 Locations Covered
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.locations}
-                      onChange={(e) =>
-                        handleInputChange("locations", e.target.value)
-                      }
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="e.g., Phuket - Krabi - Koh Phangan"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📝 Overview
-                    </label>
-                    <textarea
-                      value={formData.overview}
-                      onChange={(e) =>
-                        handleInputChange("overview", e.target.value)
-                      }
-                      rows="6"
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="Describe the package overview..."
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Highlights */}
-          {activeSection === "highlights" && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">
-                ⭐ Highlights
-              </h2>
-              <div className="space-y-3">
-                {formData.highlights.map((highlight, index) => (
-                  <div key={index} className="flex gap-3 group">
-                    <input
-                      type="text"
-                      value={highlight}
-                      onChange={(e) =>
-                        updateArrayItem("highlights", index, e.target.value)
-                      }
-                      className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                      placeholder="Enter highlight"
-                    />
-                    <button
-                      onClick={() => removeArrayItem("highlights", index)}
-                      className="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={() => addArrayItem("highlights", "")}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-                >
-                  ➕ Add Highlight
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Itinerary */}
-          {activeSection === "itinerary" && (
-            <div className="space-y-4">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
-                  📅 Itinerary
-                </h2>
-                <div className="space-y-4">
-                  {formData.itinerary.map((day, dayIndex) => (
-                    <div
-                      key={dayIndex}
-                      className="border-2 border-blue-100 rounded-xl p-5 bg-gradient-to-br from-blue-50 to-indigo-50 hover:border-blue-300 transition-all duration-300"
-                    >
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                            {day.day}
-                          </div>
-                          <h3 className="font-bold text-gray-700">
-                            Day {day.day}
-                          </h3>
-                        </div>
-                        <button
-                          onClick={() => removeArrayItem("itinerary", dayIndex)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-100 p-2 rounded-lg transition-all duration-300"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                      <input
-                        type="text"
-                        value={day.title}
-                        onChange={(e) =>
-                          updateItinerary(dayIndex, "title", e.target.value)
-                        }
-                        className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                        placeholder="Day title"
-                      />
-
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-600 mb-2">
-                          Activities:
-                        </p>
-                        {day.activities.map((activity, actIndex) => (
-                          <div key={actIndex} className="flex gap-2">
-                            <textarea
-                              value={activity}
-                              onChange={(e) =>
-                                updateItineraryActivity(
-                                  dayIndex,
-                                  actIndex,
-                                  e.target.value
-                                )
-                              }
-                              rows="2"
-                              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                              placeholder="Activity description"
-                            />
-                            <button
-                              onClick={() =>
-                                removeItineraryActivity(dayIndex, actIndex)
-                              }
-                              className="px-3 py-2 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300"
-                            >
-                              ✖️
-                            </button>
-                          </div>
-                        ))}
-                        <button
-                          onClick={() => addItineraryActivity(dayIndex)}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                        >
-                          + Add Activity
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  <button
-                    onClick={addItineraryDay}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
+                  <Form.Item
+                    {...restField}
+                    name={fieldName}
+                    style={{ flex: 1, margin: 0 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: `Please enter a ${name.slice(0, -1)}`,
+                      },
+                    ]}
                   >
-                    ➕ Add Day
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Inclusions & Exclusions */}
-          {activeSection === "inclusions" && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
-                  ✅ Inclusions
-                </h2>
-                <div className="space-y-3">
-                  {formData.inclusions.map((inclusion, index) => (
-                    <div key={index} className="flex gap-3 group">
-                      <input
-                        type="text"
-                        value={inclusion}
-                        onChange={(e) =>
-                          updateArrayItem("inclusions", index, e.target.value)
-                        }
-                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="Enter inclusion"
-                      />
-                      <button
-                        onClick={() => removeArrayItem("inclusions", index)}
-                        className="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => addArrayItem("inclusions", "")}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-                  >
-                    ➕ Add Inclusion
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
-                  ❌ Exclusions
-                </h2>
-                <div className="space-y-3">
-                  {formData.exclusions.map((exclusion, index) => (
-                    <div key={index} className="flex gap-3 group">
-                      <input
-                        type="text"
-                        value={exclusion}
-                        onChange={(e) =>
-                          updateArrayItem("exclusions", index, e.target.value)
-                        }
-                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                        placeholder="Enter exclusion"
-                      />
-                      <button
-                        onClick={() => removeArrayItem("exclusions", index)}
-                        className="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => addArrayItem("exclusions", "")}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-                  >
-                    ➕ Add Exclusion
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">
-                  ⚠️ Important Notes
-                </h2>
-                <div className="space-y-3">
-                  {formData.notes.map((note, index) => (
-                    <div key={index} className="flex gap-3 group">
-                      <input
-                        type="text"
-                        value={note}
-                        onChange={(e) =>
-                          updateArrayItem("notes", index, e.target.value)
-                        }
-                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                        placeholder="Enter note"
-                      />
-                      <button
-                        onClick={() => removeArrayItem("notes", index)}
-                        className="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => addArrayItem("notes", "")}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-400 to-red-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-                  >
-                    ➕ Add Note
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Travel Essentials */}
-          {activeSection === "essentials" && (
-            <div className="space-y-4">
-              {Object.entries(formData.travelEssentials).map(
-                ([category, items]) => (
-                  <div
-                    key={category}
-                    className="bg-white rounded-2xl shadow-lg p-6"
-                  >
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 capitalize">
-                      🎒 {category.replace(/([A-Z])/g, " $1").trim()}
-                    </h3>
-                    <div className="space-y-3">
-                      {items.map((item, index) => (
-                        <div key={index} className="flex gap-3 group">
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) =>
-                              updateTravelEssential(
-                                category,
-                                index,
-                                e.target.value
-                              )
-                            }
-                            className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            placeholder={`Enter ${category} item`}
-                          />
-                          <button
-                            onClick={() =>
-                              removeTravelEssential(category, index)
-                            }
-                            className="px-4 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => addTravelEssential(category)}
-                        className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
-                      >
-                        + Add Item
-                      </button>
-                    </div>
-                  </div>
-                )
+                    <Input placeholder={placeholder} />
+                  </Form.Item>
+                </List.Item>
               )}
-            </div>
-          )}
+            />
+            <Button
+              type="dashed"
+              onClick={() => add()}
+              block
+              icon={<PlusOutlined />}
+              style={{ marginTop: 16 }}
+            >
+              Add {title.split(" ")[0]}
+            </Button>
+          </>
+        )}
+      </Form.List>
+    </Card>
+  );
+
+  // Ant Design Layout
+  return (
+    <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+      {/* Header */}
+      <Header
+        style={{
+          background: "#fff",
+          padding: "0 24px",
+          boxShadow: "0 1px 4px rgba(0, 21, 41, 0.08)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+            Create Tourist Package ✈️
+          </Title>
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
+            size="large"
+            onClick={handleSave}
+          >
+            Save Package
+          </Button>
         </div>
-      </div>
-    </div>
+      </Header>
+
+      <Layout
+        style={{
+          maxWidth: "1200px",
+          margin: "24px auto",
+          background: "#f0f2f5",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {/* Section Navigation (Left Sidebar) */}
+        <Menu
+          mode="inline"
+          selectedKeys={[activeSection]}
+          onClick={handleMenuClick}
+          style={{
+            width: 200,
+            marginRight: 10,
+            borderRadius: "8px",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.09)",
+            flexShrink: 0,
+          }}
+        >
+          {sections.map((section) => (
+            <Menu.Item key={section.id} icon={section.icon}>
+              {section.label}
+            </Menu.Item>
+          ))}
+        </Menu>
+
+        {/* Content Area */}
+        <Content style={{ minWidth: 1000, flex: 1 }}>
+          <Form form={form} layout="vertical" initialValues={initialValues}>
+            {/* Basic Information */}
+            {activeSection === "basic" && (
+              <Card
+                title="✨ Basic Information"
+                bordered={false}
+                style={{ borderRadius: "8px" }}
+              >
+                <Form.Item
+                  label="Package Title"
+                  name="packageTitle"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the package title",
+                    },
+                  ]}
+                >
+                  <Input placeholder="e.g., Fantastic Thailand Vacation" />
+                </Form.Item>
+                <Form.Item
+                  label="Destination"
+                  name="Destination"
+                  rules={[
+                    { required: true, message: "Destination is required" },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select destination"
+                    allowClear
+                    loading={destLoading}
+                  >
+                    {destinations?.map((dest) => (
+                      <Option key={dest._id} value={dest._id}>
+                        {dest.Destination}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item label="Banner Image (16:9 recommended)" required>
+                      <Upload {...uploadProps("banner")}>
+                        {bannerPreview ? (
+                          <img
+                            src={bannerPreview}
+                            alt="Banner Preview"
+                            style={{
+                              width: "100%",
+                              maxHeight: "100px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              paddingTop: "20px",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                            <UploadOutlined />
+                            <div style={{ marginTop: 8 }}>Upload Banner</div>
+                          </div>
+                        )}
+                      </Upload>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="Card Image (3:2 recommended)" required>
+                      <Upload {...uploadProps("card")}>
+                        {cardPreview ? (
+                          <img
+                            src={cardPreview}
+                            alt="Card Preview"
+                            style={{
+                              width: "100%",
+                              maxHeight: "100px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              paddingTop: "20px",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                            <UploadOutlined />
+                            <div style={{ marginTop: 8 }}>Upload Card</div>
+                          </div>
+                        )}
+                      </Upload>
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      label={
+                        <>
+                          <PushpinOutlined /> Pickup Location
+                        </>
+                      }
+                      name="pickup"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter the pickup location",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="e.g., Phuket Airport" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label={
+                        <>
+                          <PushpinOutlined /> Drop Location
+                        </>
+                      }
+                      name="drop"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter the drop location",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="e.g., Phuket Airport" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      label={
+                        <>
+                          <ClockCircleOutlined /> Duration
+                        </>
+                      }
+                      name="duration"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter the duration",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="e.g., 6N - 7D" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label={
+                        <>
+                          <DollarCircleOutlined /> Price (₹)
+                        </>
+                      }
+                      name="price"
+                      rules={[
+                        { required: true, message: "Please enter the price" },
+                      ]}
+                    >
+                      <Input placeholder="e.g., 74,999" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Form.Item
+                  label={
+                    <>
+                      <GlobalOutlined /> Locations Covered
+                    </>
+                  }
+                  name="locations"
+                >
+                  <Input placeholder="e.g., Phuket - Krabi - Koh Phangan" />
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <>
+                      <FileTextOutlined /> Overview
+                    </>
+                  }
+                  name="overview"
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Describe the package overview..."
+                  />
+                </Form.Item>
+              </Card>
+            )}
+
+            {/* Highlights (Using renderListSection helper) */}
+            {activeSection === "highlights" &&
+              renderListSection(
+                "highlights",
+                "Highlights",
+                <StarOutlined />,
+                "Enter key highlight (e.g., Phi Phi Island Tour)"
+              )}
+
+            {/* Itinerary (Refactored to use Form.List for days and nested Form.List for activities) */}
+            {activeSection === "itinerary" && (
+              <Card
+                title="📅 Itinerary"
+                bordered={false}
+                style={{ borderRadius: "8px" }}
+              >
+                <Form.List name="itinerary">
+                  {(days, { add: addDay, remove: removeDay }) => (
+                    <Space
+                      direction="vertical"
+                      style={{ width: "100%" }}
+                      size="middle"
+                    >
+                      {days.map(
+                        (
+                          {
+                            key: dayKey,
+                            name: dayName,
+                            fieldKey: dayFieldKey,
+                            ...restDayField
+                          },
+                          index
+                        ) => (
+                          <Card
+                            key={dayKey}
+                            title={`Day ${index + 1}`}
+                            extra={
+                              <Button
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => removeDay(dayName)}
+                              >
+                                Remove Day
+                              </Button>
+                            }
+                            style={{ border: "1px solid #1890ff1f" }}
+                          >
+                            <Form.Item
+                              {...restDayField}
+                              name={[dayName, "dayTitle"]}
+                              fieldKey={[dayFieldKey, "dayTitle"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please enter a Day Title",
+                                },
+                              ]}
+                              style={{ marginBottom: 16 }}
+                            >
+                              <Input placeholder="Day Title (e.g., Arrival at Phuket & Check-in)" />
+                            </Form.Item>
+
+                            <Title level={5} style={{ marginTop: 0 }}>
+                              Activities:
+                            </Title>
+                            <Form.List name={[dayName, "activities"]}>
+                              {(
+                                activities,
+                                { add: addActivity, remove: removeActivity }
+                              ) => (
+                                <>
+                                  <List
+                                    dataSource={activities}
+                                    renderItem={({
+                                      key: actKey,
+                                      name: actName,
+                                      fieldKey: actFieldKey,
+                                      ...restActivityField
+                                    }) => (
+                                      <List.Item
+                                        key={actKey}
+                                        actions={[
+                                          <Button
+                                            type="text"
+                                            danger
+                                            icon={<DeleteOutlined />}
+                                            onClick={() =>
+                                              removeActivity(actName)
+                                            }
+                                          />,
+                                        ]}
+                                        style={{ padding: 0 }}
+                                      >
+                                        <Form.Item
+                                          {...restActivityField}
+                                          name={actName}
+                                          fieldKey={actFieldKey}
+                                          rules={[
+                                            {
+                                              required: true,
+                                              message:
+                                                "Please enter an activity",
+                                            },
+                                          ]}
+                                          style={{ flex: 1, margin: 0 }}
+                                        >
+                                          <Input.TextArea
+                                            rows={2}
+                                            placeholder="Activity description"
+                                          />
+                                        </Form.Item>
+                                      </List.Item>
+                                    )}
+                                  />
+                                  <Button
+                                    type="dashed"
+                                    size="small"
+                                    icon={<PlusOutlined />}
+                                    onClick={() => addActivity()}
+                                    style={{ marginTop: 8 }}
+                                  >
+                                    Add Activity
+                                  </Button>
+                                </>
+                              )}
+                            </Form.List>
+                          </Card>
+                        )
+                      )}
+                      <Button
+                        type="primary"
+                        onClick={() =>
+                          addDay({ dayTitle: "", activities: [""] })
+                        } // Add a day with one default empty activity
+                        block
+                        icon={<PlusOutlined />}
+                        style={{ marginTop: 16 }}
+                      >
+                        Add Day
+                      </Button>
+                    </Space>
+                  )}
+                </Form.List>
+              </Card>
+            )}
+
+            {/* Inclusions & Exclusions */}
+            {activeSection === "inclusions" && (
+              <Space
+                direction="vertical"
+                style={{ width: "100%" }}
+                size="large"
+              >
+                {renderListSection(
+                  "inclusions",
+                  "Inclusions",
+                  <CheckCircleOutlined />,
+                  "Enter inclusion (e.g., Flight tickets)"
+                )}
+
+                {renderListSection(
+                  "exclusions",
+                  "Exclusions",
+                  <CloseCircleOutlined />,
+                  "Enter exclusion (e.g., Visa fees)"
+                )}
+
+                {renderListSection(
+                  "notes",
+                  "Important Notes",
+                  <WarningOutlined />,
+                  "Enter an important note or warning"
+                )}
+              </Space>
+            )}
+
+            {/* Travel Essentials */}
+            {activeSection === "essentials" && (
+              <Space
+                direction="vertical"
+                style={{ width: "100%" }}
+                size="large"
+              >
+                {/* Iterate over the travelEssentials keys to create sections */}
+                {Object.keys(initialValues.travelEssentials).map((category) => (
+                  <Card
+                    key={category}
+                    title={`🎒 ${category.replace(/([A-Z])/g, " $1").trim()}`}
+                    bordered={false}
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <Form.List name={["travelEssentials", category]}>
+                      {(fields, { add, remove }) => (
+                        <>
+                          <List
+                            dataSource={fields}
+                            renderItem={({
+                              key,
+                              name: fieldName,
+                              ...restField
+                            }) => (
+                              <List.Item
+                                key={key}
+                                actions={[
+                                  <Button
+                                    type="text"
+                                    danger
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => remove(fieldName)}
+                                  />,
+                                ]}
+                              >
+                                <Form.Item
+                                  {...restField}
+                                  name={fieldName}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: `Please enter a ${category} item`,
+                                    },
+                                  ]}
+                                  style={{ flex: 1, margin: 0 }}
+                                >
+                                  <Input
+                                    placeholder={`Enter ${category
+                                      .replace(/([A-Z])/g, " $1")
+                                      .trim()} item`}
+                                  />
+                                </Form.Item>
+                              </List.Item>
+                            )}
+                          />
+                          <Button
+                            type="dashed"
+                            onClick={() => add()}
+                            block
+                            icon={<PlusOutlined />}
+                            style={{ marginTop: 16 }}
+                          >
+                            Add Item
+                          </Button>
+                        </>
+                      )}
+                    </Form.List>
+                  </Card>
+                ))}
+              </Space>
+            )}
+          </Form>
+        </Content>
+      </Layout>
+    </Layout>
   );
 }
