@@ -79,7 +79,7 @@ export default function TouristPackageCreator() {
       if (cardImage) imageData.append("cardImage", cardImage);
 
       // Dispatch action (make sure backend expects FormData)
-      await dispatch(createPackage(finalData));
+      // await dispatch(createPackage(finalData));
       console.log("FINAL FULL PACKAGE DATA:", finalData);
       message.success("Package saved successfully!");
     } catch (error) {
