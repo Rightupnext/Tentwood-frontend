@@ -18,6 +18,7 @@ import PackageHighlights from "./PackageHighlights";
 import PackageItinerary from "./PackageItinerary";
 import PackageInclusions from "./PackageInclusions";
 import PackageEssentials from "./PackageEssentials";
+import PackageGallery from "./PackageGallery";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -53,7 +54,7 @@ export default function TouristPackageCreator() {
 
   const [activeSection, setActiveSection] = useState("basic");
   const [form] = Form.useForm();
-
+  const [gallery, setGallery] = useState([]);
   const [bannerImage, setBannerImage] = useState(null);
   const [cardImage, setCardImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
@@ -65,25 +66,37 @@ export default function TouristPackageCreator() {
 
   const handleSave = async () => {
     try {
-      await form.validateFields(); // validates only visible tab
-      const allValues = form.getFieldsValue(true); // gets ALL TAB DATA
+      await form.validateFields();
+      const allValues = form.getFieldsValue(true);
 
-      const finalData = {
-        ...allValues,
-        bannerImage,
-        cardImage,
-      };
-      // Now send images separately using FormData
-      const imageData = new FormData();
-      if (bannerImage) imageData.append("bannerImage", bannerImage);
-      if (cardImage) imageData.append("cardImage", cardImage);
+      const formData = new FormData();
 
-      // Dispatch action (make sure backend expects FormData)
-      await dispatch(createPackage(finalData));
-      console.log("FINAL FULL PACKAGE DATA:", finalData);
-      // message.success("Package saved successfully!");
-    } catch (error) {
-      console.log("Validation Failed:", error);
+      // Append regular fields
+      Object.keys(allValues).forEach((key) => {
+        if (allValues[key] !== undefined && key !== "gallery") {
+          // If field is object or array, stringify it
+          if (typeof allValues[key] === "object") {
+            formData.append(key, JSON.stringify(allValues[key]));
+          } else {
+            formData.append(key, allValues[key]);
+          }
+        }
+      });
+
+      // Append banner & card images
+      if (bannerImage) formData.append("bannerImage", bannerImage);
+      if (cardImage) formData.append("cardImage", cardImage);
+
+      // Append gallery images
+      gallery.forEach((item) => {
+        formData.append("gallery", item.file); // ✅ only file objects
+      });
+
+      // Dispatch
+      await dispatch(createPackage(formData));
+      message.success("Package saved successfully!");
+    } catch (err) {
+      console.log("Validation Failed:", err);
       message.error("Please fill required fields!");
     }
   };
@@ -98,6 +111,11 @@ export default function TouristPackageCreator() {
       icon: <CheckCircleOutlined />,
     },
     { id: "essentials", label: "Essentials", icon: <ContainerOutlined /> },
+    {
+      id: "packageGallery",
+      label: "packageGallery",
+      icon: <ContainerOutlined />,
+    },
   ];
 
   return (
@@ -153,6 +171,9 @@ export default function TouristPackageCreator() {
             {activeSection === "itinerary" && <PackageItinerary />}
             {activeSection === "inclusions" && <PackageInclusions />}
             {activeSection === "essentials" && <PackageEssentials />}
+            {activeSection === "packageGallery" && (
+              <PackageGallery gallery={gallery} setGallery={setGallery} />
+            )}
           </div>
         </div>
       </Form>

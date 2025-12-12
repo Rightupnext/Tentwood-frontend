@@ -10,25 +10,32 @@ export const createApiThunk = (
   createAsyncThunk(name, async (data = {}, { rejectWithValue, dispatch }) => {
     try {
       let response;
+      const lower = method.toLowerCase();
 
-      if (method.toLowerCase() === "get") {
-        response = await api.get(url, { params: data });
-      } else {
-        // Replace :id in dynamic URL
+      // ----------- GET REQUEST FIXED HERE -----------
+      if (lower === "get") {
+        const finalUrl = url.includes(":id")
+          ? url.replace(":id", data.id)
+          : url;
+
+        response = await api.get(finalUrl);
+      }
+
+      // ----------- OTHER METHODS -----------
+      else {
         const finalUrl = url.includes(":id")
           ? url.replace(":id", data.id)
           : url;
 
         // genericThunk.js
         if (isMultipart) {
-          response = await api[method.toLowerCase()](finalUrl, data, {
+          response = await api[lower](finalUrl, data, {
             headers: {
               "Content-Type": "multipart/form-data", // optional; browser sets boundary automatically
             },
           });
         } else {
-          // Normal JSON request
-          response = await api[method.toLowerCase()](finalUrl, data);
+          response = await api[lower](finalUrl, data);
         }
       }
 
@@ -42,7 +49,7 @@ export const createApiThunk = (
         dispatch(onSuccessDispatch());
       }
 
-      return response.data.user || response.data;
+      return response.data;
     } catch (err) {
       const backendMsg =
         err.response?.data?.error ||
