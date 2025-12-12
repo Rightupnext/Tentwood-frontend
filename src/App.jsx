@@ -7,6 +7,8 @@ import CountryManagement from "./admin/CountryManagement";
 import DestinationManagement from "./admin/DestinationManagement";
 import TravelForm from "./admin/TravelForm";
 import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageCreator";
+import PackagesList from "./admin/TouristPackageCreator/PackagesList";
+import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
 function App() {
   return (
     <Routes>
@@ -34,7 +36,10 @@ function App() {
         <Route path="destinations" element={<DestinationManagement />} />
         {/* <Route path="travel" element={<TravelForm />} /> */}
         <Route path="travel" element={<TouristPackageCreator />} />
-        
+        <Route path="package">
+          <Route index element={<PackagesList />} /> 
+          <Route path=":id" element={<PackageDetails />} /> 
+        </Route>
       </Route>
     </Routes>
   );
