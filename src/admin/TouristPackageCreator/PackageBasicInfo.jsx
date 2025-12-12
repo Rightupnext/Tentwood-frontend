@@ -1,5 +1,5 @@
-import React from "react";
-import { Card, Form, Input, Select, Row, Col, Upload } from "antd";
+import React, { useState } from "react";
+import { Card, Form, Input, Select, Row, Col, Upload, Tag } from "antd";
 import {
   UploadOutlined,
   PushpinOutlined,
@@ -11,6 +11,16 @@ import {
 
 const { Option } = Select;
 
+const TRIP_COLORS = {
+  "International Trips": "blue",
+  "India Trips": "green",
+  "Group Tours": "orange",
+  "Honeymoon Packages": "pink",
+  "Adventure Trips": "volcano",
+  "Family Trips": "cyan",
+  "Beach Holidays": "gold",
+};
+
 export default function PackageBasicInfo({
   destinations,
   destLoading,
@@ -20,6 +30,7 @@ export default function PackageBasicInfo({
   setCardPreview,
   setBannerImage,
   setCardImage,
+  form,
 }) {
   const uploadProps = (type) => ({
     name: "file",
@@ -31,19 +42,21 @@ export default function PackageBasicInfo({
       reader.onloadend = () => {
         if (type === "banner") {
           setBannerPreview(reader.result);
-          setBannerImage(file); // ✅ this is correct
+          setBannerImage(file);
         } else {
           setCardPreview(reader.result);
-          setCardImage(file); // ✅ this is correct
+          setCardImage(file);
         }
       };
       reader.readAsDataURL(file);
-      return false; // prevent auto upload
+      return false;
     },
   });
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
 
   return (
     <Card title="✨ Basic Information" bordered={false}>
+      {/* PACKAGE TITLE */}
       <Form.Item
         name="packageTitle"
         label="Package Title"
@@ -52,17 +65,43 @@ export default function PackageBasicInfo({
         <Input placeholder="e.g., Amazing Thailand Tour" />
       </Form.Item>
 
+      {/* 1️⃣ SELECT TYPE FIRST */}
+      <Form.Item
+        name="type"
+        label="Type"
+        rules={[{ required: true, message: "Select type" }]}
+      >
+        <Select
+          placeholder="Select type"
+          allowClear
+          loading={destLoading}
+          onChange={(selectedType) => {
+            const filtered = destinations.filter((d) => d.type === selectedType);
+            setFilteredDestinations(filtered);
+
+            form.setFieldsValue({ Destination: null, TripCategory: null });
+          }}
+        >
+          {[...new Set(destinations.map((d) => d.type))].map((type) => (
+            <Option key={type} value={type}>
+              {type}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* 2️⃣ NOW SELECT DESTINATION (FILTERED BY TYPE) */}
       <Form.Item
         name="Destination"
         label="Destination"
-        rules={[{ required: true, message: "Destination is required" }]}
+        rules={[{ required: true, message: "Select destination" }]}
       >
-        <Select
-          placeholder="Select destination"
-          loading={destLoading}
-          allowClear
-        >
-          {destinations?.map((d) => (
+        <Select placeholder="Select Destination" loading={destLoading}>
+          {[
+            ...new Map(
+              filteredDestinations.map((d) => [d.Destination, d])
+            ).values(),
+          ].map((d) => (
             <Option key={d._id} value={d._id}>
               {d.Destination}
             </Option>
@@ -70,6 +109,26 @@ export default function PackageBasicInfo({
         </Select>
       </Form.Item>
 
+      {/* 3️⃣ TRIP CATEGORY (UNIQUE) */}
+      <Form.Item
+        name="TripCategory"
+        label="Trip Category"
+        rules={[{ required: true, message: "Select Trip Category" }]}
+      >
+        <Select
+          placeholder="Select Trip Category"
+          loading={destLoading}
+          allowClear
+        >
+          {[...new Set(destinations.map((d) => d.trip))].map((trip) => (
+            <Option key={trip} value={trip}>
+              <Tag color={TRIP_COLORS[trip] || "default"}>{trip}</Tag>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* IMAGE UPLOADS */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Banner Image (16:9)">
@@ -77,7 +136,7 @@ export default function PackageBasicInfo({
               {bannerPreview ? (
                 <img
                   src={bannerPreview}
-                  alt="Banner"
+                  alt="banner"
                   style={{ width: "100%", maxHeight: 100, objectFit: "cover" }}
                 />
               ) : (
@@ -96,7 +155,7 @@ export default function PackageBasicInfo({
               {cardPreview ? (
                 <img
                   src={cardPreview}
-                  alt="Card"
+                  alt="card"
                   style={{ width: "100%", maxHeight: 100, objectFit: "cover" }}
                 />
               ) : (
@@ -110,15 +169,12 @@ export default function PackageBasicInfo({
         </Col>
       </Row>
 
+      {/* Other Fields */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
             name="pickup"
-            label={
-              <>
-                <PushpinOutlined /> Pickup Location
-              </>
-            }
+            label={<><PushpinOutlined /> Pickup Location</>}
             rules={[{ required: true, message: "Enter pickup location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -127,11 +183,7 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="drop"
-            label={
-              <>
-                <PushpinOutlined /> Drop Location
-              </>
-            }
+            label={<><PushpinOutlined /> Drop Location</>}
             rules={[{ required: true, message: "Enter drop location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -143,11 +195,7 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="duration"
-            label={
-              <>
-                <ClockCircleOutlined /> Duration
-              </>
-            }
+            label={<><ClockCircleOutlined /> Duration</>}
             rules={[{ required: true, message: "Enter duration" }]}
           >
             <Input placeholder="e.g., 5N - 6D" />
@@ -157,11 +205,7 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="price"
-            label={
-              <>
-                <DollarCircleOutlined /> Price
-              </>
-            }
+            label={<><DollarCircleOutlined /> Price (Per Person)</>}
             rules={[{ required: true, message: "Enter price" }]}
           >
             <Input placeholder="e.g., 75,000" />
@@ -171,22 +215,14 @@ export default function PackageBasicInfo({
 
       <Form.Item
         name="locations"
-        label={
-          <>
-            <GlobalOutlined /> Locations Covered
-          </>
-        }
+        label={<><GlobalOutlined /> Locations Covered</>}
       >
         <Input placeholder="e.g., Phuket - Krabi - Bangkok" />
       </Form.Item>
 
       <Form.Item
         name="overview"
-        label={
-          <>
-            <FileTextOutlined /> Overview
-          </>
-        }
+        label={<><FileTextOutlined /> Overview</>}
       >
         <Input.TextArea
           rows={4}

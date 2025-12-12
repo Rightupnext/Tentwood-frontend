@@ -1,18 +1,29 @@
 // pages/PackagesList.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Input, Slider, Select, Button, Card, Spin, Tag } from "antd";
 import PackageCard from "./PackageCard";
 import { packagesMock } from "./mockData";
 import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
-
+import { fetchPackages } from "../../store/slices/packageSlice";
+import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
 
-const categories = ["International Trips", "India Trips", "Group Tours", "Honeymoon Packages"];
+const categories = [
+  "International Trips",
+  "India Trips",
+  "Group Tours",
+  "Honeymoon Packages",
+];
 
 export default function PackagesList() {
-  const [packages, setPackages] = useState(packagesMock);
+  const dispatch = useDispatch();
+  const { list: packages, loadings } = useSelector((state) => state.packages);
+  console.log("packages".packages);
+  // const [packages, setPackages] = useState(packagesMock);
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    dispatch(fetchPackages());
+  }, [dispatch]);
   // Filters
   const [category, setCategory] = useState("");
   const [destination, setDestination] = useState("");
@@ -45,7 +56,7 @@ export default function PackagesList() {
     }
 
     setTimeout(() => {
-      setPackages(filtered);
+    
       setLoading(false);
     }, 300);
   };
@@ -62,8 +73,12 @@ export default function PackagesList() {
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Available Packages</h1>
-          <p className="text-xl text-blue-100">Discover amazing travel experiences</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Available Packages
+          </h1>
+          <p className="text-xl text-blue-100">
+            Discover amazing travel experiences
+          </p>
         </div>
       </div>
 
@@ -85,9 +100,16 @@ export default function PackagesList() {
             <Col xs={24} md={6}>
               <div>
                 <div className="text-sm text-gray-600 mb-2">
-                  Price: ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                  Price: ₹{priceRange[0].toLocaleString()} - ₹
+                  {priceRange[1].toLocaleString()}
                 </div>
-                <Slider range max={200000} step={5000} value={priceRange} onChange={setPriceRange} />
+                <Slider
+                  range
+                  max={200000}
+                  step={5000}
+                  value={priceRange}
+                  onChange={setPriceRange}
+                />
               </div>
             </Col>
 
@@ -150,7 +172,9 @@ export default function PackagesList() {
             <Col xs={12} md={6} key={i}>
               <Card className="text-center rounded-xl shadow-md border-0 hover:shadow-lg transition-shadow">
                 <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className="text-2xl font-bold text-blue-600">{stat.value}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {stat.value}
+                </div>
                 <div className="text-sm text-gray-600">{stat.label}</div>
               </Card>
             </Col>
@@ -159,7 +183,9 @@ export default function PackagesList() {
 
         {/* Package Grid */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Featured Packages</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            Featured Packages
+          </h2>
 
           {loading ? (
             <div className="flex justify-center items-center py-20">
@@ -174,7 +200,9 @@ export default function PackagesList() {
               ))}
             </Row>
           ) : (
-            <p className="text-center text-gray-500 py-20">No packages found.</p>
+            <p className="text-center text-gray-500 py-20">
+              No packages found.
+            </p>
           )}
         </div>
       </div>

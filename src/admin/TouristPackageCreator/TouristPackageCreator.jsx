@@ -81,7 +81,7 @@ export default function TouristPackageCreator() {
       // Dispatch action (make sure backend expects FormData)
       await dispatch(createPackage(finalData));
       console.log("FINAL FULL PACKAGE DATA:", finalData);
-      message.success("Package saved successfully!");
+      // message.success("Package saved successfully!");
     } catch (error) {
       console.log("Validation Failed:", error);
       message.error("Please fill required fields!");
@@ -146,6 +146,7 @@ export default function TouristPackageCreator() {
                 setCardPreview={setCardPreview}
                 setBannerImage={setBannerImage}
                 setCardImage={setCardImage}
+                form={form}
               />
             )}
             {activeSection === "highlights" && <PackageHighlights />}

@@ -79,6 +79,11 @@ const DestinationManagement = () => {
       country: values.country,
       type: values.type,
       description: values.description,
+      seo: {
+        slug: values.Destination?.toLowerCase().replace(/\s+/g, "-"),
+        metaTitle: values.metaTitle || "",
+        metaDescription: values.metaDescription || "",
+      },
     };
 
     if (editId) {
