@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
+  GlobalOutlined,
+  EnvironmentOutlined,
+  FormOutlined,
+  AppstoreOutlined,
   LogoutOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-
 import { Button, Layout, Menu, theme, Dropdown, Avatar, Space } from "antd";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { logOutUser } from "../store/slices/userSlice";
 import { useDispatch } from "react-redux";
 
 const { Header, Sider, Content } = Layout;
+
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
@@ -44,11 +46,12 @@ const DashboardLayout = () => {
     },
   ];
 
-  // Compute selected key directly from pathname
+  // Compute selected key from pathname
   const getSelectedKey = () => {
     if (location.pathname.startsWith("/admin/countries")) return "2";
     if (location.pathname.startsWith("/admin/destinations")) return "3";
     if (location.pathname.startsWith("/admin/travel")) return "4";
+    if (location.pathname.startsWith("/admin/package")) return "5";
     if (location.pathname === "/admin") return "1";
     return "";
   };
@@ -70,21 +73,27 @@ const DashboardLayout = () => {
             },
             {
               key: "2",
-              icon: <VideoCameraOutlined />,
+              icon: <GlobalOutlined />,
               label: "Country Management",
               onClick: () => navigate("/admin/countries"),
             },
             {
               key: "3",
-              icon: <UploadOutlined />,
+              icon: <EnvironmentOutlined />,
               label: "Destinations",
               onClick: () => navigate("/admin/destinations"),
             },
             {
               key: "4",
-              icon: <UploadOutlined />,
-              label: "Travel Packages",
+              icon: <FormOutlined />,
+              label: "Packages Create",
               onClick: () => navigate("/admin/travel"),
+            },
+            {
+              key: "5",
+              icon: <AppstoreOutlined />,
+              label: "Packages Management",
+              onClick: () => navigate("/admin/package"),
             },
           ]}
         />
