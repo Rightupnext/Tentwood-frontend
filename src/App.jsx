@@ -9,6 +9,7 @@ import TravelForm from "./admin/TravelForm";
 import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageCreator";
 import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
+import AnalyticsDashboard from "./admin/AnalyticsDashboard";
 function App() {
   return (
     <Routes>
@@ -32,13 +33,15 @@ function App() {
         }
       >
         {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
+        <Route path="" index element={<AnalyticsDashboard />} />
         <Route path="countries" element={<CountryManagement />} />
         <Route path="destinations" element={<DestinationManagement />} />
         {/* <Route path="travel" element={<TravelForm />} /> */}
         <Route path="travel" element={<TouristPackageCreator />} />
         <Route path="package">
-          <Route index element={<PackagesList />} /> 
-          <Route path=":id" element={<PackageDetails />} /> 
+          <Route index element={<PackagesList />} />
+          <Route path="edit/:id" element={<TouristPackageCreator />} />
+          <Route path=":id" element={<PackageDetails />} />
         </Route>
       </Route>
     </Routes>

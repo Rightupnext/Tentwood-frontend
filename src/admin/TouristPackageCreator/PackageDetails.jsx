@@ -10,6 +10,7 @@ import {
   Button,
   Card,
   Divider,
+  Popconfirm,
 } from "antd";
 import { packagesMock } from "./mockData";
 import {
@@ -21,26 +22,36 @@ import {
   HeartOutlined,
   ShareAltOutlined,
   RightOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  CompassOutlined,
+  PictureOutlined,
+  DeleteOutlined,
+  EditFilled,
 } from "@ant-design/icons";
 
+import {
+  deletePackage,
+  fetchPackageById,
+} from "../../store/slices/packageSlice";
+import { useDispatch, useSelector } from "react-redux";
 const { Panel } = Collapse;
 
 export default function PackageDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [pkg, setPkg] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  const { selected: pkg, loading } = useSelector((state) => state.packages);
+  console.log("packages", pkg);
 
   useEffect(() => {
-    // Simulate API call with mock data
-    setLoading(true);
-    setTimeout(() => {
-      const foundPackage = packagesMock.find((p) => p._id === id);
-      setPkg(foundPackage);
-      setLoading(false);
-    }, 500);
-  }, [id]);
-
+    dispatch(fetchPackageById({ id }));
+  }, [dispatch, id]);
+  const handleDeletePkg = async (id) => {
+    dispatch(deletePackage({ id: id })).unwrap();
+    navigate("/admin/package");
+  };
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -65,32 +76,75 @@ export default function PackageDetails() {
   const tabItems = [
     {
       key: "1",
-      label: <span className="font-semibold">Itinerary</span>,
+      label: (
+        <span className="flex items-center gap-2 font-semibold">
+          <CalendarOutlined className="text-lg" />
+          Itinerary
+        </span>
+      ),
       children: (
         <Collapse accordion className="bg-transparent border-0">
           {pkg.itinerary?.map((day, index) => (
             <Panel
               header={
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
-                    {index + 1}
+                <div className="flex items-center gap-4">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl w-12 h-12 flex items-center justify-center font-bold text-base shadow-lg">
+                    {day.dayNumber}
                   </div>
-                  <span className="font-semibold text-gray-800">
-                    {day.dayTitle}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-gray-900 text-base">
+                      {day.title || `Day ${index + 1}`}
+                    </span>
+                    {day.summary && (
+                      <span className="text-sm text-gray-500 mt-1 line-clamp-1">
+                        {day.summary.substring(0, 60)}...
+                      </span>
+                    )}
+                  </div>
                 </div>
               }
-              key={index}
-              className="mb-2 bg-gray-50 rounded-lg border-0"
+              key={day._id}
+              className="mb-3 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
             >
-              <ul className="space-y-2 pl-11">
-                {day.activities?.map((act, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-600">
-                    <RightOutlined className="text-blue-500 mt-1" />
-                    <span>{act}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="pl-16 pr-4 py-2 space-y-4">
+                {day.summary && (
+                  <div className="flex items-start gap-3">
+                    <EnvironmentOutlined className="text-blue-500 text-lg mt-1" />
+                    <p className="text-gray-700 leading-relaxed">
+                      {day.summary}
+                    </p>
+                  </div>
+                )}
+
+                {day.details && (
+                  <div className="flex items-start gap-3">
+                    <ClockCircleOutlined className="text-gray-400 text-lg mt-1" />
+                    <p className="text-gray-600 leading-relaxed">
+                      {day.details}
+                    </p>
+                  </div>
+                )}
+
+                {day.optionalActivities?.length > 0 && (
+                  <div className="mt-4 bg-blue-50 rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                      <CompassOutlined />
+                      Optional Activities
+                    </h4>
+                    <ul className="space-y-2">
+                      {day.optionalActivities.map((act, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-gray-700"
+                        >
+                          <RightOutlined className="text-blue-500 mt-1 text-xs" />
+                          <span className="text-sm">{act}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </Panel>
           ))}
         </Collapse>
@@ -98,31 +152,38 @@ export default function PackageDetails() {
     },
     {
       key: "2",
-      label: <span className="font-semibold">Inclusions & Exclusions</span>,
+      label: (
+        <span className="flex items-center gap-2 font-semibold">
+          <CheckCircleOutlined className="text-lg" />
+          Inclusions & Exclusions
+        </span>
+      ),
       children: (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="text-lg font-bold text-green-600 mb-3 flex items-center gap-2">
-              ✓ Included
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+            <h3 className="text-xl font-bold text-green-700 mb-4 flex items-center gap-3">
+              <CheckCircleOutlined className="text-2xl" />
+              What's Included
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {pkg.inclusions?.map((inc, i) => (
-                <li key={i} className="flex items-start gap-2 text-gray-700">
-                  <span className="text-green-500 font-bold">✓</span>
-                  {inc}
+                <li key={i} className="flex items-start gap-3 text-gray-700">
+                  <CheckCircleOutlined className="text-green-500 text-lg mt-0.5 flex-shrink-0" />
+                  <span className="leading-relaxed">{inc}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-red-600 mb-3 flex items-center gap-2">
-              ✗ Not Included
+          <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-6 border border-red-200">
+            <h3 className="text-xl font-bold text-red-700 mb-4 flex items-center gap-3">
+              <CloseCircleOutlined className="text-2xl" />
+              Not Included
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {pkg.exclusions?.map((exc, i) => (
-                <li key={i} className="flex items-start gap-2 text-gray-700">
-                  <span className="text-red-500 font-bold">✗</span>
-                  {exc}
+                <li key={i} className="flex items-start gap-3 text-gray-700">
+                  <CloseCircleOutlined className="text-red-500 text-lg mt-0.5 flex-shrink-0" />
+                  <span className="leading-relaxed">{exc}</span>
                 </li>
               ))}
             </ul>
@@ -132,21 +193,30 @@ export default function PackageDetails() {
     },
     {
       key: "3",
-      label: <span className="font-semibold">Travel Essentials</span>,
+      label: (
+        <span className="flex items-center gap-2 font-semibold">
+          <CompassOutlined className="text-lg" />
+          Travel Essentials
+        </span>
+      ),
       children: (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {Object.entries(pkg.travelEssentials || {}).map(([key, items]) => (
-            <div key={key} className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-bold text-gray-800 mb-2 capitalize">
-                {key.replace(/([A-Z])/g, " $1")}
+            <div
+              key={key}
+              className="bg-gradient-to-br from-gray-50 to-gray-100 p-5 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow"
+            >
+              <h4 className="font-bold text-gray-800 mb-3 text-base flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                {key.replace(/([A-Z])/g, " $1").trim()}
               </h4>
-              <ul className="space-y-1">
+              <ul className="space-y-2">
                 {items.map((i, idx) => (
                   <li
                     key={idx}
-                    className="text-gray-600 text-sm flex items-start gap-2"
+                    className="text-gray-600 text-sm flex items-start gap-2 leading-relaxed"
                   >
-                    <span className="text-blue-500">•</span>
+                    <RightOutlined className="text-blue-500 text-xs mt-1 flex-shrink-0" />
                     {i}
                   </li>
                 ))}
@@ -158,19 +228,27 @@ export default function PackageDetails() {
     },
     {
       key: "4",
-      label: <span className="font-semibold">Gallery</span>,
+      label: (
+        <span className="flex items-center gap-2 font-semibold">
+          <PictureOutlined className="text-lg" />
+          Gallery
+        </span>
+      ),
       children: (
-        <Carousel autoplay className="rounded-lg overflow-hidden">
-          {pkg.gallery?.map((img, i) => (
-            <div key={i}>
-              <img
-                src={img.fileUrl}
-                alt={`Gallery ${i}`}
-                className="w-full h-96 object-cover"
-              />
-            </div>
-          ))}
-        </Carousel>
+        <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200">
+          <Carousel autoplay autoplaySpeed={3000} effect="fade">
+            {pkg.gallery?.map((img, i) => (
+              <div key={i} className="relative">
+                <img
+                  src={`${import.meta.env.VITE_BACKEND_URL}${img.fileUrl}`}
+                  alt={`Gallery ${i}`}
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+              </div>
+            ))}
+          </Carousel>
+        </div>
       ),
     },
   ];
@@ -180,7 +258,7 @@ export default function PackageDetails() {
       {/* Hero Section */}
       <div className="relative w-full h-96 md:h-[500px]">
         <img
-          src={pkg.heroMedia?.fileUrl}
+          src={`${import.meta.env.VITE_BACKEND_URL}${pkg.heroMedia?.fileUrl}`}
           alt={pkg.packageTitle}
           className="w-full h-full object-cover"
         />
@@ -199,10 +277,28 @@ export default function PackageDetails() {
 
         <div className="absolute top-6 right-6 flex gap-2">
           <Button
-            icon={<HeartOutlined />}
+            icon={<EditFilled />}
+            danger
+            onClick={() => navigate(`/admin/package/edit/${pkg._id}`)}
             size="large"
-            className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full hover:bg-white"
+            className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full hover:bg-red-500"
           />
+          <Popconfirm
+            title="Delete Package"
+            description="Are you sure you want to delete this package?"
+            okText="Yes, Delete"
+            cancelText="Cancel"
+            okButtonProps={{ danger: true }}
+            onConfirm={() => handleDeletePkg(pkg._id)}
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              size="large"
+              className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full hover:bg-red-500"
+            />
+          </Popconfirm>
+
           <Button
             icon={<ShareAltOutlined />}
             size="large"
@@ -238,11 +334,11 @@ export default function PackageDetails() {
             <div className="flex flex-wrap gap-4 items-center text-lg">
               <Tag className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border-0 text-white">
                 <CalendarOutlined />
-                {pkg.durationDays} Days / {pkg.nights} Nights
+                {pkg.durationDays} Days
               </Tag>
               <Tag className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border-0 text-white">
                 <EnvironmentOutlined />
-                {pkg.locations.split(",")[0]}
+                {pkg.locations}
               </Tag>
               <Tag className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border-0 text-white">
                 <StarFilled className="text-yellow-400" />
@@ -317,7 +413,7 @@ export default function PackageDetails() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
+                {/* <div className="flex items-start gap-3">
                   <ClockCircleOutlined className="text-green-500 text-lg mt-1" />
                   <div>
                     <div className="text-xs text-gray-500">Meeting Point</div>
@@ -325,7 +421,7 @@ export default function PackageDetails() {
                       {pkg.meetingPoint}
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <Button
@@ -337,11 +433,11 @@ export default function PackageDetails() {
                 Book Now
               </Button>
 
-              <div className="mt-4 p-3 bg-green-50 rounded-lg text-center">
+              {/* <div className="mt-4 p-3 bg-green-50 rounded-lg text-center">
                 <span className="text-green-600 text-sm font-semibold">
                   🎉 Only {pkg.seatsTotal - pkg.seatsBooked} seats remaining!
                 </span>
-              </div>
+              </div> */}
             </Card>
           </div>
         </div>

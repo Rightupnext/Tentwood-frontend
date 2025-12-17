@@ -10,7 +10,11 @@ import {
 import { Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDestinations } from "../../store/slices/destinationSlice";
-import { createPackage, updatePackage } from "../../store/slices/packageSlice";
+import {
+  createPackage,
+  fetchPackageById,
+  updatePackage,
+} from "../../store/slices/packageSlice";
 
 // Child Components
 import PackageBasicInfo from "./PackageBasicInfo";
@@ -18,6 +22,8 @@ import PackageHighlights from "./PackageHighlights";
 import PackageItinerary from "./PackageItinerary";
 import PackageInclusions from "./PackageInclusions";
 import PackageEssentials from "./PackageEssentials";
+import PackageGallery from "./PackageGallery";
+import { useParams } from "react-router-dom";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -46,44 +52,147 @@ const initialValues = {
 };
 
 export default function TouristPackageCreator() {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { list: destinations, loading: destLoading } = useSelector(
     (state) => state.destinations
   );
-
+  const { selected: currentPackage, loading: packageLoading } = useSelector(
+    (state) => state.packages
+  );
   const [activeSection, setActiveSection] = useState("basic");
   const [form] = Form.useForm();
-
+  const [gallery, setGallery] = useState([]);
   const [bannerImage, setBannerImage] = useState(null);
   const [cardImage, setCardImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
   const [cardPreview, setCardPreview] = useState(null);
+  // In TouristPackageCreator.jsx
+  const [removedGalleryIds, setRemovedGalleryIds] = useState([]);
 
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchPackageById({ id }));
+    }
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (!currentPackage) return;
+
+    form.setFieldsValue({
+      packageTitle: currentPackage.packageTitle,
+      pickup: currentPackage.pickup,
+      drop: currentPackage.drop,
+      duration: currentPackage.durationDays,
+      locations: currentPackage.locations,
+      overview: currentPackage.overview,
+      price: currentPackage.price,
+      Destination: currentPackage.Destination?._id,
+      tripCategory: currentPackage?.Destination?.trip,
+      type: currentPackage.Destination?.type,
+
+      highlights: currentPackage.highlights?.length
+        ? currentPackage.highlights
+        : [""],
+
+      inclusions: currentPackage.inclusions?.length
+        ? currentPackage.inclusions
+        : [""],
+
+      exclusions: currentPackage.exclusions?.length
+        ? currentPackage.exclusions
+        : [""],
+
+      notes: currentPackage.notes?.length ? currentPackage.notes : [""],
+
+      travelEssentials: {
+        mustCarry: currentPackage.travelEssentials?.mustCarry || [""],
+        gears: currentPackage.travelEssentials?.gears || [""],
+        clothes: currentPackage.travelEssentials?.clothes || [""],
+        footwear: currentPackage.travelEssentials?.footwear || [""],
+        medication: currentPackage.travelEssentials?.medication || [""],
+        personalAccessories: currentPackage.travelEssentials
+          ?.personalAccessories || [""],
+      },
+
+      itinerary: currentPackage.itinerary?.map((day) => ({
+        dayTitle: day.title,
+        summary: day.summary,
+        details: day.details,
+        activities: day.optionalActivities?.length
+          ? day.optionalActivities
+          : [""],
+        meals: day.meals,
+      })) || [{ dayTitle: "", activities: [""] }],
+    });
+
+    // Media previews
+    if (currentPackage.heroMedia) {
+      setBannerPreview(
+        import.meta.env.VITE_BACKEND_URL + currentPackage.heroMedia.fileUrl
+      );
+    }
+
+    if (currentPackage.cardMedia) {
+      setCardPreview(
+        import.meta.env.VITE_BACKEND_URL + currentPackage.cardMedia.fileUrl
+      );
+    }
+
+    if (currentPackage.gallery?.length) {
+      setGallery(
+        currentPackage.gallery.map((img) => ({
+          uid: img._id,
+          url: import.meta.env.VITE_BACKEND_URL + img.fileUrl,
+          status: "done",
+          isExisting: true,
+        }))
+      );
+    }
+  }, [currentPackage, form]);
   useEffect(() => {
     dispatch(fetchDestinations());
   }, []);
 
   const handleSave = async () => {
     try {
-      await form.validateFields(); // validates only visible tab
-      const allValues = form.getFieldsValue(true); // gets ALL TAB DATA
+      await form.validateFields();
+      const allValues = form.getFieldsValue(true);
 
-      const finalData = {
-        ...allValues,
-        bannerImage,
-        cardImage,
-      };
-      // Now send images separately using FormData
-      const imageData = new FormData();
-      if (bannerImage) imageData.append("bannerImage", bannerImage);
-      if (cardImage) imageData.append("cardImage", cardImage);
+      const formData = new FormData();
 
-      // Dispatch action (make sure backend expects FormData)
-      await dispatch(createPackage(finalData));
-      console.log("FINAL FULL PACKAGE DATA:", finalData);
-      message.success("Package saved successfully!");
-    } catch (error) {
-      console.log("Validation Failed:", error);
+      // Append regular fields
+      Object.keys(allValues).forEach((key) => {
+        if (allValues[key] !== undefined && key !== "gallery") {
+          // If field is object or array, stringify it
+          if (typeof allValues[key] === "object") {
+            formData.append(key, JSON.stringify(allValues[key]));
+          } else {
+            formData.append(key, allValues[key]);
+          }
+        }
+      });
+
+      // Append banner & card images
+      if (bannerImage) formData.append("bannerImage", bannerImage);
+      if (cardImage) formData.append("cardImage", cardImage);
+
+      // Append gallery images
+      gallery.forEach((item) => {
+        formData.append("gallery", item.file); // ✅ only file objects
+      });
+      // ✅ removed gallery images
+      if (removedGalleryIds.length) {
+        formData.append("removedGallery", JSON.stringify(removedGalleryIds));
+      }
+      // Dispatch
+      if (id) {
+        await dispatch(updatePackage({ id: id, data: formData }));
+      } else {
+        await dispatch(createPackage(formData));
+      }
+    } catch (err) {
+      console.log("Validation Failed:", err);
       message.error("Please fill required fields!");
     }
   };
@@ -98,6 +207,11 @@ export default function TouristPackageCreator() {
       icon: <CheckCircleOutlined />,
     },
     { id: "essentials", label: "Essentials", icon: <ContainerOutlined /> },
+    {
+      id: "packageGallery",
+      label: "packageGallery",
+      icon: <ContainerOutlined />,
+    },
   ];
 
   return (
@@ -113,8 +227,16 @@ export default function TouristPackageCreator() {
         <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
           Create Tourist Package ✈️
         </Title>
-        <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-          Save Package
+        <Button
+          type="primary"
+          icon={<SaveOutlined />}
+          onClick={handleSave}
+          style={{
+            backgroundColor: id ? "#fa8c16" : "#52c41a", // orange : green
+            borderColor: id ? "#fa8c16" : "#52c41a",
+          }}
+        >
+          {id ? "Update Package" : "Save Package"}
         </Button>
       </div>
 
@@ -146,12 +268,22 @@ export default function TouristPackageCreator() {
                 setCardPreview={setCardPreview}
                 setBannerImage={setBannerImage}
                 setCardImage={setCardImage}
+                form={form}
+                currentPackage={currentPackage}
               />
             )}
             {activeSection === "highlights" && <PackageHighlights />}
             {activeSection === "itinerary" && <PackageItinerary />}
             {activeSection === "inclusions" && <PackageInclusions />}
             {activeSection === "essentials" && <PackageEssentials />}
+            {activeSection === "packageGallery" && (
+              <PackageGallery
+                gallery={gallery}
+                setGallery={setGallery}
+                currentPackage={currentPackage}
+                setRemovedGalleryIds={setRemovedGalleryIds}
+              />
+            )}
           </div>
         </div>
       </Form>
