@@ -279,7 +279,7 @@ export default function PackageDetails() {
           <Button
             icon={<EditFilled />}
             danger
-            onClick={() => navigate(`/admin/edit-package/${pkg._id}`)}
+            onClick={() => navigate(`/admin/package/edit/${pkg._id}`)}
             size="large"
             className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full hover:bg-red-500"
           />
@@ -334,7 +334,7 @@ export default function PackageDetails() {
             <div className="flex flex-wrap gap-4 items-center text-lg">
               <Tag className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border-0 text-white">
                 <CalendarOutlined />
-                {pkg.durationDays} Days / {pkg.nights} Nights
+                {pkg.durationDays} Days
               </Tag>
               <Tag className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border-0 text-white">
                 <EnvironmentOutlined />
