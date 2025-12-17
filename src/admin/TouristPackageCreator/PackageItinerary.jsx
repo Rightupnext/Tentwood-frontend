@@ -31,7 +31,7 @@ export default function PackageItinerary() {
 
                 {/* Title */}
                 <Form.Item
-                  name={[name, "title"]}
+                  name={[name, "dayTitle"]}
                   rules={[{ required: true, message: "Enter day title" }]}
                 >
                   <Input placeholder="Title" />

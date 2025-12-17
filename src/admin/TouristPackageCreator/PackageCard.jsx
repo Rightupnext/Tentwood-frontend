@@ -15,7 +15,17 @@ export default function PackageCard({ pkg }) {
   const handleClick = () => {
     navigate(`${pkg._id}`);
   };
+  const TRIP_COLORS = {
+    "International Trips": "blue",
+    "India Trips": "green",
+    "Group Tours": "orange",
+    "Honeymoon Packages": "pink",
+    "Adventure Trips": "volcano",
+    "Family Trips": "cyan",
+    "Beach Holidays": "gold",
+  };
 
+  const tripName = pkg?.Destination?.trip;
   return (
     <Card
       hoverable
@@ -55,13 +65,14 @@ export default function PackageCard({ pkg }) {
           {/* Seats Badge */}
           <div className="absolute top-3 left-3">
             <Tag
-              color="gold"
+              color={TRIP_COLORS[tripName] || "default"}
               className="
                 font-semibold px-4 py-1 rounded-full 
                 shadow-md text-sm
               "
             >
-              {pkg.seatsTotal - pkg.seatsBooked} Seats Left
+              {/* {pkg.seatsTotal - pkg.seatsBooked} Seats Left */}
+              {pkg?.Destination?.trip}
             </Tag>
           </div>
         </div>
@@ -85,10 +96,10 @@ export default function PackageCard({ pkg }) {
             {pkg.durationDays} Days
           </span>
 
-          <span className="flex items-center gap-1">
+          {/* <span className="flex items-center gap-1">
             <UserOutlined className="text-purple-500" />
             {pkg.seatsTotal} Seats
-          </span>
+          </span> */}
 
           <span className="text-blue-600 font-semibold text-base">
             ₹{pkg.price.toLocaleString()}
