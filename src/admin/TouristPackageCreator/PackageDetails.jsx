@@ -27,6 +27,7 @@ import {
   CompassOutlined,
   PictureOutlined,
   DeleteOutlined,
+  EditFilled,
 } from "@ant-design/icons";
 
 import {
@@ -275,6 +276,13 @@ export default function PackageDetails() {
         </div>
 
         <div className="absolute top-6 right-6 flex gap-2">
+          <Button
+            icon={<EditFilled />}
+            danger
+            onClick={() => navigate(`/admin/edit-package/${pkg._id}`)}
+            size="large"
+            className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full hover:bg-red-500"
+          />
           <Popconfirm
             title="Delete Package"
             description="Are you sure you want to delete this package?"

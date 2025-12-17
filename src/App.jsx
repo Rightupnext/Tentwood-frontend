@@ -38,9 +38,10 @@ function App() {
         <Route path="destinations" element={<DestinationManagement />} />
         {/* <Route path="travel" element={<TravelForm />} /> */}
         <Route path="travel" element={<TouristPackageCreator />} />
+        <Route path="edit-package/:id" element={<TouristPackageCreator />} />
         <Route path="package">
-          <Route index element={<PackagesList />} /> 
-          <Route path=":id" element={<PackageDetails />} /> 
+          <Route index element={<PackagesList />} />
+          <Route path=":id" element={<PackageDetails />} />
         </Route>
       </Route>
     </Routes>

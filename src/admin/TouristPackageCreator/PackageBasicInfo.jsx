@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Form, Input, Select, Row, Col, Upload, Tag } from "antd";
 import {
   UploadOutlined,
@@ -31,6 +31,7 @@ export default function PackageBasicInfo({
   setBannerImage,
   setCardImage,
   form,
+  currentPackage,
 }) {
   const uploadProps = (type) => ({
     name: "file",
@@ -53,6 +54,14 @@ export default function PackageBasicInfo({
     },
   });
   const [filteredDestinations, setFilteredDestinations] = useState([]);
+  useEffect(() => {
+    if (currentPackage?.Destination?.type && destinations.length) {
+      const filtered = destinations.filter(
+        (d) => d.type === currentPackage.Destination.type
+      );
+      setFilteredDestinations(filtered);
+    }
+  }, [currentPackage, destinations]);
 
   return (
     <Card title="✨ Basic Information" bordered={false}>
@@ -76,10 +85,18 @@ export default function PackageBasicInfo({
           allowClear
           loading={destLoading}
           onChange={(selectedType) => {
-            const filtered = destinations.filter((d) => d.type === selectedType);
+            const filtered = destinations.filter(
+              (d) => d.type === selectedType
+            );
             setFilteredDestinations(filtered);
 
-            form.setFieldsValue({ Destination: null, TripCategory: null });
+            // ✅ ONLY clear if user is creating NEW package
+            if (!currentPackage) {
+              form.setFieldsValue({
+                Destination: null,
+                tripCategory: null,
+              });
+            }
           }}
         >
           {[...new Set(destinations.map((d) => d.type))].map((type) => (
@@ -111,7 +128,7 @@ export default function PackageBasicInfo({
 
       {/* 3️⃣ TRIP CATEGORY (UNIQUE) */}
       <Form.Item
-        name="TripCategory"
+        name="tripCategory"
         label="Trip Category"
         rules={[{ required: true, message: "Select Trip Category" }]}
       >
@@ -174,7 +191,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="pickup"
-            label={<><PushpinOutlined /> Pickup Location</>}
+            label={
+              <>
+                <PushpinOutlined /> Pickup Location
+              </>
+            }
             rules={[{ required: true, message: "Enter pickup location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -183,7 +204,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="drop"
-            label={<><PushpinOutlined /> Drop Location</>}
+            label={
+              <>
+                <PushpinOutlined /> Drop Location
+              </>
+            }
             rules={[{ required: true, message: "Enter drop location" }]}
           >
             <Input placeholder="e.g., Phuket Airport" />
@@ -195,7 +220,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="duration"
-            label={<><ClockCircleOutlined /> Duration</>}
+            label={
+              <>
+                <ClockCircleOutlined /> Duration
+              </>
+            }
             rules={[{ required: true, message: "Enter duration" }]}
           >
             <Input placeholder="e.g., 5N - 6D" />
@@ -205,7 +234,11 @@ export default function PackageBasicInfo({
         <Col span={12}>
           <Form.Item
             name="price"
-            label={<><DollarCircleOutlined /> Price (Per Person)</>}
+            label={
+              <>
+                <DollarCircleOutlined /> Price (Per Person)
+              </>
+            }
             rules={[{ required: true, message: "Enter price" }]}
           >
             <Input placeholder="e.g., 75,000" />
@@ -215,14 +248,22 @@ export default function PackageBasicInfo({
 
       <Form.Item
         name="locations"
-        label={<><GlobalOutlined /> Locations Covered</>}
+        label={
+          <>
+            <GlobalOutlined /> Locations Covered
+          </>
+        }
       >
         <Input placeholder="e.g., Phuket - Krabi - Bangkok" />
       </Form.Item>
 
       <Form.Item
         name="overview"
-        label={<><FileTextOutlined /> Overview</>}
+        label={
+          <>
+            <FileTextOutlined /> Overview
+          </>
+        }
       >
         <Input.TextArea
           rows={4}

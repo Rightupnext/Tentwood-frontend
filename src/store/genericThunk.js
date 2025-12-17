@@ -7,36 +7,32 @@ export const createApiThunk = (
   name,
   { method, url, onSuccessDispatch, isMultipart = false } // add isMultipart flag
 ) =>
-  createAsyncThunk(name, async (data = {}, { rejectWithValue, dispatch }) => {
+  createAsyncThunk(name, async (payload = {}, { rejectWithValue, dispatch }) => {
     try {
       let response;
       const lower = method.toLowerCase();
 
-      // ----------- GET REQUEST FIXED HERE -----------
-      if (lower === "get") {
-        const finalUrl = url.includes(":id")
-          ? url.replace(":id", data.id)
-          : url;
+      const finalUrl = url.includes(":id")
+        ? url.replace(":id", payload.id)
+        : url;
 
+      // ---------------- GET ----------------
+      if (lower === "get") {
         response = await api.get(finalUrl);
       }
 
-      // ----------- OTHER METHODS -----------
-      else {
-        const finalUrl = url.includes(":id")
-          ? url.replace(":id", data.id)
-          : url;
+      // ---------------- MULTIPART ----------------
+      else if (isMultipart) {
+        response = await api[lower](finalUrl, payload.data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
 
-        // genericThunk.js
-        if (isMultipart) {
-          response = await api[lower](finalUrl, data, {
-            headers: {
-              "Content-Type": "multipart/form-data", // optional; browser sets boundary automatically
-            },
-          });
-        } else {
-          response = await api[lower](finalUrl, data);
-        }
+      // ---------------- JSON ----------------
+      else {
+        response = await api[lower](finalUrl, payload);
       }
 
       // Success notification
