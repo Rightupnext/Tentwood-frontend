@@ -14,6 +14,7 @@ import { lazy } from "react";
 
 import BottomNavbar from "./client/components/Bottomnavbar";
 import Topnavbar from "./client/components/Topnavbar";
+import DestinationUserGuide from "./admin/DestinationUserGuide";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
@@ -39,12 +40,15 @@ function App() {
       <Routes>
         {/* Home Page */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/international-trips" element={<Thingtodo />} />
+        <Route path="/international-trips/*" element={<Thingtodo />} />
+        <Route path="/india-trips/*" element={<Thingtodo />} />
+        <Route path="/group-tours/*" element={<Thingtodo />} />
 
         <Route
           path="/international-trips/:country/:city/:slug"
           element={<Promotions />}
         />
+
         {/* About Page */}
         <Route path="/about-us" element={<AboutUs />} />
 
@@ -86,6 +90,7 @@ function App() {
           {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
           <Route path="" index element={<AnalyticsDashboard />} />
           <Route path="countries" element={<CountryManagement />} />
+          <Route path="guide" element={<DestinationUserGuide />} />
           <Route path="destinations" element={<DestinationManagement />} />
           {/* <Route path="travel" element={<TravelForm />} /> */}
           <Route path="travel" element={<TouristPackageCreator />} />

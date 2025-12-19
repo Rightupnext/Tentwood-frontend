@@ -53,6 +53,8 @@ const DestinationManagement = () => {
   const { list: countries, loading: countryLoading } = useSelector(
     (state) => state.countries
   );
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   const [form] = Form.useForm();
   const [editId, setEditId] = useState(null);
@@ -63,6 +65,31 @@ const DestinationManagement = () => {
     dispatch(fetchDestinations());
     dispatch(fetchCountries());
   }, [dispatch]);
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const countryId = form.getFieldValue("country");
+    const metaTitle = form.getFieldValue("metaTitle");
+
+    if (!countryId || metaTitle) return;
+
+    const country = countries.find((c) => c._id === countryId);
+    if (!country) return;
+
+    const template = countryMetaTemplates[country.name.toLowerCase()];
+
+    if (template) {
+      form.setFieldsValue({
+        metaTitle: template.metaTitle,
+        metaDescription: template.metaDescription,
+      });
+    } else {
+      form.setFieldsValue({
+        metaTitle: `Explore ${country.name} | Top Travel Destinations & Packages`,
+        metaDescription: `Discover the best places to visit in ${country.name}. Explore popular destinations, attractions, and travel packages for your perfect trip.`,
+      });
+    }
+  }, [isModalOpen, countries, form]);
 
   const openModal = () => setIsModalOpen(true);
 
@@ -124,14 +151,7 @@ const DestinationManagement = () => {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteDestination(id))
-      .then(() => notification.success({ message: "Destination Deleted" }))
-      .catch((err) =>
-        notification.error({
-          message: "Delete Failed",
-          description: err.message,
-        })
-      );
+    dispatch(deleteDestination({ id: id }));
   };
 
   // Filter destinations by active tab (trip category)
@@ -191,6 +211,14 @@ const DestinationManagement = () => {
     { value: "adventure", label: "Adventure" },
     { value: "cultural", label: "Cultural" },
   ];
+  // Get types already used for selected country + trip
+  const getUsedTypes = (countryId, trip) => {
+    if (!countryId || !trip) return [];
+    return destinations
+      .filter((d) => d.country?._id === countryId && d.trip === trip)
+      .map((d) => d.type);
+  };
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -245,37 +273,8 @@ const DestinationManagement = () => {
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Row gutter={16}>
-            {/* Destination Name */}
-            <Col span={12}>
-              <Form.Item
-                label="Destination Name"
-                name="Destination"
-                rules={[{ required: true, message: "Destination is required" }]}
-              >
-                <Input placeholder="Enter destination name" />
-              </Form.Item>
-            </Col>
-
-            {/* Trip Category */}
-            <Col span={12}>
-              <Form.Item
-                label="Trip Category"
-                name="trip"
-                rules={[
-                  { required: true, message: "Trip category is required" },
-                ]}
-              >
-                <Select placeholder="Select trip category" allowClear>
-                  {DESTINATION_OPTIONS.map((dest) => (
-                    <Option key={dest} value={dest}>
-                      {dest}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-
             {/* Country */}
+
             <Col span={12}>
               <Form.Item
                 label="Country"
@@ -288,14 +287,32 @@ const DestinationManagement = () => {
                   optionFilterProp="children"
                   onChange={(countryId) => {
                     const country = countries.find((c) => c._id === countryId);
-                    if (country) {
-                      const metaTemplate =
-                        countryMetaTemplates[country.name.toLowerCase()];
-                      form.setFieldsValue({
-                        metaTitle: metaTemplate?.metaTitle || "",
-                        metaDescription: metaTemplate?.metaDescription || "",
-                      });
-                    }
+                    if (!country) return;
+
+                    setSelectedCountry(countryId); // save selected country
+
+                    // reset type if already used
+                    const usedTypes = getUsedTypes(countryId, selectedTrip);
+                    const currentType = form.getFieldValue("type");
+                    if (usedTypes.includes(currentType))
+                      form.setFieldsValue({ type: undefined });
+
+                    // auto-fill Destination Name
+                    form.setFieldsValue({
+                      Destination: `${country.name}`,
+                    });
+
+                    // meta template
+                    const template =
+                      countryMetaTemplates[country.name.toLowerCase()];
+                    form.setFieldsValue({
+                      metaTitle:
+                        template?.metaTitle ||
+                        `Explore ${country.name} | Top Travel Destinations & Packages`,
+                      metaDescription:
+                        template?.metaDescription ||
+                        `Discover the best places to visit in ${country.name}. Explore popular destinations, attractions, and travel packages for your perfect trip.`,
+                    });
                   }}
                 >
                   {countries.map((c) => (
@@ -306,13 +323,52 @@ const DestinationManagement = () => {
                 </Select>
               </Form.Item>
             </Col>
+            {/* Trip Category */}
+            <Col span={12}>
+              <Form.Item
+                label="Trip Category"
+                name="trip"
+                rules={[
+                  { required: true, message: "Trip category is required" },
+                ]}
+              >
+                <Select
+                  placeholder="Select trip category"
+                  allowClear
+                  onChange={(tripValue) => {
+                    setSelectedTrip(tripValue); // save selected trip
+
+                    // reset type if already used
+                    const usedTypes = getUsedTypes(selectedCountry, tripValue);
+                    const currentType = form.getFieldValue("type");
+                    if (usedTypes.includes(currentType))
+                      form.setFieldsValue({ type: undefined });
+                  }}
+                >
+                  {DESTINATION_OPTIONS.map((dest) => (
+                    <Option key={dest} value={dest}>
+                      {dest}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            {/* Destination Name */}
+            <Col span={12}>
+              <Form.Item
+                label="Destination Name"
+                name="Destination"
+                rules={[{ required: true, message: "Destination is required" }]}
+              >
+                <Input placeholder="Enter destination name" />
+              </Form.Item>
+            </Col>
 
             {/* Type */}
             <Col span={12}>
               <Form.Item
                 label="Type"
                 name="type"
-                initialValue="city"
                 rules={[{ required: true, message: "Type is required" }]}
               >
                 <Select
@@ -323,7 +379,13 @@ const DestinationManagement = () => {
                     option.children.toLowerCase().includes(input.toLowerCase())
                   }
                 >
-                  {TYPE_OPTIONS.map((type) => (
+                  {TYPE_OPTIONS.filter((type) => {
+                    const usedTypes = getUsedTypes(
+                      selectedCountry,
+                      selectedTrip
+                    );
+                    return !usedTypes.includes(type.value);
+                  }).map((type) => (
                     <Option key={type.value} value={type.value}>
                       {type.label}
                     </Option>

@@ -74,16 +74,16 @@ const CountryManagement = () => {
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
-    { title: "ISO2", dataIndex: "iso2", key: "iso2" },
-    { title: "ISO3", dataIndex: "iso3", key: "iso3" },
-    { title: "Currency", dataIndex: "currency", key: "currency" },
-    { title: "Region", dataIndex: "region", key: "region" },
-    {
-      title: "Languages",
-      dataIndex: "languages",
-      key: "languages",
-      render: (langs) => langs?.join(", "),
-    },
+    // { title: "ISO2", dataIndex: "iso2", key: "iso2" },
+    // { title: "ISO3", dataIndex: "iso3", key: "iso3" },
+    // { title: "Currency", dataIndex: "currency", key: "currency" },
+    // { title: "Region", dataIndex: "region", key: "region" },
+    // {
+    //   title: "Languages",
+    //   dataIndex: "languages",
+    //   key: "languages",
+    //   render: (langs) => langs?.join(", "),
+    // },
     {
       title: "Actions",
       key: "actions",
@@ -151,7 +151,7 @@ const CountryManagement = () => {
           >
             <Input placeholder="India" />
           </Form.Item>
-          <Form.Item name="iso2" label="ISO2" rules={[{ required: true }]}>
+          {/* <Form.Item name="iso2" label="ISO2" rules={[{ required: true }]}>
             <Input placeholder="IN" maxLength={2} />
           </Form.Item>
           <Form.Item name="iso3" label="ISO3">
@@ -183,7 +183,7 @@ const CountryManagement = () => {
                 );
               }}
             />
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </Modal>
     </div>

@@ -52,6 +52,7 @@ const DashboardLayout = () => {
     if (location.pathname.startsWith("/admin/destinations")) return "3";
     if (location.pathname.startsWith("/admin/travel")) return "4";
     if (location.pathname.startsWith("/admin/package")) return "5";
+    if (location.pathname.startsWith("/admin/guide")) return "6";
     if (location.pathname === "/admin") return "1";
     return "";
   };
@@ -93,6 +94,12 @@ const DashboardLayout = () => {
               key: "5",
               icon: <AppstoreOutlined />,
               label: "Packages Management",
+              onClick: () => navigate("/admin/package"),
+            },
+            {
+              key: "6",
+              icon: <AppstoreOutlined />,
+              label: "Guide",
               onClick: () => navigate("/admin/package"),
             },
           ]}

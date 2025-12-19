@@ -152,7 +152,7 @@ export default function TouristPackageCreator() {
   }, [currentPackage, form]);
   useEffect(() => {
     dispatch(fetchDestinations());
-  }, []);
+  }, [dispatch]);
 
   const handleSave = async () => {
     try {

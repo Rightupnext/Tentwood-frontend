@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Button, Grid, Drawer, Menu } from "antd";
 import { DownOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import logo from "../../assets/home/logo.2.png";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDestinations } from "../../store/slices/destinationSlice";
 const { useBreakpoint } = Grid;
 
 export default function BottomNavbar() {
@@ -11,75 +12,100 @@ export default function BottomNavbar() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const screens = useBreakpoint();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { list: destinations, loading: destLoading } = useSelector(
+    (state) => state.destinations
+  );
+  // Helper: remove duplicates by Destination name
+  const getUniqueDestinations = (list) => {
+    const map = new Map();
+    list.forEach((d) => {
+      if (!map.has(d.Destination)) {
+        map.set(d.Destination, d);
+      }
+    });
+    return [...map.values()];
+  };
+
+  // Group destinations by trip
+  const internationalTrips = getUniqueDestinations(
+    destinations.filter((d) => d.trip === "International Trips")
+  );
+  const indiaTrips = getUniqueDestinations(
+    destinations.filter((d) => d.trip === "India Trips")
+  );
+  const groupTours = getUniqueDestinations(
+    destinations.filter((d) => d.trip === "Group Tours")
+  );
+  const honeymoonPackages = getUniqueDestinations(
+    destinations.filter((d) => d.trip === "Honeymoon Packages")
+  );
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  useEffect(() => {
+    dispatch(fetchDestinations());
+  }, [dispatch]);
   const menuItems = [
     { name: "Home", link: "/" },
     { name: "About Us", link: "/about-us" },
     {
       name: "International",
-      submenu: [
-        "Europe",
-        "Vietnam",
-        "Bali",
-        "Thailand",
-        "Japan",
-        "Dubai",
-        "Georgia",
-        "Sri Lanka",
-        "Bhutan",
-        "Philippines",
-        "Kazakhstan",
-        "Singapore",
-        "Malaysia",
-        "Maldives",
-        "Mauritius",
-        "South Africa",
-        "Kenya",
-        "Switzerland",
-        "France",
-        "New Zealand",
-        "Spain",
-        "Turkey",
-        "Australia",
-      ],
+      submenu: internationalTrips.map((d) => d.Destination),
     },
     {
       name: "India",
-      submenu: [
-        "Rajasthan",
-        "Kashmir",
-        "Meghalaya",
-        "Sikkim",
-        "Andaman",
-        "Arunachal Pradesh",
-        "Spiti",
-        "Uttarakhand",
-        "Ladakh",
-        "Himachal Pradesh",
-        "Nagaland",
-        "Weekend Getaways",
-        "Kerala",
-      ],
+      submenu: indiaTrips.map((d) => d.Destination),
     },
-    { name: "Group Tour", link: "/group-tour" },
-    { name: "HoneyMoon Packages", link: "/Vintagedouble" },
-    { name: "Our Packages", link: "/Travel" },
+    { name: "Group Tour", submenu: groupTours.map((d) => d.Destination) },
+    {
+      name: "HoneyMoon Packages",
+      submenu: honeymoonPackages.map((d) => d.Destination),
+    },
+
     { name: "Contact", link: "/contact" },
   ];
-
-  // Desktop dropdown menu items for Ant Design
-  const getDropdownItems = (submenu) => {
+  // Helper: map destination name to route
+  const getDestinationRoute = (destName, category) => {
+    const dest = destinations.find(
+      (d) => d.Destination === destName && d.trip === category
+    );
+    if (dest && dest.route) {
+      // Add prefix based on category
+      switch (category) {
+        case "International Trips":
+          return `/international-trips/${dest.route}`;
+        case "India Trips":
+          return `/india-trips/${dest.route}`;
+        case "Group Tours":
+          return `/group-tours/${dest.route}`;
+        case "Honeymoon Packages":
+          return `/honeymoon-packages/${dest.route}`;
+        default:
+          return `/destination/${dest.route}`;
+      }
+    }
+    return "#";
+  };
+  // Pass the parent category name as 'category'
+  const getDropdownItems = (submenu, category) => {
     return submenu.map((subItem, idx) => ({
       key: `${subItem}-${idx}`,
       label: (
         <Link
-          to={`/destination/${subItem.toLowerCase().replace(/\s+/g, "-")}`}
+          to={getDestinationRoute(
+            subItem,
+            category === "International"
+              ? "International Trips"
+              : category === "India"
+              ? "India Trips"
+              : category === "Group Tour"
+              ? "Group Tours"
+              : "Honeymoon Packages"
+          )}
           className="text-gray-700 hover:text-teal-600"
         >
           {subItem}
@@ -122,7 +148,7 @@ export default function BottomNavbar() {
                   <Dropdown
                     key={item.name}
                     menu={{
-                      items: getDropdownItems(item.submenu),
+                      items: getDropdownItems(item.submenu, item.name),
                       style: {
                         maxHeight: "400px",
                         overflowY: "auto",
