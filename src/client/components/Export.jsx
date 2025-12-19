@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Bus, Compass, Car, Briefcase, MapPin, Star } from "lucide-react";
 
+import { CarOutlined, CompassOutlined, CarryOutOutlined, EnvironmentOutlined, StarOutlined } from "@ant-design/icons";
 const cities = [
   { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200&q=80", desc: "A vibrant city full of life and culture." },
   { name: "California", image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&q=80", desc: "Beautiful beaches and endless sunshine." },
@@ -13,11 +13,11 @@ const cities = [
 ];
 
 const categories = [
-  { icon: Bus, label: "Public Transportations", color: "text-pink-500", bg: "bg-white", iconBg: "bg-pink-50" },
-  { icon: Compass, label: "Nature & Adventure", color: "text-teal-500", bg: "bg-white", iconBg: "bg-teal-50" },
-  { icon: Car, label: "Private Transportations", color: "text-yellow-500", bg: "bg-white", iconBg: "bg-yellow-50" },
-  { icon: Briefcase, label: "Business Tours", color: "text-red-500", bg: "bg-white", iconBg: "bg-red-50" },
-  { icon: MapPin, label: "Local Visit", color: "text-blue-500", bg: "bg-white", iconBg: "bg-blue-50" }
+  { icon: CarOutlined, label: "Public Transportations", color: "text-pink-500", bg: "bg-white", iconBg: "bg-pink-50" },
+  { icon: CompassOutlined, label: "Nature & Adventure", color: "text-teal-500", bg: "bg-white", iconBg: "bg-teal-50" },
+  { icon: CarryOutOutlined, label: "Private Transportations", color: "text-yellow-500", bg: "bg-white", iconBg: "bg-yellow-50" },
+  { icon: EnvironmentOutlined, label: "Business Tours", color: "text-red-500", bg: "bg-white", iconBg: "bg-red-50" },
+  { icon: StarOutlined, label: "Local Visit", color: "text-blue-500", bg: "bg-white", iconBg: "bg-blue-50" }
 ];
 
 const tours = [
@@ -164,7 +164,7 @@ export default function CityExplorer() {
                 <div className="flex items-center gap-2 mb-4 pt-3 border-t border-gray-100">
                   <div className="flex">
                     {[...Array(5)].map((_, idx) => (
-                      <Star
+                      <StarOutlined
                         key={idx}
                         className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 ${
                           idx < tour.rating

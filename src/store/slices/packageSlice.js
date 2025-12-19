@@ -12,6 +12,10 @@ export const fetchPackageById = createApiThunk("fetchPackageById", {
   method: "get",
   url: "/packages/:id",
 });
+export const fetchRelatedPackageById = createApiThunk("fetchRelatedPackageById", {
+  method: "get",
+  url: "/packages/related/:id",
+});
 
 export const createPackage = createApiThunk("createPackage", {
   method: "post",
@@ -50,6 +54,7 @@ const packageSlice = createSlice({
       updatePackage,
       deletePackage,
       fetchPackageById,
+      fetchRelatedPackageById
     ];
 
     thunks.forEach((thunk) => {
@@ -73,6 +78,7 @@ const packageSlice = createSlice({
               state.list.push(action.payload.data);
               break;
             case "fetchPackageById":
+            case "fetchRelatedPackageById":
               state.selected = action.payload.data || null; // <-- store the package here
               break;
             case "updatePackage": {

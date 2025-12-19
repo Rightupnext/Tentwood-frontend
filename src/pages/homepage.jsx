@@ -30,29 +30,22 @@ function HomePage() {
       <ExploreDestinations />
 
       {/* Lazy Loaded Sections with a Smooth Fallback Loader */}
-      <Suspense
-        fallback={
-          <div className="w-full py-20 text-center text-lg font-semibold">
-            Loading...
-          </div>
-        }
-      >
-        <Export />
-        <Featured />
-        <Promotion />
-        <Journey />
 
-        <Related />
-        <Smartcity />
-        <Thingtodo />
-        <Outsidethe />
-        <Travel />
-        <Testimonials />
-        {/* <Promotion2 /> */}
-        {/* <Map /> */}
-        {/* <Ensure /> */}
-        <Water />
-      </Suspense>
+      <Export />
+      <Featured />
+      <Promotion />
+      <Journey />
+
+      <Related />
+      <Smartcity />
+      <Thingtodo />
+      <Outsidethe />
+      <Travel />
+      <Testimonials />
+      {/* <Promotion2 /> */}
+      {/* <Map /> */}
+      {/* <Ensure /> */}
+      <Water />
 
       {/* FOOTER */}
     </>

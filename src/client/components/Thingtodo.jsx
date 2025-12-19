@@ -235,7 +235,7 @@ export default function LondonActivities() {
             </div>
 
             {/* Activities */}
-            <div className="space-y-4">
+            <div className="space-y-4 cursor-pointer">
               {filteredPackages.map((a) => (
                 <div
                   key={a.id}

@@ -3,7 +3,10 @@ import { ArrowRight, MousePointer, Percent, Users } from "lucide-react";
 import Vintage from "../components/Vintagedouble";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchPackageById } from "../../store/slices/packageSlice";
+import {
+  fetchPackageById,
+  fetchRelatedPackageById,
+} from "../../store/slices/packageSlice";
 
 export default function TravelPackagesSingle() {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,9 +17,10 @@ export default function TravelPackagesSingle() {
   const dispatch = useDispatch();
 
   const { selected, loading } = useSelector((state) => state.packages);
+  console.log("selected", selected?.matchedData);
 
   useEffect(() => {
-    dispatch(fetchPackageById({ id:packageId }));
+    dispatch(fetchRelatedPackageById({ id: packageId }));
   }, [dispatch, packageId]);
 
   useEffect(() => {
@@ -57,7 +61,7 @@ export default function TravelPackagesSingle() {
 
   return (
     <>
-      <Vintage />
+      <Vintage selected={selected} />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Package Cards */}
