@@ -40,12 +40,24 @@ function App() {
       <Routes>
         {/* Home Page */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/international-trips/*" element={<Thingtodo />} />
+        <Route path="/:tripType/:country/:city" element={<Thingtodo />} />
         <Route path="/india-trips/*" element={<Thingtodo />} />
         <Route path="/group-tours/*" element={<Thingtodo />} />
 
         <Route
           path="/international-trips/:country/:city/:slug"
+          element={<Promotions />}
+        />
+        <Route
+          path="/india-trips/:country/:city/:slug"
+          element={<Promotions />}
+        />
+        <Route
+          path="/group-tours/:country/:city/:slug"
+          element={<Promotions />}
+        />
+        <Route
+          path="/honeymoon-package/:country/:city/:slug"
           element={<Promotions />}
         />
 
