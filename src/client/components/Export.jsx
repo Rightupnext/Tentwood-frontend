@@ -1,206 +1,310 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  CarOutlined,
+  CompassOutlined,
+  CarryOutOutlined,
+  EnvironmentOutlined,
+  StarOutlined,
+  LeftOutlined,
+  RightOutlined,
+  ClockCircleOutlined,
+  TeamOutlined,
+  StarFilled,
+  UserOutlined,
+} from "@ant-design/icons";
 
-import { CarOutlined, CompassOutlined, CarryOutOutlined, EnvironmentOutlined, StarOutlined } from "@ant-design/icons";
-const cities = [
-  { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200&q=80", desc: "A vibrant city full of life and culture." },
-  { name: "California", image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&q=80", desc: "Beautiful beaches and endless sunshine." },
-  { name: "Alaska", image: "https://images.unsplash.com/photo-1512355144108-e94a235b10af?w=1200&q=80", desc: "A land of wilderness and adventure." },
-  { name: "Sidney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=1200&q=80", desc: "A stunning harbor city full of energy." },
-  { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80", desc: "A luxurious city in the desert." },
-  { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80", desc: "A timeless city with rich history." },
-  { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&q=80", desc: "A perfect mix of tradition and technology." },
-  { name: "Delhi", image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80", desc: "A city full of heritage and flavors." }
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPackages } from "../../store/slices/packageSlice";
+
+const IMAGE_BASE = "http://localhost:5000"; // change to prod URL if needed
 
 const categories = [
-  { icon: CarOutlined, label: "Public Transportations", color: "text-pink-500", bg: "bg-white", iconBg: "bg-pink-50" },
-  { icon: CompassOutlined, label: "Nature & Adventure", color: "text-teal-500", bg: "bg-white", iconBg: "bg-teal-50" },
-  { icon: CarryOutOutlined, label: "Private Transportations", color: "text-yellow-500", bg: "bg-white", iconBg: "bg-yellow-50" },
-  { icon: EnvironmentOutlined, label: "Business Tours", color: "text-red-500", bg: "bg-white", iconBg: "bg-red-50" },
-  { icon: StarOutlined, label: "Local Visit", color: "text-blue-500", bg: "bg-white", iconBg: "bg-blue-50" }
-];
-
-const tours = [
-  { title: "Alaska: River Experience from Westminster to Greenwich", duration: "2 hours", facility: "Transport Facility", plan: "Family Plan", rating: 4, reviews: 584, price: "$35.00", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80" },
-  { title: "Alaska: Classic Double-Decker Bus Tour", duration: "2 hours", facility: "Transport Facility", plan: "Family Plan", rating: 4, reviews: 584, price: "$35.00", image: "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=400&q=80" },
-  { title: "Alaska: London City Highlights with Afternoon Tea", duration: "2 hours", facility: "Transport Facility", plan: "Family Plan", rating: 4, reviews: 584, price: "$35.00", image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80" },
-  { title: "Alaska: Scenic River Cruise Experience", duration: "2 hours", facility: "Transport Facility", plan: "Family Plan", rating: 4, reviews: 584, price: "$35.00", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80" }
+  {
+    icon: CarOutlined,
+    label: "Public Transportations",
+    color: "text-pink-500",
+    iconBg: "bg-pink-50",
+  },
+  {
+    icon: CompassOutlined,
+    label: "Nature & Adventure",
+    color: "text-teal-500",
+    iconBg: "bg-teal-50",
+  },
+  {
+    icon: CarryOutOutlined,
+    label: "Private Transportations",
+    color: "text-yellow-500",
+    iconBg: "bg-yellow-50",
+  },
+  {
+    icon: EnvironmentOutlined,
+    label: "Business Tours",
+    color: "text-red-500",
+    iconBg: "bg-red-50",
+  },
+  {
+    icon: StarOutlined,
+    label: "Local Visit",
+    color: "text-blue-500",
+    iconBg: "bg-blue-50",
+  },
 ];
 
 export default function CityExplorer() {
-  const [selectedCity, setSelectedCity] = useState("Alaska");
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [hoveredCategory, setHoveredCategory] = useState(null);
-  const city = cities.find(c => c.name === selectedCity);
+  const dispatch = useDispatch();
+  const { list: packages = [] } = useSelector((state) => state.packages);
 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [filteredPackages, setFilteredPackages] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+  /* ================= FETCH API ================= */
+  useEffect(() => {
+    dispatch(fetchPackages());
+  }, [dispatch]);
+
+  /* ================= COUNTRY LIST ================= */
+  const countryNames = [
+    ...new Set(
+      packages.map((item) => item?.Destination?.country?.name).filter(Boolean)
+    ),
+  ];
+
+  /* ================= AUTO SELECT FIRST COUNTRY ================= */
+  useEffect(() => {
+    if (countryNames.length && !selectedCountry) {
+      setSelectedCountry(countryNames[0]);
+    }
+  }, [countryNames, selectedCountry]);
+
+  /* ================= FILTER PACKAGES BY COUNTRY ================= */
+  useEffect(() => {
+    if (!selectedCountry) return;
+
+    const filtered = packages.filter(
+      (p) => p?.Destination?.country?.name === selectedCountry
+    );
+
+    setFilteredPackages(filtered);
+  }, [packages, selectedCountry]);
+  const scrollRef = useRef(null);
+
+  const scrollLeft = () => {
+    scrollRef.current.scrollBy({
+      left: -300, // adjust scroll distance
+      behavior: "smooth",
+    });
+  };
+
+  const scrollRight = () => {
+    scrollRef.current.scrollBy({
+      left: 300,
+      behavior: "smooth",
+    });
+  };
+  const heroPackage = filteredPackages[0];
+  const TourCard = ({ t, i }) => {
+    const [hov, setHov] = useState(false);
+    const [imgLoaded, setImgLoaded] = useState(false);
+
+    return (
+      <div
+        key={t._id}
+        className="tour-card flex-shrink-0 w-[240px] sm:w-[280px] md:w-[300px] lg:w-[320px] bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-2xl hover:scale-105 hover:-translate-y-2 group cursor-pointer"
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        style={{ animation: `fadeInUp 0.6s ease-out ${i * 100}ms both` }}
+      >
+        <div className="relative h-48 sm:h-52 md:h-56 w-full overflow-hidden bg-gray-200">
+          {/* Skeleton loader */}
+          {!imgLoaded && (
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"
+              style={{ backgroundSize: "200% 100%" }}
+            />
+          )}
+
+          <img
+            src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
+            alt={t.title}
+            loading="lazy"
+            onLoad={() => setImgLoaded(true)}
+            className={`w-full h-full object-cover transition-all duration-700 ${
+              imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            } group-hover:scale-110`}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
+            <StarOutlined className="w-3 h-3 fill-white" />
+            {t?.Destination?.trip}
+          </div>
+
+          {hov && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
+                <span className="text-sm font-bold text-gray-900">
+                  View Details →
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="p-5">
+          <h3 className="font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-teal-600 transition-colors duration-300 text-base">
+            {t.packageTitle}
+          </h3>
+
+          <div className="space-y-2.5 text-sm text-gray-600">
+            <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
+              <ClockCircleOutlined className="w-4 h-4 text-teal-600" />
+              <span>Duration {t.durationDays}</span>
+            </div>
+            <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
+              <CarOutlined className="w-4 h-4 text-teal-600" />
+              <span>Transport Facility </span>
+            </div>
+            {/* <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
+              <UserOutlined className="w-4 h-4 text-teal-600" />
+              <span>
+                <strong>Location</strong> {t.locations}
+              </span>
+            </div> */}
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                {[...Array(5)].map((_, idx) => (
+                  <StarOutlined
+                    key={idx}
+                    className={`w-4 h-4 transition-all duration-300 ${
+                      idx < t.rating
+                        ? "fill-yellow-400 text-yellow-400 scale-100"
+                        : "text-gray-300 scale-90"
+                    }`}
+                    style={{ transitionDelay: `${idx * 50}ms` }}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gray-500">{t.reviews} reviews</span>
+            </div>
+
+            <div className="text-right">
+              <div className="text-2xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
+                ${t.price}.00
+              </div>
+              <div className="text-xs text-gray-500">per person</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+      </div>
+    );
+  };
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16 px-3 sm:px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
-        {/* City Tabs */}
+        {/* ================= COUNTRY TABS ================= */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 md:mb-12">
-          {cities.map((c, i) => (
+          {countryNames.map((c, i) => (
             <button
-              key={c.name}
-              onClick={() => setSelectedCity(c.name)}
+              key={c}
+              onClick={() => setSelectedCountry(c)}
               style={{ animationDelay: `${i * 50}ms` }}
               className={`px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-500 animate-fadeIn shadow-sm ${
-                selectedCity === c.name
+                selectedCountry === c
                   ? "bg-gradient-to-r from-teal-400 to-teal-500 text-white shadow-lg shadow-teal-300/50 scale-105 hover:shadow-xl"
                   : "bg-white text-gray-700 border border-gray-200 hover:border-teal-300 hover:shadow-md hover:scale-105"
               }`}
             >
-              {c.name}
+              {c}
             </button>
           ))}
         </div>
 
-        {/* Main Hero Image Section */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 sm:mb-14 md:mb-16 group animate-scaleIn">
-          <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
-            <img
-              src={city.image}
-              alt={city.name}
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-          </div>
-
-     <div
-  className="
-    lg:absolute 
-    lg:bottom-12 lg:left-10 lg:right-10 
-    relative 
-    mt-6 
-    sm:mt-8 
-    md:mt-10 
-    px-4
-  "
->
-  <div className="bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl animate-slideUp">
-    {/* Title */}
-    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 animate-fadeIn">
-      {city.name}
-    </h2>
-
-    {/* Description */}
-    <p
-      className="text-gray-600 text-sm sm:text-base md:text-lg mb-5 sm:mb-6 md:mb-8 max-w-2xl animate-fadeIn"
-      style={{ animationDelay: "100ms" }}
-    >
-      {city.desc} Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.
-    </p>
-
-    {/* Category Buttons */}
-    <div className="flex flex-wrap gap-3 sm:gap-4">
-      {categories.map((cat, i) => {
-        const Icon = cat.icon;
-        return (
-          <button
-            key={cat.label}
-            style={{ animationDelay: `${i * 80}ms` }}
-            onMouseEnter={() => setHoveredCategory(i)}
-            onMouseLeave={() => setHoveredCategory(null)}
-            className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-2.5 sm:py-3 ${cat.bg} rounded-xl sm:rounded-2xl border border-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer animate-fadeIn group/cat`}
-          >
-            <div
-              className={`w-8 h-8 sm:w-10 sm:h-10 ${cat.iconBg} rounded-lg sm:rounded-xl flex items-center justify-center transition-transform duration-300 ${
-                hoveredCategory === i ? "scale-110 rotate-6" : ""
-              }`}
-            >
-              <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${cat.color}`} />
+        {/* ================= HERO SECTION ================= */}
+        {heroPackage && (
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 sm:mb-14 md:mb-16 group animate-scaleIn">
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
+              <img
+                src={`${import.meta.env.VITE_BACKEND_URL}${
+                  heroPackage?.heroMedia?.fileUrl
+                }`}
+                alt={heroPackage?.packageTitle}
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
-            <span className="text-gray-700 text-xs sm:text-sm font-medium whitespace-nowrap">
-              {cat.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  </div>
-</div>
 
+            <div className="absolute bottom-10 left-10 right-10 bg-white/95 backdrop-blur-md rounded-2xl p-8 shadow-xl">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {heroPackage?.packageTitle}
+              </h2>
+              <p className="text-gray-600 max-w-3xl">{heroPackage?.overview}</p>
+
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                {categories.map((cat, i) => {
+                  const Icon = cat.icon;
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 px-4 py-2 bg-white rounded-xl border shadow-sm"
+                    >
+                      <div
+                        className={`w-10 h-10 ${cat.iconBg} rounded-lg  sm:rounded-xl flex items-center justify-center`}
+                      >
+                        <Icon
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${cat.color}`}
+                        />
+                      </div>
+                      <span className="text-gray-700 text-xs sm:text-sm font-medium whitespace-nowrap">
+                        {cat.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ===== Scroll Buttons ===== */}
+        <div className="flex gap-2 sm:gap-3 justify-end mb-4">
+          <button
+            onClick={scrollLeft}
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
+          >
+            <LeftOutlined className="text-white text-lg sm:text-xl" />
+          </button>
+
+          <button
+            onClick={scrollRight}
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
+          >
+            <RightOutlined className="text-white text-lg sm:text-xl" />
+          </button>
         </div>
 
-        {/* Tour Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-          {tours.map((tour, i) => (
+        {/* ===== Cards Container ===== */}
+        <div
+          ref={scrollRef}
+          className="flex gap-5 overflow-x-auto scroll-smooth no-scrollbar"
+        >
+          {filteredPackages.map((pkg, i) => (
             <div
               key={i}
-              style={{ animationDelay: `${i * 100}ms` }}
-              onMouseEnter={() => setHoveredCard(i)}
-              onMouseLeave={() => setHoveredCard(null)}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 animate-slideUp hover:-translate-y-3 cursor-pointer group"
+              className="min-w-[280px] sm:min-w-[300px] lg:min-w-[320px]"
             >
-              <div className="relative h-44 sm:h-48 md:h-52 overflow-hidden">
-                <img
-                  src={tour.image}
-                  alt={tour.title}
-                  className={`w-full h-full object-cover transition-transform duration-700 ${
-                    hoveredCard === i ? "scale-125" : "scale-100"
-                  }`}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-              <div className="p-4 sm:p-5">
-                <h3 className="font-semibold text-gray-800 mb-3 text-sm sm:text-base line-clamp-2 min-h-[44px] sm:min-h-[48px] group-hover:text-teal-600 transition-colors duration-300">
-                  {tour.title}
-                </h3>
-                <div className="space-y-1.5 text-xs sm:text-sm text-gray-600 mb-4">
-                  <p className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
-                    Duration: {tour.duration}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
-                    {tour.facility}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
-                    {tour.plan}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 mb-4 pt-3 border-t border-gray-100">
-                  <div className="flex">
-                    {[...Array(5)].map((_, idx) => (
-                      <StarOutlined
-                        key={idx}
-                        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 ${
-                          idx < tour.rating
-                            ? "fill-amber-400 text-amber-400 scale-100"
-                            : "text-gray-300"
-                        } ${hoveredCard === i && idx < tour.rating ? 'scale-110' : ''}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">({tour.reviews})</span>
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <div>
-                    <span className="text-xl sm:text-2xl font-bold text-teal-600">
-                      {tour.price}
-                    </span>
-                    <span className="text-xs text-gray-500 ml-1">/ person</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-xs sm:text-sm rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
-                    Book Now
-                  </button>
-                </div>
-              </div>
+              <TourCard t={pkg} i={i} />
             </div>
           ))}
         </div>
       </div>
-
-      <style>{`
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes scaleIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
-        .animate-fadeIn{animation:fadeIn 0.6s ease-out forwards}
-        .animate-slideUp{animation:slideUp 0.7s ease-out forwards}
-        .animate-scaleIn{animation:scaleIn 0.8s ease-out forwards}
-      `}</style>
     </div>
   );
 }
