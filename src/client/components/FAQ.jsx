@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, Volume2, VolumeX } from "lucide-react";
 
-export default function WaterRaftingFAQ() {
+export default function FAQ() {
   const [isVisible, setIsVisible] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);

@@ -11,14 +11,15 @@ import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
 import AnalyticsDashboard from "./admin/AnalyticsDashboard";
 import { lazy } from "react";
-
+import Footer from "../src/client/Footer";
 import BottomNavbar from "./client/components/Bottomnavbar";
 import Topnavbar from "./client/components/Topnavbar";
 import DestinationUserGuide from "./admin/DestinationUserGuide";
+import FAQ from "./client/components/FAQ";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
-const Water = lazy(() => import("../src/client/components/Water"));
+
 const ContactUs = lazy(() => import("./client/components/Contact"));
 const Testimonials = lazy(() => import("./client/components/Testimonal"));
 const Thingtodo = lazy(() => import("../src/client/components/Thingtodo"));
@@ -27,7 +28,6 @@ const VintageDouble = lazy(() =>
 );
 const Promotions = lazy(() => import("./client/components/Promotions"));
 const Travel = lazy(() => import("../src/client/components/Travel"));
-const Footer = lazy(() => import("../src/client/Footer"));
 
 function App() {
   return (
@@ -40,6 +40,7 @@ function App() {
       <Routes>
         {/* Home Page */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/FAQ" element={<FAQ />} />
         <Route path="/:tripType/:country/:city" element={<Thingtodo />} />
         {/* <Route path="/india-trips/*" element={<Thingtodo />} /> */}
         {/* <Route path="/group-tours/*" element={<Thingtodo />} /> */}
@@ -66,9 +67,6 @@ function App() {
 
         {/* Ensure Page */}
         <Route path="/ensure" element={<Ensure />} />
-
-        {/* Water Page */}
-        <Route path="/water" element={<Water />} />
 
         {/* Contact Page */}
         <Route path="/contact" element={<ContactUs />} />
@@ -113,6 +111,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <Footer />
     </>
   );
 }
