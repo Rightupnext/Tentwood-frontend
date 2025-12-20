@@ -1,40 +1,44 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight, MapPin, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 export default function ExploreDestinations() {
   const [hovered, setHovered] = useState(null);
   const [scrollProgress, setScrollProgress] = useState({});
   const rowRefs = useRef([]);
 
-  const destinations = [
-    { id: 1, name: "America", tours: "12 Tours", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=800&q=80" },
-    { id: 2, name: "France", tours: "15 Tours", image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&q=80" },
-    { id: 3, name: "Japan", tours: "18 Tours", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?w=800&q=80" },
-    { id: 4, name: "Africa", tours: "10 Tours", image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80" },
-    { id: 5, name: "USA", tours: "20 Tours", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&q=80" },
-    { id: 6, name: "Italy", tours: "22 Tours", image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80" },
-    { id: 7, name: "Australia", tours: "16 Tours", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=80" },
-    { id: 8, name: "Thailand", tours: "14 Tours", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80" },
-    { id: 9, name: "Greece", tours: "13 Tours", image: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&q=80" },
-    { id: 10, name: "Brazil", tours: "11 Tours", image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80" },
-  ];
+  const destinations = useMemo(() => [
+    { id: 1, name: "America", tours: "12 Tours", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=600&q=75&auto=format&fit=crop" },
+    { id: 2, name: "France", tours: "15 Tours", image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=600&q=75&auto=format&fit=crop" },
+    { id: 3, name: "Japan", tours: "18 Tours", image: "https://images.unsplash.com/photo-1528164344705-47542687000d?w=600&q=75&auto=format&fit=crop" },
+    { id: 4, name: "Africa", tours: "10 Tours", image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=75&auto=format&fit=crop" },
+    { id: 5, name: "USA", tours: "20 Tours", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600&q=75&auto=format&fit=crop" },
+    { id: 6, name: "Italy", tours: "22 Tours", image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=75&auto=format&fit=crop" },
+    { id: 7, name: "Australia", tours: "16 Tours", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=75&auto=format&fit=crop" },
+    { id: 8, name: "Thailand", tours: "14 Tours", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=600&q=75&auto=format&fit=crop" },
+    { id: 9, name: "Greece", tours: "13 Tours", image: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=600&q=75&auto=format&fit=crop" },
+    { id: 10, name: "Brazil", tours: "11 Tours", image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&q=75&auto=format&fit=crop" },
+  ], []);
 
-  const row1 = destinations;
-  const row2 = [...destinations].reverse();
+  const [row1, row2] = useMemo(() => [destinations, [...destinations].reverse()], [destinations]);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      rowRefs.current.forEach((row, index) => {
-        if (row) {
-          const rect = row.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
-          setScrollProgress(prev => ({ ...prev, [index]: progress }));
-        }
-      });
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          rowRefs.current.forEach((row, index) => {
+            if (row) {
+              const rect = row.getBoundingClientRect();
+              const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / window.innerHeight));
+              setScrollProgress(prev => ({ ...prev, [index]: progress }));
+            }
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -47,61 +51,64 @@ export default function ExploreDestinations() {
     return (
       <div 
         ref={el => rowRefs.current[rowIndex] = el}
-        className="relative overflow-hidden mb-6 sm:mb-8 md:mb-10"
-        style={{
-          transform: `scale(${scale})`,
-          opacity: opacity,
-          transition: 'transform 0.3s ease-out, opacity 0.3s ease-out'
-        }}
+        className="relative overflow-hidden mb-4 md:mb-6 lg:mb-8"
+        style={{ transform: `scale(${scale})`, opacity, transition: 'transform 0.3s, opacity 0.3s', willChange: 'transform, opacity' }}
       >
-        <div className={`flex space-x-3 sm:space-x-4 md:space-x-6 ${reverse ? "animate-[scrollLeft_40s_linear_infinite]" : "animate-[scrollRight_40s_linear_infinite]"} hover:[animation-play-state:paused]`}>
+        <div className={`flex gap-3 md:gap-4 lg:gap-6 ${reverse ? "animate-[scrollLeft_35s_linear_infinite]" : "animate-[scrollRight_35s_linear_infinite]"} hover:paused`}>
           {[...list, ...list, ...list].map((item, i) => (
             <div 
               key={i} 
-              className="w-56 h-40 sm:w-72 sm:h-56 md:w-80 md:h-64 flex-shrink-0 relative group cursor-pointer" 
+              className="w-52 h-36 md:w-64 md:h-48 lg:w-72 lg:h-56 shrink-0 relative group cursor-pointer touch-manipulation" 
               onMouseEnter={() => setHovered(`${rowIndex}-${i}`)} 
               onMouseLeave={() => setHovered(null)}
+              onTouchStart={() => setHovered(`${rowIndex}-${i}`)}
+              onTouchEnd={() => setHovered(null)}
             >
-              <div className="relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-teal-500/50 group-hover:z-10">
+              <div className="relative w-full h-full rounded-xl md:rounded-2xl overflow-hidden shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-teal-500/40 group-hover:z-10" style={{ willChange: 'transform' }}>
                 <img 
                   src={item.image} 
                   alt={item.name} 
-                  className="w-full h-full object-cover group-hover:scale-125 duration-700 transition-transform brightness-90 group-hover:brightness-110" 
-                  loading="lazy" 
+                  className="w-full h-full object-cover group-hover:scale-110 duration-500 transition-transform brightness-90 group-hover:brightness-105" 
+                  loading="lazy"
+                  decoding="async"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-teal-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent group-hover:from-black/85 transition-all duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/15 to-cyan-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
                 
-                {/* Sparkle effect on hover */}
-                <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:animate-pulse">
-                  <Sparkles className="w-5 h-5 text-yellow-300" />
+                <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 animate-pulse">
+                  <svg className="w-4 h-4 text-yellow-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/>
+                  </svg>
                 </div>
                 
-                <div className="absolute bottom-0 p-3 sm:p-5 md:p-6 text-white transform transition-transform duration-300 group-hover:translate-y-[-8px]">
-                  <h3 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2 group-hover:text-teal-300 transition-colors duration-300 drop-shadow-lg">
+                <div className="absolute bottom-0 p-3 md:p-4 lg:p-5 text-white transform transition-transform duration-200 group-hover:-translate-y-2">
+                  <h3 className="text-lg md:text-2xl lg:text-3xl font-bold mb-1 group-hover:text-teal-300 transition-colors duration-200 drop-shadow-lg">
                     {item.name}
                   </h3>
-                  <div className="flex items-center space-x-2 opacity-80 mb-2 sm:mb-4 group-hover:opacity-100 transition-opacity">
-                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 group-hover:text-teal-400 transition-colors group-hover:animate-bounce" />
-                    <span className="text-xs sm:text-base font-medium">{item.tours}</span>
+                  <div className="flex items-center gap-2 opacity-80 mb-2 md:mb-3 group-hover:opacity-100 transition-opacity">
+                    <svg className="w-3 h-3 md:w-4 md:h-4 group-hover:text-teal-400 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span className="text-xs md:text-sm font-medium">{item.tours}</span>
                   </div>
-                  <button className={`${hovered === `${rowIndex}-${i}` ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"} flex items-center space-x-2 px-3 py-1.5 sm:px-6 sm:py-3 bg-white text-teal-600 rounded-full font-semibold transition-all duration-300 text-xs sm:text-base hover:bg-teal-50 hover:shadow-lg active:scale-95 hover:shadow-teal-300/50`}>
-                    <span>Explore Now</span>
-                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+                  <button className={`${hovered === `${rowIndex}-${i}` ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-white text-teal-600 rounded-full font-semibold transition-all duration-200 text-xs md:text-sm hover:bg-teal-50 active:scale-95`}>
+                    <span>Explore</span>
+                    <svg className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                    </svg>
                   </button>
                 </div>
                 
-                {/* Rotating arrow badge */}
-                <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:rotate-[360deg] shadow-lg">
-                  <ArrowRight className="text-white w-3 h-3 sm:w-5 sm:h-5" />
+                <div className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:rotate-180 shadow-lg">
+                  <svg className="text-white w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                  </svg>
                 </div>
                 
-                {/* Border glow effect */}
-                <div className="absolute inset-0 border-2 border-white/0 group-hover:border-teal-400/50 rounded-xl sm:rounded-2xl transition-all duration-500"></div>
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-teal-400/40 rounded-xl md:rounded-2xl transition-all duration-300"></div>
                 
-                {/* Corner accents */}
-                <div className="absolute top-0 left-0 w-0 h-0 border-t-2 border-l-2 border-teal-400 group-hover:w-8 group-hover:h-8 transition-all duration-500 rounded-tl-xl"></div>
-                <div className="absolute bottom-0 right-0 w-0 h-0 border-b-2 border-r-2 border-cyan-400 group-hover:w-8 group-hover:h-8 transition-all duration-500 rounded-br-xl"></div>
+                <div className="absolute top-0 left-0 w-0 h-0 border-t-2 border-l-2 border-teal-400 group-hover:w-6 group-hover:h-6 transition-all duration-300 rounded-tl-xl"></div>
+                <div className="absolute bottom-0 right-0 w-0 h-0 border-b-2 border-r-2 border-cyan-400 group-hover:w-6 group-hover:h-6 transition-all duration-300 rounded-br-xl"></div>
               </div>
             </div>
           ))}
@@ -111,18 +118,20 @@ export default function ExploreDestinations() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-teal-50 py-12 sm:py-16 md:py-20 px-4 overflow-hidden">
-      <div className="max-w-7xl mx-auto text-center mb-10 sm:mb-12 md:mb-16">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-teal-50 py-8 md:py-12 lg:py-16 px-3 md:px-4 overflow-hidden">
+      <div className="max-w-7xl mx-auto text-center mb-8 md:mb-10 lg:mb-14">
         <div className="inline-block relative">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 via-teal-700 to-cyan-700 bg-clip-text text-transparent relative inline-block animate-[fadeIn_1s_ease-in]">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-gray-900 via-teal-700 to-cyan-700 bg-clip-text text-transparent animate-[fadeIn_0.8s_ease-in]">
             Explore Top Destinations
           </h2>
-          <div className="absolute left-1/2 -translate-x-1/2 w-24 sm:w-28 md:w-32 h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500 rounded-full -bottom-2 animate-[expand_1s_ease-out] shadow-lg shadow-teal-500/50" />
-          <div className="absolute -top-6 -right-6 opacity-50 animate-pulse">
-            <Sparkles className="w-6 h-6 text-teal-500" />
+          <div className="absolute left-1/2 -translate-x-1/2 w-20 md:w-24 lg:w-28 h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500 rounded-full -bottom-2 animate-[expand_0.8s_ease-out] shadow-lg shadow-teal-500/50" />
+          <div className="absolute -top-4 -right-4 md:-top-5 md:-right-5 opacity-50 animate-[float_3s_ease-in-out_infinite]">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-teal-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/>
+            </svg>
           </div>
         </div>
-        <p className="text-gray-600 max-w-2xl mx-auto mt-6 sm:mt-8 text-sm sm:text-base md:text-lg px-4 animate-[fadeIn_1.5s_ease-in] leading-relaxed">
+        <p className="text-gray-600 max-w-2xl mx-auto mt-4 md:mt-6 text-xs md:text-sm lg:text-base px-4 animate-[fadeIn_1.2s_ease-in] leading-relaxed">
           Discover the world's most beautiful places. Hand-picked destinations curated for the perfect travel experience.
         </p>
       </div>
@@ -130,13 +139,15 @@ export default function ExploreDestinations() {
       <Row list={row1} reverse={false} rowIndex={0} />
       <Row list={row2} reverse={true} rowIndex={1} />
       
-      <div className="text-center mt-10 sm:mt-12 md:mt-16 animate-[fadeIn_2s_ease-in]">
-        <button className="group px-8 py-3 sm:px-10 sm:py-4 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500 bg-[length:200%_100%] text-white font-semibold rounded-full shadow-lg hover:shadow-2xl hover:shadow-teal-500/50 hover:scale-105 active:scale-95 transition-all duration-300 text-sm sm:text-base relative overflow-hidden">
-          <span className="relative z-10 flex items-center gap-2">
+      <div className="text-center mt-8 md:mt-10 lg:mt-14 animate-[fadeIn_1.5s_ease-in]">
+        <button className="group px-6 py-2.5 md:px-8 md:py-3 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500 bg-[length:200%] text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:shadow-teal-500/40 hover:scale-105 active:scale-95 transition-all duration-300 text-sm md:text-base relative overflow-hidden touch-manipulation">
+          <span className="relative z-10 flex items-center gap-2 justify-center">
             View All Destinations
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+            <svg className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
           </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-[shimmer_2s_linear_infinite]"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-[shimmer_2s_linear_infinite]"></div>
         </button>
       </div>
       
@@ -155,22 +166,26 @@ export default function ExploreDestinations() {
         }
         @keyframes expand {
           0% { width: 0; }
-          100% { width: 6rem; }
+          100% { width: 5rem; }
         }
         @keyframes shimmer {
           0% { background-position: 200% center; }
           100% { background-position: -200% center; }
         }
-        @media (min-width: 640px) {
-          @keyframes expand {
-            0% { width: 0; }
-            100% { width: 7rem; }
-          }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
         @media (min-width: 768px) {
           @keyframes expand {
             0% { width: 0; }
-            100% { width: 8rem; }
+            100% { width: 6rem; }
+          }
+        }
+        @media (min-width: 1024px) {
+          @keyframes expand {
+            0% { width: 0; }
+            100% { width: 7rem; }
           }
         }
       `}</style>

@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { ChevronDown, Facebook, Twitter, Instagram, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export default function PremiumFooter() {
+export default function Footer() {
   const [hoveredLink, setHoveredLink] = useState(null);
   const [hoveredSocial, setHoveredSocial] = useState(null);
 
   const links = {
     company: [
-      { name: "About Us", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Press Room", href: "#" },
+      { name: "About Us", to: "/about-us" },
+      { name: "Blog", to: "#" },
+      { name: "Press Room", to: "#" },
       { name: "Careers", href: "#" }
     ],
     help: [
-      { name: "Contact us", href: "#" },
-      { name: "FAQs", href: "#" },
+      { name: "Contact us", href: "/contact" },
+      { name: "FAQs", href: "/FAQ" },
       { name: "Terms and conditions", href: "#" },
       { name: "Privacy policy", href: "#" },
       { name: "Sitemap", href: "#" }
@@ -147,7 +148,7 @@ export default function PremiumFooter() {
             <ul className="space-y-3">
               {links.company.map((l, i) => (
                 <li key={i}>
-                  <a 
+                  <Link 
                     href={l.href} 
                     onMouseEnter={() => setHoveredLink(`c${i}`)} 
                     onMouseLeave={() => setHoveredLink(null)} 
@@ -157,7 +158,7 @@ export default function PremiumFooter() {
                       {l.name}
                       <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ${hoveredLink === `c${i}` ? "w-full" : "w-0"}`} />
                     </span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -169,7 +170,7 @@ export default function PremiumFooter() {
             <ul className="space-y-3">
               {links.help.map((l, i) => (
                 <li key={i}>
-                  <a 
+                  <Link 
                     href={l.href} 
                     onMouseEnter={() => setHoveredLink(`h${i}`)} 
                     onMouseLeave={() => setHoveredLink(null)} 
@@ -179,7 +180,7 @@ export default function PremiumFooter() {
                       {l.name}
                       <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ${hoveredLink === `h${i}` ? "w-full" : "w-0"}`} />
                     </span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

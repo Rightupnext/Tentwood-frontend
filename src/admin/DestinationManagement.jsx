@@ -379,13 +379,7 @@ const DestinationManagement = () => {
                     option.children.toLowerCase().includes(input.toLowerCase())
                   }
                 >
-                  {TYPE_OPTIONS.filter((type) => {
-                    const usedTypes = getUsedTypes(
-                      selectedCountry,
-                      selectedTrip
-                    );
-                    return !usedTypes.includes(type.value);
-                  }).map((type) => (
+                  {TYPE_OPTIONS.map((type) => (
                     <Option key={type.value} value={type.value}>
                       {type.label}
                     </Option>
