@@ -41,8 +41,8 @@ function App() {
         {/* Home Page */}
         <Route path="/" element={<HomePage />} />
         <Route path="/:tripType/:country/:city" element={<Thingtodo />} />
-        <Route path="/india-trips/*" element={<Thingtodo />} />
-        <Route path="/group-tours/*" element={<Thingtodo />} />
+        {/* <Route path="/india-trips/*" element={<Thingtodo />} /> */}
+        {/* <Route path="/group-tours/*" element={<Thingtodo />} /> */}
 
         <Route
           path="/international-trips/:country/:city/:slug"
