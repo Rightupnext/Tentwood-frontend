@@ -10,41 +10,98 @@ import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageC
 import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
 import AnalyticsDashboard from "./admin/AnalyticsDashboard";
+import { lazy } from "react";
+
+import BottomNavbar from "./client/components/Bottomnavbar";
+import Topnavbar from "./client/components/Topnavbar";
+import DestinationUserGuide from "./admin/DestinationUserGuide";
+const HomePage = lazy(() => import("./pages/homepage"));
+const AboutUs = lazy(() => import("./pages/Aboutus"));
+const Ensure = lazy(() => import("../src/client/components/Ensure"));
+const Water = lazy(() => import("../src/client/components/Water"));
+const ContactUs = lazy(() => import("./client/components/Contact"));
+const Testimonials = lazy(() => import("./client/components/Testimonal"));
+const Thingtodo = lazy(() => import("../src/client/components/Thingtodo"));
+const VintageDouble = lazy(() =>
+  import("../src/client/components/Vintagedouble")
+);
+const Promotions = lazy(() => import("./client/components/Promotions"));
+const Travel = lazy(() => import("../src/client/components/Travel"));
+const Footer = lazy(() => import("../src/client/Footer"));
+
 function App() {
   return (
-    <Routes>
-      {/* Public route */}
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Auth />
-          </PublicRoute>
-        }
-      />
+    <>
+      <Topnavbar />
 
-      {/* Private admin routes */}
-      <Route
-        path="/admin/*"
-        element={
-          <PrivateRoute allowedRoles={["admin"]}>
-            <DashboardLayout />
-          </PrivateRoute>
-        }
-      >
-        {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
-        <Route path="" index element={<AnalyticsDashboard />} />
-        <Route path="countries" element={<CountryManagement />} />
-        <Route path="destinations" element={<DestinationManagement />} />
-        {/* <Route path="travel" element={<TravelForm />} /> */}
-        <Route path="travel" element={<TouristPackageCreator />} />
-        <Route path="package">
-          <Route index element={<PackagesList />} />
-          <Route path="edit/:id" element={<TouristPackageCreator />} />
-          <Route path=":id" element={<PackageDetails />} />
+      {/* Always visible bottom navbar */}
+      <BottomNavbar />
+
+      <Routes>
+        {/* Home Page */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/international-trips/*" element={<Thingtodo />} />
+        <Route path="/india-trips/*" element={<Thingtodo />} />
+        <Route path="/group-tours/*" element={<Thingtodo />} />
+
+        <Route
+          path="/international-trips/:country/:city/:slug"
+          element={<Promotions />}
+        />
+
+        {/* About Page */}
+        <Route path="/about-us" element={<AboutUs />} />
+
+        {/* Ensure Page */}
+        <Route path="/ensure" element={<Ensure />} />
+
+        {/* Water Page */}
+        <Route path="/water" element={<Water />} />
+
+        {/* Contact Page */}
+        <Route path="/contact" element={<ContactUs />} />
+
+        {/* Testimonials */}
+        <Route path="/Testimonal" element={<Testimonials />} />
+
+        {/* Popular destinations page */}
+
+        {/* Our Packages */}
+        <Route path="/Travel" element={<Travel />} />
+        {/* Public route */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Auth />
+            </PublicRoute>
+          }
+        />
+
+        {/* Private admin routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <PrivateRoute allowedRoles={["admin"]}>
+              <DashboardLayout />
+            </PrivateRoute>
+          }
+        >
+          {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
+          <Route path="" index element={<AnalyticsDashboard />} />
+          <Route path="countries" element={<CountryManagement />} />
+          <Route path="guide" element={<DestinationUserGuide />} />
+          <Route path="destinations" element={<DestinationManagement />} />
+          {/* <Route path="travel" element={<TravelForm />} /> */}
+          <Route path="travel" element={<TouristPackageCreator />} />
+          <Route path="package">
+            <Route index element={<PackagesList />} />
+            <Route path="edit/:id" element={<TouristPackageCreator />} />
+            <Route path=":id" element={<PackageDetails />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }
 

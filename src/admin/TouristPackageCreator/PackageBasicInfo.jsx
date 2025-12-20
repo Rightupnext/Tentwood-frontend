@@ -33,6 +33,49 @@ export default function PackageBasicInfo({
   form,
   currentPackage,
 }) {
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
+  const [filteredTrips, setFilteredTrips] = useState([]);
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedDestination, setSelectedDestination] = useState(null);
+
+  // Remove duplicate destinations by Destination name
+  const getUniqueDestinations = (destList) => {
+    const map = new Map();
+    destList.forEach((d) => {
+      if (!map.has(d.Destination)) {
+        map.set(d.Destination, d);
+      }
+    });
+    return [...map.values()];
+  };
+
+  // Remove duplicate trips
+  const getUniqueTrips = (trips) => [...new Set(trips)];
+
+  useEffect(() => {
+    if (selectedType) {
+      const filtered = destinations.filter((d) => d.type === selectedType);
+      setFilteredDestinations(filtered);
+
+      // Reset destination & trip if type changes
+      form.setFieldsValue({ Destination: null, tripCategory: null });
+      setSelectedDestination(null);
+      setFilteredTrips([]);
+    }
+  }, [selectedType, destinations, form]);
+
+  useEffect(() => {
+    if (selectedDestination) {
+      const filtered = destinations
+        .filter((d) => d._id === selectedDestination)
+        .map((d) => d.trip);
+      setFilteredTrips(getUniqueTrips(filtered));
+
+      // Reset trip category if destination changes
+      form.setFieldsValue({ tripCategory: null });
+    }
+  }, [selectedDestination, destinations, form]);
+
   const uploadProps = (type) => ({
     name: "file",
     listType: "picture-card",
@@ -53,19 +96,10 @@ export default function PackageBasicInfo({
       return false;
     },
   });
-  const [filteredDestinations, setFilteredDestinations] = useState([]);
-  useEffect(() => {
-    if (currentPackage?.Destination?.type && destinations.length) {
-      const filtered = destinations.filter(
-        (d) => d.type === currentPackage.Destination.type
-      );
-      setFilteredDestinations(filtered);
-    }
-  }, [currentPackage, destinations]);
 
   return (
     <Card title="✨ Basic Information" bordered={false}>
-      {/* PACKAGE TITLE */}
+      {/* Package Title */}
       <Form.Item
         name="packageTitle"
         label="Package Title"
@@ -74,7 +108,7 @@ export default function PackageBasicInfo({
         <Input placeholder="e.g., Amazing Thailand Tour" />
       </Form.Item>
 
-      {/* 1️⃣ SELECT TYPE FIRST */}
+      {/* Select Type */}
       <Form.Item
         name="type"
         label="Type"
@@ -84,20 +118,7 @@ export default function PackageBasicInfo({
           placeholder="Select type"
           allowClear
           loading={destLoading}
-          onChange={(selectedType) => {
-            const filtered = destinations.filter(
-              (d) => d.type === selectedType
-            );
-            setFilteredDestinations(filtered);
-
-            // ✅ ONLY clear if user is creating NEW package
-            if (!currentPackage) {
-              form.setFieldsValue({
-                Destination: null,
-                tripCategory: null,
-              });
-            }
-          }}
+          onChange={(value) => setSelectedType(value)}
         >
           {[...new Set(destinations.map((d) => d.type))].map((type) => (
             <Option key={type} value={type}>
@@ -107,18 +128,18 @@ export default function PackageBasicInfo({
         </Select>
       </Form.Item>
 
-      {/* 2️⃣ NOW SELECT DESTINATION (FILTERED BY TYPE) */}
+      {/* Select Destination (Filtered by Type, deduplicated) */}
       <Form.Item
         name="Destination"
         label="Destination"
         rules={[{ required: true, message: "Select destination" }]}
       >
-        <Select placeholder="Select Destination" loading={destLoading}>
-          {[
-            ...new Map(
-              filteredDestinations.map((d) => [d.Destination, d])
-            ).values(),
-          ].map((d) => (
+        <Select
+          placeholder="Select Destination"
+          loading={destLoading}
+          onChange={(value) => setSelectedDestination(value)}
+        >
+          {getUniqueDestinations(filteredDestinations).map((d) => (
             <Option key={d._id} value={d._id}>
               {d.Destination}
             </Option>
@@ -126,18 +147,14 @@ export default function PackageBasicInfo({
         </Select>
       </Form.Item>
 
-      {/* 3️⃣ TRIP CATEGORY (UNIQUE) */}
+      {/* Trip Category (Filtered by Destination, deduplicated) */}
       <Form.Item
         name="tripCategory"
         label="Trip Category"
         rules={[{ required: true, message: "Select Trip Category" }]}
       >
-        <Select
-          placeholder="Select Trip Category"
-          loading={destLoading}
-          allowClear
-        >
-          {[...new Set(destinations.map((d) => d.trip))].map((trip) => (
+        <Select placeholder="Select Trip Category" loading={destLoading}>
+          {filteredTrips.map((trip) => (
             <Option key={trip} value={trip}>
               <Tag color={TRIP_COLORS[trip] || "default"}>{trip}</Tag>
             </Option>
@@ -145,7 +162,7 @@ export default function PackageBasicInfo({
         </Select>
       </Form.Item>
 
-      {/* IMAGE UPLOADS */}
+      {/* Banner & Card Upload */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Banner Image (16:9)">
@@ -165,7 +182,6 @@ export default function PackageBasicInfo({
             </Upload>
           </Form.Item>
         </Col>
-
         <Col span={12}>
           <Form.Item label="Card Image (3:2)">
             <Upload {...uploadProps("card")}>
@@ -230,7 +246,6 @@ export default function PackageBasicInfo({
             <Input placeholder="e.g., 5N - 6D" />
           </Form.Item>
         </Col>
-
         <Col span={12}>
           <Form.Item
             name="price"
@@ -265,10 +280,7 @@ export default function PackageBasicInfo({
           </>
         }
       >
-        <Input.TextArea
-          rows={4}
-          placeholder="Describe the package overview..."
-        />
+        <Input.TextArea rows={4} placeholder="Describe the package overview..." />
       </Form.Item>
     </Card>
   );

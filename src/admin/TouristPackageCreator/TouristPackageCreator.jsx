@@ -152,7 +152,7 @@ export default function TouristPackageCreator() {
   }, [currentPackage, form]);
   useEffect(() => {
     dispatch(fetchDestinations());
-  }, []);
+  }, [dispatch]);
 
   const handleSave = async () => {
     try {
@@ -189,7 +189,7 @@ export default function TouristPackageCreator() {
       if (id) {
         await dispatch(updatePackage({ id: id, data: formData }));
       } else {
-        await dispatch(createPackage(formData));
+        await dispatch(createPackage({ data: formData }));
       }
     } catch (err) {
       console.log("Validation Failed:", err);
