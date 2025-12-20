@@ -6,7 +6,7 @@ export default function TopNavbar() {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white py-1 sm:py-2 overflow-hidden text-xs sm:text-sm md:text-base">
+      <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white py-1 sm:py-2 overflow-hidden text-xs sm:text-sm md:text-base ">
         <div className="scroll-text flex whitespace-nowrap">
           {[...repeat, ...repeat].map((item, i) => (
             <span key={i} className="inline-block px-4 sm:px-8">

@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Button, Grid, Drawer, Menu } from "antd";
-import { DownOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  MenuOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import logo from "../../assets/home/logo.2.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDestinations } from "../../store/slices/destinationSlice";
+
 const { useBreakpoint } = Grid;
 
 export default function BottomNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { list: destinations, loading: destLoading } = useSelector(
+
+  const { list: destinations } = useSelector(
     (state) => state.destinations
   );
-  // Helper: remove duplicates by Destination name
+
+  /* ---------------- HELPERS ---------------- */
+
   const getUniqueDestinations = (list) => {
     const map = new Map();
     list.forEach((d) => {
@@ -27,7 +36,6 @@ export default function BottomNavbar() {
     return [...map.values()];
   };
 
-  // Group destinations by trip
   const internationalTrips = getUniqueDestinations(
     destinations.filter((d) => d.trip === "International Trips")
   );
@@ -41,132 +49,137 @@ export default function BottomNavbar() {
     destinations.filter((d) => d.trip === "Honeymoon Packages")
   );
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  useEffect(() => {
-    dispatch(fetchDestinations());
-  }, [dispatch]);
   const menuItems = [
     { name: "Home", link: "/" },
     { name: "About Us", link: "/about-us" },
     {
       name: "International",
       submenu: internationalTrips.map((d) => d.Destination),
+      category: "International Trips",
     },
     {
       name: "India",
       submenu: indiaTrips.map((d) => d.Destination),
+      category: "India Trips",
     },
-    { name: "Group Tour", submenu: groupTours.map((d) => d.Destination) },
     {
-      name: "HoneyMoon Packages",
-      submenu: honeymoonPackages.map((d) => d.Destination),
+      name: "Group Tour",
+      submenu: groupTours.map((d) => d.Destination),
+      category: "Group Tours",
     },
-
+    {
+      name: "Honeymoon Packages",
+      submenu: honeymoonPackages.map((d) => d.Destination),
+      category: "Honeymoon Packages",
+    },
     { name: "Contact", link: "/contact" },
   ];
-  // Helper: map destination name to route
+
   const getDestinationRoute = (destName, category) => {
     const dest = destinations.find(
       (d) => d.Destination === destName && d.trip === category
     );
-    if (dest && dest.route) {
-      // Add prefix based on category
-      switch (category) {
-        case "International Trips":
-          return `/international-trips/${dest.route}`;
-        case "India Trips":
-          return `/india-trips/${dest.route}`;
-        case "Group Tours":
-          return `/group-tours/${dest.route}`;
-        case "Honeymoon Packages":
-          return `/honeymoon-packages/${dest.route}`;
-        default:
-          return `/destination/${dest.route}`;
-      }
+
+    if (!dest || !dest.route) return "#";
+
+    switch (category) {
+      case "International Trips":
+        return `/international-trips/${dest.route}`;
+      case "India Trips":
+        return `/india-trips/${dest.route}`;
+      case "Group Tours":
+        return `/group-tours/${dest.route}`;
+      case "Honeymoon Packages":
+        return `/honeymoon-packages/${dest.route}`;
+      default:
+        return `/destination/${dest.route}`;
     }
-    return "#";
   };
-  // Pass the parent category name as 'category'
-  const getDropdownItems = (submenu, category) => {
-    return submenu.map((subItem, idx) => ({
-      key: `${subItem}-${idx}`,
+
+  const getDropdownItems = (submenu, category) =>
+    submenu.map((item, idx) => ({
+      key: `${item}-${idx}`,
       label: (
         <Link
-          to={getDestinationRoute(
-            subItem,
-            category === "International"
-              ? "International Trips"
-              : category === "India"
-              ? "India Trips"
-              : category === "Group Tour"
-              ? "Group Tours"
-              : "Honeymoon Packages"
-          )}
+          to={getDestinationRoute(item, category)}
           className="text-gray-700 hover:text-teal-600"
         >
-          {subItem}
+          {item}
         </Link>
       ),
     }));
-  };
+
+  /* ---------------- EFFECTS ---------------- */
+
+  useEffect(() => {
+    dispatch(fetchDestinations());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* ---------------- JSX ---------------- */
 
   return (
     <nav
-      className={`sticky top-0 z-50 transition-all duration-500 ${
+      className={`w-full max-w-full sticky top-0 z-50 transition-all duration-500 ${
         isScrolled
           ? "bg-white shadow-lg"
           : "bg-gradient-to-r from-teal-500 to-cyan-500"
       }`}
     >
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* LOGO */}
           <div
-            className="flex-shrink-0 cursor-pointer"
+            className="cursor-pointer"
             onClick={() => navigate("/")}
           >
             <img
               src={logo}
-              alt="Tentwood Logo"
-              className={`h-auto object-contain transition-all duration-300 ${
+              alt="Logo"
+              className={`transition-all duration-300 object-contain ${
                 isScrolled
-                  ? "w-24 sm:w-32 md:w-36 lg:w-40"
-                  : "w-28 sm:w-36 md:w-44 lg:w-52"
+                  ? "w-24 sm:w-28 md:w-32 lg:w-36 xl:w-40"
+                  : "w-20 xs:w-24 sm:w-28 md:w-32 lg:w-36 xl:w-52"
               }`}
             />
           </div>
 
-          {/* Desktop Menu */}
-          {screens.lg && (
-            <div className="flex items-center space-x-4">
+          {/* DESKTOP MENU (ONLY ≥1200px) */}
+          {screens.xl && (
+            <div className="flex items-center space-x-2 xl:space-x-4">
               {menuItems.map((item) =>
                 item.submenu ? (
                   <Dropdown
                     key={item.name}
+                    trigger={["hover"]}
+                    placement="bottomLeft"
                     menu={{
-                      items: getDropdownItems(item.submenu, item.name),
+                      items: getDropdownItems(
+                        item.submenu,
+                        item.category
+                      ),
                       style: {
-                        maxHeight: "400px",
+                        maxHeight: 400,
                         overflowY: "auto",
                         display: "grid",
-                        gridTemplateColumns: "repeat(4, minmax(150px, 1fr))",
-                        gap: "8px",
-                        padding: "12px",
+                        gridTemplateColumns:
+                          "repeat(4, minmax(150px, 1fr))",
+                        gap: 8,
+                        padding: 12,
                       },
                     }}
-                    placement="bottomLeft"
-                    trigger={["hover"]}
                   >
                     <Button
                       type="text"
-                      className={`px-4 py-2 rounded-lg !text-base !font-medium !transition-all !duration-300 ${
+                      className={`!font-medium !transition ${
                         isScrolled
-                          ? "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
-                          : "!text-white !hover:bg-white/10"
+                          ? "text-gray-700 hover:text-teal-600"
+                          : "!text-white"
                       }`}
                     >
                       {item.name} <DownOutlined />
@@ -176,9 +189,9 @@ export default function BottomNavbar() {
                   <Link
                     key={item.name}
                     to={item.link}
-                    className={`px-4 py-2 rounded-lg text-base font-medium transition-all duration-300 ${
+                    className={`px-3 py-2 font-medium rounded-lg transition ${
                       isScrolled
-                        ? "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                        ? "text-gray-700 hover:text-teal-600"
                         : "text-white hover:bg-white/10"
                     }`}
                   >
@@ -187,82 +200,95 @@ export default function BottomNavbar() {
                 )
               )}
 
-              {/* Sign In */}
               <Button
                 type="primary"
-                className="!bg-yellow-400 !text-gray-900 !font-semibold !hover:bg-yellow-300 !transition-all !duration-300"
+                className="!bg-yellow-400 !text-gray-900 !font-semibold"
               >
                 Sign In
               </Button>
             </div>
           )}
 
-          {/* Mobile Menu Button */}
-          {!screens.lg && (
+          {/* MOBILE / LAPTOP MENU BUTTON (<1200px) */}
+          {!screens.xl && (
             <Button
               type="text"
-              icon={drawerVisible ? <CloseOutlined /> : <MenuOutlined />}
+              icon={
+                drawerVisible ? <CloseOutlined /> : <MenuOutlined />
+              }
               onClick={() => setDrawerVisible(!drawerVisible)}
-              className={`${isScrolled ? "text-gray-700" : "text-white"}`}
+              className={isScrolled ? "text-gray-700" : "text-white"}
             />
           )}
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* DRAWER MENU */}
       <Drawer
+        placement="left"
+        open={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
         title={
           <img
             src={logo}
-            alt="Tentwood Logo"
-            className="h-12 object-contain cursor-pointer"
+            alt="Logo"
+            className="h-12 cursor-pointer"
             onClick={() => {
               navigate("/");
               setDrawerVisible(false);
             }}
           />
         }
-        placement="left"
-        onClose={() => setDrawerVisible(false)}
-        open={drawerVisible}
         styles={{ body: { padding: 0 } }}
       >
         <Menu mode="inline" style={{ border: "none" }}>
           {menuItems.map((item) =>
             item.submenu ? (
-              <Menu.SubMenu key={item.name} title={item.name}>
-                {item.submenu.map((subItem, idx) => (
-                  <Menu.Item key={`${subItem}-${idx}`}>
+              <Menu.SubMenu
+                key={item.name}
+                title={item.name}
+              >
+                {item.submenu.map((sub, idx) => (
+                  <Menu.Item key={`${sub}-${idx}`}>
                     <Link
-                      to={`/destination/${subItem
-                        .toLowerCase()
-                        .replace(/\s+/g, "-")}`}
-                      onClick={() => setDrawerVisible(false)}
+                      to={getDestinationRoute(
+                        sub,
+                        item.category
+                      )}
+                      onClick={() =>
+                        setDrawerVisible(false)
+                      }
                     >
-                      {subItem}
+                      {sub}
                     </Link>
                   </Menu.Item>
                 ))}
               </Menu.SubMenu>
             ) : (
               <Menu.Item key={item.name}>
-                <Link to={item.link} onClick={() => setDrawerVisible(false)}>
+                <Link
+                  to={item.link}
+                  onClick={() =>
+                    setDrawerVisible(false)
+                  }
+                >
                   {item.name}
                 </Link>
               </Menu.Item>
             )
           )}
 
-          <Menu.Item key="sign-in">
+          <Menu.Item>
             <Button
               type="primary"
-              className="w-full !bg-yellow-400 !text-gray-900 !hover:bg-yellow-300 !transition-all !duration-300"
+              className="w-full !bg-yellow-400 !text-gray-900"
             >
               Sign In
             </Button>
           </Menu.Item>
         </Menu>
       </Drawer>
+      
     </nav>
   );
 }

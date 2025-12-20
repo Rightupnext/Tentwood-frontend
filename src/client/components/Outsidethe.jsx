@@ -532,9 +532,7 @@ const TravelShowcase = () => {
 
         {/* Decorative Elements */}
         <div className="fixed top-10 right-8 w-20 h-20 bg-yellow-300 rounded-full blur-2xl opacity-30 pointer-events-none" />
-        <div className="fixed top-10 right-2 w-16 h-16 bg-yellow-400 rounded-full opacity-80 pointer-events-none" />
         <div className="fixed bottom-80 right-8 w-20 h-20 bg-yellow-300 rounded-full blur-2xl opacity-30 pointer-events-none" />
-        <div className="fixed bottom-80 right-2 w-16 h-16 bg-yellow-400 rounded-full opacity-80 pointer-events-none" />
       </div>
     </div>
   );
