@@ -327,7 +327,7 @@ export default function LondonActivities() {
             {/* Sort Bar */}
             <div className="bg-white rounded-2xl shadow-md border border-slate-200/60 p-5 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <span className="text-sm font-medium text-slate-700">
                     Sort by
                   </span>
@@ -337,12 +337,17 @@ export default function LondonActivities() {
                     <option>Price: High to Low</option>
                     <option>Rating</option>
                   </select>
-                </div>
+                </div> */}
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#fdc700]">
+                  {selectedThemes.length
+                    ? selectedThemes.join(", ")
+                    : `All ${themes}`}
+                </h1>
 
                 <div className="flex items-center gap-2 text-sm">
                   <button
                     onClick={handleResetFilters}
-                    className="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30"
+                    className="px-6 py-2.5 bg-gradient-to-r from-yellow-500 to-yellow-500 cursor-pointer text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30"
                   >
                     Reset Filter
                   </button>
@@ -352,7 +357,7 @@ export default function LondonActivities() {
                     className={`p-2 rounded-lg transition-all ${
                       viewMode === "list"
                         ? "bg-teal-500 text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
                     }`}
                   >
                     <MenuOutlined />
@@ -362,7 +367,7 @@ export default function LondonActivities() {
                     className={`p-2 rounded-lg transition-all ${
                       viewMode === "grid"
                         ? "bg-teal-500 text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
                     }`}
                   >
                     <AppstoreOutlined />
