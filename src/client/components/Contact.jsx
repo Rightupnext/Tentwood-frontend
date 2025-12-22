@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Send, MapPin, Phone, Mail, ArrowUp } from "lucide-react";
+import {
+  SendOutlined,
+  EnvironmentOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  ArrowUpOutlined,
+} from "@ant-design/icons";
+
 import map from "../../assets/contact/map.1.jpg";
 import LocationMap from "../../client/components/Map";
 export default function ContactUs() {
@@ -36,8 +44,37 @@ export default function ContactUs() {
   };
 
   const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    alert("Message sent successfully!");
+    const {
+      name,
+      phone,
+      email,
+      startPlace,
+      destination,
+      persons,
+      startDate,
+      endDate,
+    } = formData;
+
+    const message = `
+🌍 *New Travel Enquiry*
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+✉️ Email: ${email}
+
+📍 Start Place: ${startPlace}
+🎯 Destination: ${destination}
+👥 Persons: ${persons}
+
+📅 Start Date: ${startDate}
+🏁 End Date: ${endDate}
+  `;
+
+    const whatsappURL = `https://wa.me/${
+      import.meta.env.VITE_PHONE
+    }?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappURL, "_blank");
   };
 
   const mapDots = [
@@ -69,22 +106,25 @@ export default function ContactUs() {
 
   const contactCards = [
     {
-      icon: <MapPin size={28} className="text-white" />,
+      icon: <EnvironmentOutlined className="!text-white text-3xl" />,
       title: "Office Location",
       text: "2nd floor city sq complex,\nKarumbukkadai, Coimbatore,\nTamil Nadu - 641008",
       gradient: "from-cyan-500 to-blue-500",
+      type: "location",
     },
     {
-      icon: <Phone size={28} className="text-white" />,
+      icon: <PhoneOutlined className="!text-white text-3xl" />,
       title: "For Contact",
-      text: "+91 98928 9822",
+      text: import.meta.env.VITE_PHONE,
       gradient: "from-purple-500 to-pink-500",
+      type: "phone",
     },
     {
-      icon: <Mail size={28} className="text-white" />,
+      icon: <MailOutlined className="!text-white text-3xl" />,
       title: "For Email",
       text: "Tentwoodtrips@gmail.com",
       gradient: "from-orange-500 to-red-500",
+      type: "email",
     },
   ];
 
@@ -184,7 +224,7 @@ export default function ContactUs() {
                   className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#3CAD9B] to-cyan-500 text-white font-bold rounded-full shadow-lg flex items-center justify-center gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-[#3CAD9B]/50 transition-all duration-300 group mt-6"
                 >
                   <span className="text-lg">Send Message</span>
-                  <Send
+                  <SendOutlined
                     size={20}
                     className="group-hover:translate-x-1 transition-transform"
                   />
@@ -297,7 +337,17 @@ export default function ContactUs() {
                   {c.title}
                 </h3>
                 <p className="text-gray-700 whitespace-pre-line text-sm md:text-base leading-relaxed group-hover:text-white transition-colors duration-300">
-                  {c.text}
+                  {c.type === "phone" ? (
+                    <a href={`tel:+91${c.text}`} className="hover:underline">
+                      +91 {c.text}
+                    </a>
+                  ) : c.type === "email" ? (
+                    <a href={`mailto:${c.text}`} className="hover:underline">
+                      {c.text}
+                    </a>
+                  ) : (
+                    c.text
+                  )}
                 </p>
               </div>
 
@@ -317,7 +367,10 @@ export default function ContactUs() {
             : "opacity-0 translate-y-12 pointer-events-none"
         }`}
       >
-        <ArrowUp size={24} className="group-hover:animate-bounce" />
+        <ArrowUpOutlined
+          size={24}
+          className="group-hover:animate-bounce !text-white"
+        />
         <div className="absolute inset-0 rounded-full border-2 border-[#3CAD9B] animate-ping-slow opacity-50"></div>
       </button>
 

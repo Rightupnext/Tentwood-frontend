@@ -100,7 +100,7 @@ const DashboardLayout = () => {
               key: "6",
               icon: <AppstoreOutlined />,
               label: "Guide",
-              onClick: () => navigate("/admin/package"),
+              onClick: () => navigate("/admin/guide"),
             },
           ]}
         />
