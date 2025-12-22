@@ -15,6 +15,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPackages } from "../../store/slices/packageSlice";
+import { useNavigate } from "react-router-dom";
 
 const IMAGE_BASE = "http://localhost:5000"; // change to prod URL if needed
 
@@ -105,9 +106,22 @@ export default function CityExplorer() {
   };
   const heroPackage = filteredPackages[0];
   const TourCard = ({ t, i }) => {
+    const navigate = useNavigate();
     const [hov, setHov] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
-
+    const TRIP_ROUTE_MAP = {
+      "India Trips": "india-trips",
+      "International Trips": "international-trips",
+      "Honeymoon Packages": "honeymoon-packages",
+      "Group Tour": "group-tour",
+    };
+    const handleNavigate = (a) => {
+      const tripPrefix = TRIP_ROUTE_MAP[a?.Destination?.trip];
+      if (!tripPrefix) return;
+      navigate(`/${tripPrefix}/${a?.Destination?.route}/${a?.seo?.slug}`, {
+        state: { id: a?._id },
+      });
+    };
     return (
       <div
         key={t._id}
@@ -144,11 +158,14 @@ export default function CityExplorer() {
 
           {hov && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
+              <button
+                onClick={() => handleNavigate(t)}
+                className="cursor-pointer bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 shadow-2xl"
+              >
                 <span className="text-sm font-bold text-gray-900">
                   View Details →
                 </span>
-              </div>
+              </button>
             </div>
           )}
         </div>

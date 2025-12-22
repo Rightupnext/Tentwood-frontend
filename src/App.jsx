@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import DashboardLayout from "./admin/DashboardLayout";
 import Auth from "./admin/Auth";
 import PublicRoute from "./PublicRoute";
@@ -10,12 +10,15 @@ import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageC
 import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
 import AnalyticsDashboard from "./admin/AnalyticsDashboard";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import Footer from "../src/client/Footer";
 import BottomNavbar from "./client/components/Bottomnavbar";
 import Topnavbar from "./client/components/Topnavbar";
 import DestinationUserGuide from "./admin/DestinationUserGuide";
 import FAQ from "./client/components/FAQ";
+import ScrollToTop from "./ScrollToTop";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMe } from "./store/slices/userSlice";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
@@ -30,12 +33,19 @@ const Promotions = lazy(() => import("./client/components/Promotions"));
 const Travel = lazy(() => import("../src/client/components/Travel"));
 
 function App() {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const User = useSelector((state) => state.users.auth.user);
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  console.log("User", User);
+  useEffect(() => {
+    dispatch(fetchMe());
+  }, [dispatch]);
   return (
     <>
-      <Topnavbar />
-
-      {/* Always visible bottom navbar */}
-      <BottomNavbar />
+      <ScrollToTop />
+      {!isAdminRoute && <Topnavbar />}
+      {!isAdminRoute && <BottomNavbar />}
 
       <Routes>
         {/* Home Page */}
