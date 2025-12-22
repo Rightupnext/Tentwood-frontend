@@ -19,6 +19,7 @@ import FAQ from "./client/components/FAQ";
 import ScrollToTop from "./ScrollToTop";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/slices/userSlice";
+import WhatsAppFloat from "./WhatsAppFloat";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
@@ -122,6 +123,7 @@ function App() {
         </Route>
       </Routes>
       <Footer />
+      <WhatsAppFloat/>
     </>
   );
 }

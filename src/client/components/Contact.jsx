@@ -36,8 +36,37 @@ export default function ContactUs() {
   };
 
   const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    alert("Message sent successfully!");
+    const {
+      name,
+      phone,
+      email,
+      startPlace,
+      destination,
+      persons,
+      startDate,
+      endDate,
+    } = formData;
+
+    const message = `
+🌍 *New Travel Enquiry*
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+✉️ Email: ${email}
+
+📍 Start Place: ${startPlace}
+🎯 Destination: ${destination}
+👥 Persons: ${persons}
+
+📅 Start Date: ${startDate}
+🏁 End Date: ${endDate}
+  `;
+
+    const whatsappURL = `https://wa.me/${
+      import.meta.env.VITE_PHONE
+    }?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappURL, "_blank");
   };
 
   const mapDots = [
@@ -77,7 +106,7 @@ export default function ContactUs() {
     {
       icon: <Phone size={28} className="text-white" />,
       title: "For Contact",
-      text: "+91 98928 9822",
+      text: import.meta.env.VITE_PHONE,
       gradient: "from-purple-500 to-pink-500",
     },
     {
@@ -297,7 +326,7 @@ export default function ContactUs() {
                   {c.title}
                 </h3>
                 <p className="text-gray-700 whitespace-pre-line text-sm md:text-base leading-relaxed group-hover:text-white transition-colors duration-300">
-                  {c.text}
+                  {i === 1 ? `+91 ${c.text}` : c.text}
                 </p>
               </div>
 

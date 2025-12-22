@@ -15,16 +15,12 @@ const opt = (u) =>
     ? u + "&auto=format&fit=crop&q=80"
     : u + "?auto=format&fit=crop&q=80";
 
-export default function TourCarousel({
-  packages,
-  Title1,
-  Title2,
-  internationalTrips,
-  indiaTrips,
+export default function Relatedtours({
   Title3,
   Title4,
+  packages,
   honeymoonTrips,
-  GroupTrips
+  GroupTrips,
 }) {
   const [sc1, setSc1] = useState(0);
   const [sc2, setSc2] = useState(0);
@@ -305,16 +301,16 @@ export default function TourCarousel({
 
       <div className="max-w-7xl mx-auto">
         <Section
-          title={Title1}
-          tours={internationalTrips || []}
+          title={Title3}
+          tours={GroupTrips || []}
           refEl={r1}
           sc={sc1}
           setSc={setSc1}
           idx={0}
         />
         <Section
-          title={Title2}
-          tours={indiaTrips || []}
+          title={Title4}
+          tours={honeymoonTrips || []}
           refEl={r2}
           sc={sc2}
           setSc={setSc2}

@@ -13,11 +13,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPackages } from "../../store/slices/packageSlice";
 import { useNavigate } from "react-router-dom";
-
-const IMAGE_BASE = "http://localhost:5000"; // change to prod URL if needed
 
 const categories = [
   {
@@ -52,18 +48,9 @@ const categories = [
   },
 ];
 
-export default function CityExplorer() {
-  const dispatch = useDispatch();
-  const { list: packages = [] } = useSelector((state) => state.packages);
-
+export default function CityExplorer({ packages }) {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filteredPackages, setFilteredPackages] = useState([]);
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  /* ================= FETCH API ================= */
-  useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
 
   /* ================= COUNTRY LIST ================= */
   const countryNames = [
