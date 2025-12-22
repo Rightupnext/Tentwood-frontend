@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Send, MapPin, Phone, Mail, ArrowUp } from "lucide-react";
 import {
   SendOutlined,
   EnvironmentOutlined,
@@ -9,7 +8,7 @@ import {
 } from "@ant-design/icons";
 
 import map from "../../assets/contact/map.1.jpg";
-import LocationMap from "../../client/components/Map";
+import LocationMap from "./LocationMap";
 export default function ContactUs() {
   const [isVisible, setIsVisible] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);

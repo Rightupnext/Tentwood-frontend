@@ -16,7 +16,7 @@ const SmartCityTourApp = lazy(() =>
   import("../client/components/SmartCityTourApp")
 );
 const Testimonials = lazy(() => import("../client/components/Testimonal"));
-const Outsidethe = lazy(() => import("../client/components/Outsidethe"));
+const Outsidethe = lazy(() => import("../client/components/TravelShowcase"));
 function HomePage() {
   const dispatch = useDispatch();
   const { list: packages = [] } = useSelector((state) => state.packages);

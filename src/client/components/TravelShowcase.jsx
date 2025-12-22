@@ -1,5 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Clock, Users, MapPin } from 'lucide-react';
+import {
+  LeftOutlined,
+  RightOutlined,
+  StarOutlined,
+  ClockCircleOutlined,
+  TeamOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
 
 const TravelShowcase = () => {
   const outsideCityRef = useRef(null);
@@ -334,25 +341,25 @@ const TravelShowcase = () => {
           <h3 className="font-bold text-gray-900 mb-3 text-base line-clamp-2 h-12">{tour.title}</h3>
           <div className="space-y-1.5 mb-3 text-xs text-gray-600">
             <div className="flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-blue-500" />
+              <ClockCircleOutlined className="!w-3.5 !h-3.5 !text-blue-500" />
               <span>Duration {tour.duration}</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-blue-500" />
+              <EnvironmentOutlined className="!w-3.5 !h-3.5 !text-blue-500" />
               <span>{tour.facility}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Users className="w-3.5 h-3.5 text-blue-500" />
+              <TeamOutlined className="!w-3.5 !h-3.5 !text-blue-500" />
               <span>{tour.plan}</span>
             </div>
           </div>
           <div className="flex items-center justify-between pt-3 border-t">
             <div className="flex items-center gap-1.5">
               {[...Array(5)].map((_, i) => (
-                <Star
+                <StarOutlined
                   key={i}
                   className={`w-3.5 h-3.5 ${
-                    i < Math.floor(tour.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                    i < Math.floor(tour.rating) ? '!fill-yellow-400 !text-yellow-400' : '!text-gray-300'
                   }`}
                 />
               ))}
@@ -394,25 +401,25 @@ const TravelShowcase = () => {
           <h3 className="font-bold text-gray-900 mb-2 text-sm line-clamp-2 h-10">{tour.title}</h3>
           <div className="space-y-1 mb-3 text-xs text-gray-600">
             <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3" />
+              <ClockCircleOutlined className="!w-3 !h-3" />
               <span>Duration {tour.duration}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3" />
+              <EnvironmentOutlined className="!w-3 !h-3" />
               <span>{tour.facility}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Users className="w-3 h-3" />
+              <TeamOutlined className="!w-3 !h-3" />
               <span>{tour.plan}</span>
             </div>
           </div>
           <div className="flex items-center justify-between pt-3 border-t">
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
-                <Star
+                <StarOutlined
                   key={i}
                   className={`w-3 h-3 ${
-                    i < tour.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                    i < tour.rating ? '!fill-yellow-400 !text-yellow-400' : '!text-gray-300'
                   }`}
                 />
               ))}
@@ -445,13 +452,13 @@ const TravelShowcase = () => {
                 onClick={() => scroll(outsideCityRef, 'left')}
                 className="p-2.5 rounded-full bg-white shadow-lg bg-yellow-400 hover:shadow-xl cursor-pointer transition-all duration-300   hover:text-white group"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-700 group-hover:text-white" />
+                <LeftOutlined className="!w-5 !h-5 !text-gray-700 !group-hover:text-white" />
               </button>
               <button
                 onClick={() => scroll(outsideCityRef, 'right')}
                 className="p-2.5 rounded-full bg-white shadow-lg hover:shadow-xl bg-yellow-400 transition-all cursor-pointer duration-300    hover:text-white group"
               >
-                <ChevronRight className="w-5 h-5 text-gray-700 group-hover:text-white" />
+                <RightOutlined className="!w-5 !h-5 !text-gray-700 !group-hover:text-white" />
               </button>
             </div>
           </div>
@@ -477,13 +484,13 @@ const TravelShowcase = () => {
                 onClick={() => scroll(specialFoodsRef, 'left')}
                 className="p-2 rounded-full bg-yellow shadow-md hover:shadow-lg bg-yellow-400 hover:text-white transition-all  cursor-pointer duration-300"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <LeftOutlined className="!w-5 !h-5" />
               </button>
               <button
                 onClick={() => scroll(specialFoodsRef, 'right')}
                 className="p-2 rounded-full bg-white shadow-md hover:shadow-lg bg-yellow-400 hover:text-white transition-all duration-300"
               >
-                <ChevronRight className="w-5 h-5" />
+                <RightOutlined className="!w-5 !h-5" />
               </button>
             </div>
           </div>
@@ -509,13 +516,13 @@ const TravelShowcase = () => {
                 onClick={() => scroll(riverActivityRef, 'left')}
                 className="p-2 rounded-full bg-white shadow-md hover:shadow-lg bg-yellow-400 hover:text-white transition-all cursor-pointer duration-300"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <LeftOutlined className="!w-5 !h-5" />
               </button>
               <button
                 onClick={() => scroll(riverActivityRef, 'right')}
                 className="p-2 rounded-full bg-white shadow-md hover:shadow-lg bg-yellow-400 hover:text-white transition-all duration-300"
               >
-                <ChevronRight className="w-5 h-5" />
+                <RightOutlined className="!w-5 !h-5" />
               </button>
             </div>
           </div>

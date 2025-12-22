@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  MapPin,
-  Clock,
-  Users,
-} from "lucide-react";
+  StarOutlined,
+  LeftOutlined,
+  RightOutlined,
+  EnvironmentOutlined,
+  ClockCircleOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
+
 import { useNavigate } from "react-router-dom";
 
 export default function FeaturedDestinations({ selected }) {
@@ -76,9 +77,9 @@ export default function FeaturedDestinations({ selected }) {
                   : "bg-slate-100 border border-slate-200 opacity-50 cursor-not-allowed"
               }`}
             >
-              <ChevronLeft
-                className={`w-5 h-5 sm:w-6 cursor-pointer sm:h-6 ${
-                  canScrollLeft ? "text-slate-700" : "text-slate-400"
+              <LeftOutlined
+                className={`!w-5 !h-5 !sm:w-6 !cursor-pointer !sm:h-6 ${
+                  canScrollLeft ? "!text-slate-700" : "!text-slate-400"
                 }`}
               />
             </button>
@@ -102,9 +103,9 @@ export default function FeaturedDestinations({ selected }) {
                   : "bg-slate-100 border border-slate-200 opacity-50 cursor-not-allowed"
               }`}
             >
-              <ChevronRight
-                className={`w-5 h-5 sm:w-6 sm:h-6 cursor-pointer  ${
-                  canScrollRight ? "text-slate-700" : "text-slate-400"
+              <RightOutlined
+                className={`!w-5 !h-5 !sm:w-6 !sm:h-6 !cursor-pointer  ${
+                  canScrollRight ? "!text-slate-700" : "!text-slate-400"
                 }`}
               />
             </button>
@@ -159,17 +160,17 @@ export default function FeaturedDestinations({ selected }) {
                   {/* Info List */}
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600">
-                      <Clock className="w-4 h-4 text-teal-500" />
+                      <ClockCircleOutlined className="!w-4 !h-4 !text-teal-500" />
                       <span>Duration: {dest.durationDays}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600">
-                      <MapPin className="w-4 h-4 text-purple-500" />
+                      <EnvironmentOutlined className="!w-4 !h-4 !text-purple-500" />
                       <span>
                         {dest.pickup} / {dest.drop}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600">
-                      <Users className="w-4 h-4 text-blue-500" />
+                      <TeamOutlined className="!w-4 !h-4 !text-blue-500" />
                       <span>{dest.plan}</span>
                     </div>
                   </div>
@@ -178,12 +179,12 @@ export default function FeaturedDestinations({ selected }) {
                   <div className="flex items-center gap-2 mb-4 pb-4 border-b border-slate-100">
                     <div className="flex">
                       {[...Array(5)].map((_, idx) => (
-                        <Star
+                        <StarOutlined
                           key={idx}
-                          className={`w-4 h-4 transition-all duration-300 ${
+                          className={`!w-4 !h-4 !transition-all !duration-300 ${
                             idx < dest.rating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "fill-slate-200 text-slate-200"
+                              ? "!fill-yellow-400 !text-yellow-400"
+                              : "!fill-slate-200 !text-slate-200"
                           } ${
                             hoveredCard === i && idx < dest.rating
                               ? "scale-125"

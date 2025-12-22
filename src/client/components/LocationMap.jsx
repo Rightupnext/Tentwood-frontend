@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Star, Navigation, ExternalLink } from "lucide-react";
+import {
+  EnvironmentOutlined,
+  StarOutlined,
+  CompassOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
+
 import { Link } from "react-router-dom";
 const optimizeUnsplash = (url) => {
   // If URL already has query params (w=...), append optimization params
@@ -42,7 +48,10 @@ export default function LocationMap() {
                   </p>
                 </div>
                 <button className="flex-shrink-0 p-2 md:p-3 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl hover:scale-110 hover:shadow-lg transition-all duration-300">
-                  <Navigation size={18} className="md:w-5 md:h-5" />
+                  <CompassOutlined
+                    style={{ fontSize: 28 }}
+                    className="!md:w-5 !md:h-5"
+                  />
                   <span className="sr-only">Directions</span>
                 </button>
               </div>
@@ -54,10 +63,10 @@ export default function LocationMap() {
                   </span>
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star
+                      <StarOutlined
                         key={i}
-                        size={14}
-                        className="fill-yellow-400 text-yellow-400 md:w-4 md:h-4"
+                        style={{ fontSize: 14 }}
+                        className="!fill-yellow-400 !text-yellow-400 !md:w-4 !md:h-4"
                       />
                     ))}
                   </div>
@@ -76,9 +85,10 @@ export default function LocationMap() {
               >
                 <button className="w-full cursor-pointer text-blue-600 font-semibold hover:bg-blue-50 py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base group">
                   View larger map
-                  <ExternalLink
+                  <ExportOutlined
                     size={14}
-                    className="group-hover:translate-x-1 transition-transform md:w-4 md:h-4"
+                    style={{ fontSize: 18 }}
+                    className="!group-hover:translate-x-1 !transition-transform md:w-4 md:h-4"
                   />
                 </button>
               </Link>
@@ -181,9 +191,9 @@ export default function LocationMap() {
                   aria-hidden="true"
                 >
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-3 bg-red-500/20 rounded-full blur-md" />
-                  <MapPin
-                    size={56}
-                    className="text-red-500 fill-red-500 drop-shadow-2xl"
+                  <EnvironmentOutlined
+                    style={{ fontSize: 56 }}
+                    className="!text-red-500 !fill-red-500 !drop-shadow-2xl"
                   />
                 </div>
               </div>
@@ -218,9 +228,9 @@ export default function LocationMap() {
               </span>
             </button>
             <button className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl shadow-lg hover:shadow-xl hover:bg-blue-50 transition-all duration-300 flex items-center justify-center group border border-gray-200">
-              <Navigation
-                size={18}
-                className="text-blue-600 group-hover:rotate-45 transition-transform md:w-5 md:h-5"
+              <CompassOutlined
+                style={{ fontSize: 18 }}
+                className="!text-blue-600 !group-hover:rotate-45 !transition-transform !md:w-5 !md:h-5"
               />
             </button>
           </div>

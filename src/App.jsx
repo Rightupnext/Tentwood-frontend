@@ -23,6 +23,7 @@ import WhatsAppFloat from "./WhatsAppFloat";
 import TermsAndConditions from "./client/components/TermsAndConditions";
 import PrivacyPolicy from "./client/components/PrivacyPolicy";
 import TravelSearch from "../src/client/components/Travel";
+import TravelShowcase from "./client/components/TravelShowcase";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
@@ -59,6 +60,7 @@ function App() {
         <Route path="/travel" element={<TravelSearch />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/TravelShowcase" element={<TravelShowcase />} />
 
         <Route
           path="/international-trips/:country/:city/:slug"
