@@ -20,6 +20,9 @@ import ScrollToTop from "./ScrollToTop";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/slices/userSlice";
 import WhatsAppFloat from "./WhatsAppFloat";
+import TermsAndConditions from "./client/components/TermsAndConditions";
+import PrivacyPolicy from "./client/components/PrivacyPolicy";
+import TravelSearch from "../src/client/components/Travel";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
@@ -53,8 +56,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/:tripType/:country/:city" element={<Thingtodo />} />
-        {/* <Route path="/india-trips/*" element={<Thingtodo />} /> */}
-        {/* <Route path="/group-tours/*" element={<Thingtodo />} /> */}
+        <Route path="/travel" element={<TravelSearch />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
 
         <Route
           path="/international-trips/:country/:city/:slug"
@@ -123,7 +127,7 @@ function App() {
         </Route>
       </Routes>
       <Footer />
-      <WhatsAppFloat/>
+      <WhatsAppFloat />
     </>
   );
 }

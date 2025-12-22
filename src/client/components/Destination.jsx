@@ -5,81 +5,35 @@ export default function ExploreDestinations({ packages }) {
   const [scrollProgress, setScrollProgress] = useState({});
   const rowRefs = useRef([]);
 
-  const destinations = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "America",
-        tours: "12 Tours",
-        image:
-          "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 2,
-        name: "France",
-        tours: "15 Tours",
-        image:
-          "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 3,
-        name: "Japan",
-        tours: "18 Tours",
-        image:
-          "https://images.unsplash.com/photo-1528164344705-47542687000d?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 4,
-        name: "Africa",
-        tours: "10 Tours",
-        image:
-          "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 5,
-        name: "USA",
-        tours: "20 Tours",
-        image:
-          "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 6,
-        name: "Italy",
-        tours: "22 Tours",
-        image:
-          "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 7,
-        name: "Australia",
-        tours: "16 Tours",
-        image:
-          "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 8,
-        name: "Thailand",
-        tours: "14 Tours",
-        image:
-          "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 9,
-        name: "Greece",
-        tours: "13 Tours",
-        image:
-          "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=600&q=75&auto=format&fit=crop",
-      },
-      {
-        id: 10,
-        name: "Brazil",
-        tours: "11 Tours",
-        image:
-          "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&q=75&auto=format&fit=crop",
-      },
-    ],
-    []
-  );
+  const destinations = useMemo(() => {
+    if (!packages || !packages.length) return [];
+
+    const countryMap = {};
+
+    packages.forEach((pkg) => {
+      const countryName = pkg?.Destination?.countryName;
+      if (!countryName) return;
+
+      if (!countryMap[countryName]) {
+        countryMap[countryName] = {
+          name: countryName,
+          count: 0,
+          image: pkg?.cardMedia?.fileUrl
+            ? `${import.meta.env.VITE_BACKEND_URL}${pkg.cardMedia.fileUrl}`
+            : "",
+        };
+      }
+
+      countryMap[countryName].count += 1;
+    });
+
+    return Object.values(countryMap).map((item, index) => ({
+      id: index + 1,
+      name: item.name,
+      tours: `${item.count} Tours`,
+      image: item.image,
+    }));
+  }, [packages]);
 
   const [row1, row2] = useMemo(
     () => [destinations, [...destinations].reverse()],

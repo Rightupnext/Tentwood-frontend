@@ -1,79 +1,87 @@
 import React, { useState } from "react";
-import { ChevronDown, Facebook, Twitter, Instagram, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   FacebookFilled,
-  TwitterOutlined,
   InstagramFilled,
   GlobalOutlined,
   LinkedinFilled,
+  DownOutlined,
 } from "@ant-design/icons";
-
+import footer1 from "../assets/footer/footer1.svg";
+import footer2 from "../assets/footer/footer2.svg";
+import footer3 from "../assets/footer/footer3.svg";
+import footer4 from "../assets/footer/footer4.jpg";
+import footer5 from "../assets/footer/footer5.jpg";
+import footer6 from "../assets/footer/footer6.svg";
+import footer7 from "../assets/footer/footer7.png";
+import footer8 from "../assets/footer/footer8.svg";
+import footer9 from "../assets/footer/footer9.png";
 export default function Footer() {
   const [hoveredLink, setHoveredLink] = useState(null);
   const [hoveredSocial, setHoveredSocial] = useState(null);
 
   const links = {
     company: [
+      { name: "Home", to: "/" },
       { name: "About Us", to: "/about-us" },
-      { name: "Blog", to: "#" },
-      { name: "Press Room", to: "#" },
-      { name: "Careers", href: "#" },
+      { name: "InterNational Trip's", to: "/" },
+      { name: "Group Tour", to: "/" },
+      { name: "India Trip's", to: "/" },
+      { name: "HoneyMoon Trip's", to: "/" },
     ],
     help: [
-      { name: "Contact us", href: "/contact" },
-      { name: "FAQs", href: "/FAQ" },
-      { name: "Terms and conditions", href: "#" },
-      { name: "Privacy policy", href: "#" },
-      { name: "Sitemap", href: "#" },
+      { name: "Contact us", to: "/contact" },
+      { name: "FAQs", to: "/faq" },
+      { name: "Terms and conditions", to: "/terms" },
+      { name: "Privacy policy", to: "/privacy" },
     ],
   };
 
   const payments = [
     {
       name: "Mastercard",
-      img: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg",
+      img: footer1,
       color: "from-red-500 to-orange-500",
     },
     {
       name: "Visa",
-      img: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg",
+      img: footer2,
       color: "from-blue-500 to-blue-700",
     },
     {
       name: "PayPal",
-      img: "https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg",
+      img: footer3,
       color: "from-blue-500 to-blue-600",
     },
     {
       name: "Stripe",
-      img: "https://res.cloudinary.com/dttvw0p7p/image/upload/v1765618446/strip_gplo60.jpg",
+      img: footer4,
       color: "from-blue-600 to-purple-600",
     },
     {
       name: "Amex",
-      img: "https://res.cloudinary.com/dttvw0p7p/image/upload/v1765618538/amez_mfg55w.jpg",
+      img: footer5,
       color: "from-blue-400 to-blue-600",
     },
-    // { name: "Discover", img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Discover_Card_logo.svg", color: "from-orange-500 to-orange-600" },
+
     {
       name: "Bitcoin",
-      img: "https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg",
+      img: footer6,
       color: "from-yellow-500 to-orange-500",
     },
     {
       name: "GPay",
-      img: "https://res.cloudinary.com/dttvw0p7p/image/upload/v1765618714/Gpay_qvwfkm.png",
+      img: footer7,
       color: "from-green-500 to-blue-500",
     },
     {
       name: "Apple Pay",
-      img: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+      img: footer8,
       color: "from-gray-800 to-gray-900",
     },
     {
       name: "Maestro",
-      img: "https://res.cloudinary.com/dttvw0p7p/image/upload/v1765618818/Maestro_Logo.svg_qx4v3w.png",
+      img: footer9,
       color: "from-red-600 to-blue-600",
     },
   ];
@@ -117,7 +125,7 @@ export default function Footer() {
             {icon && <span className="text-lg">{icon}</span>}
             {value}
           </span>
-          <ChevronDown
+          <DownOutlined
             className={`w-4 h-4 transition-transform duration-300 ${
               open ? "rotate-180" : ""
             }`}
@@ -221,7 +229,7 @@ export default function Footer() {
               {links.company.map((l, i) => (
                 <li key={i}>
                   <Link
-                    href={l.href}
+                    to={l.to}
                     onMouseEnter={() => setHoveredLink(`c${i}`)}
                     onMouseLeave={() => setHoveredLink(null)}
                     className="text-white/70 hover:text-white transition-all relative text-sm sm:text-base"
@@ -249,7 +257,7 @@ export default function Footer() {
               {links.help.map((l, i) => (
                 <li key={i}>
                   <Link
-                    href={l.href}
+                    to={l.to}
                     onMouseEnter={() => setHoveredLink(`h${i}`)}
                     onMouseLeave={() => setHoveredLink(null)}
                     className="text-white/70 hover:text-white transition-all relative text-sm sm:text-base"

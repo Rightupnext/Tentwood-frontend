@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Bus,
-  Users,
-  Star,
-  MapPin,
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import {
+  StarFilled,
+  StarOutlined,
+  LeftOutlined,
+  RightOutlined,
+  ClockCircleOutlined,
+  CarOutlined,
+  TeamOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
 const opt = (u) =>
   u.includes("?")
     ? u + "&auto=format&fit=crop&q=80"
@@ -24,7 +24,7 @@ export default function TourCarousel({
   Title3,
   Title4,
   honeymoonTrips,
-  GroupTrips
+  GroupTrips,
 }) {
   const [sc1, setSc1] = useState(0);
   const [sc2, setSc2] = useState(0);
@@ -94,7 +94,7 @@ export default function TourCarousel({
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
-            <Star className="w-3 h-3 fill-white" />
+            <StarFilled className="w-3 h-3 fill-white" />
             {t?.Destination?.trip}
           </div>
 
@@ -119,15 +119,15 @@ export default function TourCarousel({
 
           <div className="space-y-2.5 text-sm text-gray-600">
             <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
-              <Clock className="w-4 h-4 text-teal-600" />
+              <ClockCircleOutlined className="!w-4 !h-4 !text-teal-600" />
               <span>Duration {t.durationDays}</span>
             </div>
             <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
-              <Bus className="w-4 h-4 text-teal-600" />
+              <CarOutlined className="!w-4 !h-4 !text-teal-600" />
               <span>Transport Facility</span>
             </div>
             <div className="flex items-center gap-2 transform transition-transform duration-300 group-hover:translate-x-1">
-              <Users className="w-4 h-4 text-teal-600" />
+              <TeamOutlined className="!w-4 !h-4 !text-teal-600" />
               <span>Family Plan</span>
             </div>
           </div>
@@ -200,14 +200,14 @@ export default function TourCarousel({
             disabled={sc <= 0}
             className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <LeftOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !!text-white" />
           </button>
 
           <button
             onClick={() => handleScroll(refEl, "right", setSc)}
             className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <RightOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !text-white" />
           </button>
         </div>
       </div>

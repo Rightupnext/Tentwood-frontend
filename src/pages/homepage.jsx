@@ -5,15 +5,16 @@ import Banner from "../client/components/Banner";
 import ExploreDestinations from "../client/components/Destination";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPackages } from "../store/slices/packageSlice";
-import Relatedtour2 from "../client/components/Relatedtours";
 import Relatedtours from "../client/components/Relatedtours";
 
 // Lazy Loaded Components – SUPER FAST PERFORMANCE
 const Export = lazy(() => import("../client/components/Export"));
-const Promotion = lazy(() => import("../client/components/Promotion"));
-const Journey = lazy(() => import("../client/components/Journey"));
+const TravelPromo = lazy(() => import("../client/components/TravelPromo"));
+const VideoGallery = lazy(() => import("../client/components/VideoGallery"));
 const Related = lazy(() => import("../client/components/Relatedtour"));
-const Smartcity = lazy(() => import("../client/components/Smartcity"));
+const SmartCityTourApp = lazy(() =>
+  import("../client/components/SmartCityTourApp")
+);
 const Testimonials = lazy(() => import("../client/components/Testimonal"));
 const Outsidethe = lazy(() => import("../client/components/Outsidethe"));
 function HomePage() {
@@ -46,8 +47,8 @@ function HomePage() {
       <Banner />
       <ExploreDestinations packages={packages} />
       <Export packages={packages} />
-      <Promotion />
-      <Journey />
+      <TravelPromo />
+      <VideoGallery />
       <Related
         packages={packages}
         Title1={Title1}
@@ -55,7 +56,7 @@ function HomePage() {
         indiaTrips={indiaTrips}
         internationalTrips={internationalTrips}
       />
-      <Smartcity />
+      <SmartCityTourApp packages={packages} />
       <Relatedtours
         packages={packages}
         Title3={Title3}

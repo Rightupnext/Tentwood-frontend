@@ -57,26 +57,6 @@ export default function Banner() {
       <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent"></div>
 
-      {/* AUDIO CONTROL */}
-      <div className="absolute top-6 right-6 z-50">
-        <button
-          onClick={toggleMute}
-          className="w-14 h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center hover:bg-white/30 transition-all border border-white/30 hover:scale-110 group shadow-xl"
-        >
-          {!isPlaying || isMuted ? (
-            <AudioOutlined className="!text-white !text-lg md:!text-xl rotate-45" />
-          ) : (
-            <AudioOutlined className="!text-white !text-lg md:!text-xl animate-pulse" />
-          )}
-        </button>
-
-        {!isPlaying && (
-          <div className="absolute -bottom-12 right-0 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg text-xs font-semibold text-gray-700 whitespace-nowrap animate-bounce">
-            Click to play music 🎵
-          </div>
-        )}
-      </div>
-
       {/* MAIN CONTENT */}
       <div className="relative flex flex-col items-center justify-center px-4 py-16 md:py-24 z-10 min-h-screen">
         {/* HERO TEXT */}

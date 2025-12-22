@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  Quote,
-  Users,
-  Globe,
-  Sparkles,
-  TrendingUp,
-  Award,
-} from "lucide-react";
 
+import {
+  LeftOutlined,
+  RightOutlined,
+  StarFilled,
+  CommentOutlined,
+  TeamOutlined,
+  GlobalOutlined,
+  StarOutlined,
+  RiseOutlined,
+  TrophyOutlined,
+} from "@ant-design/icons";
+import test1 from "../../assets/test/test1.jpg";
+import test2 from "../../assets/test/test1.jpg";
+import test3 from "../../assets/test/test3.jpg";
+import test4 from "../../assets/test/test4.jpg";
+import test5 from "../../assets/test/test5.jpg";
 export default function Testimonials() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -24,8 +29,7 @@ export default function Testimonials() {
     {
       name: "Robert Kcarery",
       role: "XTrip Traveler",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+      image: test1,
       rating: 5,
       title: "Excellent Tourist Place!",
       text: "I had the most amazing trip of my life! Everything, including the guided excursions and the airport pickup, was meticulously organized. The itinerary was well-balanced, and the accommodations were excellent.",
@@ -33,8 +37,7 @@ export default function Testimonials() {
     {
       name: "Sarah Mitchell",
       role: "Adventure Seeker",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      image: test2,
       rating: 5,
       title: "Unforgettable Experience!",
       text: "From start to finish, this was a dream vacation! The attention to detail was incredible, and every moment was perfectly planned. The local guides were knowledgeable and friendly. Highly recommend!",
@@ -42,21 +45,14 @@ export default function Testimonials() {
     {
       name: "Michael Chen",
       role: "Family Traveler",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+      image: test3,
       rating: 5,
       title: "Perfect Family Vacation!",
       text: "Traveling with kids can be challenging, but this trip was smooth and enjoyable for everyone. The activities were family-friendly, and the accommodations were spacious and comfortable. Will definitely book again!",
     },
   ];
 
-  const floatingAvatars = [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
-    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100",
-  ];
+  const floatingAvatars = [test1, test2, test3, test4, test5];
 
   const nextTestimonial = () => {
     setDirection("right");
@@ -173,7 +169,7 @@ export default function Testimonials() {
                 </div>
                 {/* Verified Badge */}
                 <div className="absolute -bottom-2 -right-2 bg-[#3CAD9B] p-2 rounded-full shadow-lg transform group-hover:scale-125 transition-transform duration-300">
-                  <Award className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <TrophyOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !text-white" />
                 </div>
               </div>
             </div>
@@ -247,7 +243,7 @@ export default function Testimonials() {
               style={{ animationDelay: "1.5s" }}
             >
               <div className="bg-gradient-to-br from-[#3CAD9B] to-[#2d9b8a] rounded-2xl p-3 sm:p-4 shadow-2xl transform hover:scale-125 hover:rotate-12 transition-all duration-300 border border-[#3CAD9B]">
-                <Globe className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
+                <GlobalOutlined className="!w-5 !h-5 !text-4xl !text-white" />
               </div>
             </div>
 
@@ -256,7 +252,7 @@ export default function Testimonials() {
               style={{ animationDelay: "2.5s" }}
             >
               <div className="bg-gradient-to-br from-[#3CAD9B] to-[#2d9b8a] rounded-2xl p-3 sm:p-4 shadow-2xl transform hover:scale-125 hover:-rotate-12 transition-all duration-300 border border-[#3CAD9B]">
-                <Sparkles className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
+                <StarOutlined className="!w-5 !h-5 !sm:w-7  !sm:h-7 !text-white" />
               </div>
             </div>
 
@@ -265,7 +261,7 @@ export default function Testimonials() {
               style={{ animationDelay: "3.5s" }}
             >
               <div className="bg-gradient-to-br from-[#3CAD9B] to-[#2d9b8a] rounded-2xl p-3 sm:p-4 shadow-2xl transform hover:scale-125 hover:rotate-12 transition-all duration-300 border border-[#3CAD9B]">
-                <TrendingUp className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
+                <RiseOutlined className="!w-5 !h-5 !sm:w-7 !sm:h-7 !text-white" />
               </div>
             </div>
           </div>
@@ -274,7 +270,7 @@ export default function Testimonials() {
           <div className={`${loaded ? "animate-slideInRight" : "opacity-0"}`}>
             <div className="mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 bg-[#3CAD9B]/20 backdrop-blur-sm px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 border-[#3CAD9B]/50 mb-4 sm:mb-6 hover:scale-110 hover:border-[#3CAD9B] transition-all duration-300 animate-pulse-glow">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#3CAD9B]" />
+                <TeamOutlined className="!w-4 !h-4 !sm:w-5 !sm:h-5 !text-[#3CAD9B]" />
                 <span className="text-xs sm:text-sm font-bold text-white tracking-wider">
                   TESTIMONIALS
                 </span>
@@ -306,12 +302,11 @@ export default function Testimonials() {
                   style={{ animation: "shimmer 2s infinite" }}
                 ></div>
               </div>
-
               {/* Quote Icon */}
               <div className="absolute top-4 sm:top-6 right-4 sm:right-6 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-                <Quote className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-[#3CAD9B]" />
+                <CommentOutlined className="!w-16 !h-16 !sm:w-20 !sm:h-20 !md:w-24 !md:h-24 !text-[#3CAD9B]" />
               </div>
-
+              {/* 
               {/* Stars */}
               <div className="flex gap-1 mb-4 sm:mb-6 relative z-10">
                 {[...Array(testimonials[activeTestimonial].rating)].map(
@@ -321,22 +316,20 @@ export default function Testimonials() {
                       className="transform hover:scale-125 hover:rotate-12 transition-all duration-300"
                       style={{ animationDelay: `${i * 0.1}s` }}
                     >
-                      <Star className="w-5 h-5 sm:w-6 sm:h-6 fill-[#3CAD9B] text-[#3CAD9B] drop-shadow-lg" />
+                      <StarFilled className="!w-5 !h-5 !sm:w-6 !sm:h-6 !fill-[#3CAD9B] !text-[#3CAD9B] !drop-shadow-lg" />
                     </div>
                   )
                 )}
-              </div>
-
+              </div>{" "}
+              */}
               {/* Title */}
               <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 relative z-10 hover:text-[#3CAD9B] transition-colors duration-300">
                 {testimonials[activeTestimonial].title}
               </h3>
-
               {/* Review Text */}
               <p className="text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-6 sm:mb-8 relative z-10">
                 {testimonials[activeTestimonial].text}
               </p>
-
               {/* Author Info */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
                 <div className="flex items-center gap-3 sm:gap-4">
@@ -366,17 +359,16 @@ export default function Testimonials() {
                     onClick={prevTestimonial}
                     className="bg-gradient-to-r from-[#3CAD9B] to-[#2d9b8a] hover:from-[#2d9b8a] hover:to-[#3CAD9B] text-white p-2 sm:p-3 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-125 hover:-rotate-6 active:scale-95 transition-all duration-300 border border-[#3CAD9B]"
                   >
-                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <LeftOutlined className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                   <button
                     onClick={nextTestimonial}
                     className="bg-gradient-to-r from-[#3CAD9B] to-[#2d9b8a] hover:from-[#2d9b8a] hover:to-[#3CAD9B] text-white p-2 sm:p-3 rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-125 hover:rotate-6 active:scale-95 transition-all duration-300 border border-[#3CAD9B]"
                   >
-                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <RightOutlined className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
-
               {/* Progress Dots */}
               <div className="flex gap-2 justify-center mt-6 sm:mt-8 relative z-10">
                 {testimonials.map((_, idx) => (
