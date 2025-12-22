@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  Calendar,
-  Users,
-  MapPin,
-  Clock,
-  CheckCircle,
-  Plus,
-  Minus,
-  X,
-} from "lucide-react";
+  EnvironmentOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+  PlusOutlined,
+  MinusOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+
 import { StarOutlined } from "@ant-design/icons";
-import FeaturedDestinations from "./Featured";
+import FeaturedDestinations from "./FeaturedDestinations";
 export default function TourBooking({ selected }) {
   const SelectedPkg = selected?.matchedData[0];
   const [fromDate, setFromDate] = useState("");
@@ -160,7 +159,7 @@ export default function TourBooking({ selected }) {
                   key={i}
                   className="flex items-start gap-2 text-gray-700 text-sm"
                 >
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircleOutlined className="!w-5 !h-5 !text-green-500 !flex-shrink-0 !mt-0.5" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -180,7 +179,7 @@ export default function TourBooking({ selected }) {
                   key={i}
                   className="flex items-start gap-2 text-gray-700 text-sm"
                 >
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircleOutlined className="!w-5 !h-5 !text-green-500 !flex-shrink-0 !mt-0.5" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -230,7 +229,7 @@ export default function TourBooking({ selected }) {
                           key={i}
                           className="flex items-start gap-3 text-gray-700 text-sm"
                         >
-                          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                          <CheckCircleOutlined className="!w-5 !h-5 !text-green-500 !flex-shrink-0 !mt-0.5" />
                           <span className="leading-relaxed">{item}</span>
                         </li>
                       ))}
@@ -259,7 +258,7 @@ export default function TourBooking({ selected }) {
             onClick={() => setShowImageModal(false)}
             className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-all"
           >
-            <X className="w-6 h-6" />
+            <CloseOutlined className="!w-6 !h-6" />
           </button>
           <img
             src={modalImage}
@@ -281,13 +280,13 @@ export default function TourBooking({ selected }) {
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4 text-teal-500" />
+                  <EnvironmentOutlined className="!w-4 !h-4 !text-teal-500" />
                   <span>
                     Pick - {SelectedPkg?.pickup} & Drop - {SelectedPkg?.drop}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4 text-teal-500" />
+                  <ClockCircleOutlined className="!w-4 !h-4 !text-teal-500" />
                   <span>Duration</span>
                 </div>
                 <span className="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-semibold">
@@ -458,13 +457,13 @@ export default function TourBooking({ selected }) {
               <div className="bg-white rounded-xl shadow-xl p-6 animate-fade-in-up">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-teal-600 mb-2">
-                    <MapPin className="w-5 h-5" />
+                    <EnvironmentOutlined className="w-5 h-5" />
                     <span className="font-semibold text-sm">
                       Pickup Available At {SelectedPkg?.pickup}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
-                    <Clock className="w-5 h-5" />
+                    <ClockCircleOutlined className="!w-5 !h-5" />
                     <span className="text-sm">
                       Duration : {SelectedPkg?.durationDays}
                     </span>
@@ -511,7 +510,7 @@ export default function TourBooking({ selected }) {
                         onClick={() => setGuests(Math.max(1, guests - 1))}
                         className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
                       >
-                        <Minus className="w-5 h-5" />
+                        <MinusOutlined className="!w-5 !h-5" />
                       </button>
                       <input
                         type="text"
@@ -523,7 +522,7 @@ export default function TourBooking({ selected }) {
                         onClick={() => setGuests(guests + 1)}
                         className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
                       >
-                        <Plus className="w-5 h-5" />
+                        <PlusOutlined className="!w-5 !h-5" />
                       </button>
                     </div>
                   </div>
@@ -599,7 +598,7 @@ export default function TourBooking({ selected }) {
           scrollbar-width: none;
         }
       `}</style>
-      <FeaturedDestinations selected={selected}/>
+      <FeaturedDestinations selected={selected} />
     </div>
   );
 }

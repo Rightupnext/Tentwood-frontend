@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, MousePointer, Percent, Users } from "lucide-react";
-import Vintage from "../components/Vintagedouble";
+import {
+  ArrowRightOutlined,
+  ZoomOutOutlined,
+  PercentageOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
+import phuket from '../../assets/travel/promo7.avif'
+import egypt from '../../assets/travel/promo8.avif'
+import Vintagedouble from "../components/Vintagedouble";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import {
@@ -61,7 +68,7 @@ export default function TravelPackagesSingle() {
 
   return (
     <>
-      <Vintage selected={selected} />
+      <Vintagedouble selected={selected} />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Package Cards */}
@@ -125,7 +132,7 @@ export default function TravelPackagesSingle() {
               {/* Image */}
               <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8 w-60 md:w-80 h-40 md:h-60 rounded-2xl overflow-hidden shadow-2xl animate-float will-change-transform">
                 <img
-                  src="https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&q=70"
+                  src={phuket}
                   alt="Phuket Beach"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   loading="lazy"
@@ -195,7 +202,7 @@ export default function TravelPackagesSingle() {
                 style={{ animationDelay: "1s" }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&q=70"
+                  src={egypt}
                   alt="Egypt Pyramids"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   loading="lazy"
@@ -229,16 +236,21 @@ export default function TravelPackagesSingle() {
                 className="flex items-center gap-2 text-purple-600 font-semibold text-lg hover:gap-4 transition-all duration-300 group"
               >
                 View All Package.
-                <ArrowRight
-                  className="group-hover:translate-x-1 transition-transform"
-                  size={20}
+                <ArrowRightOutlined
+                  className="!group-hover:translate-x-1 !transition-transform"
+                  style={{ fontSize: 20 }}
                 />
               </a>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
               <FeatureCard
-                icon={<MousePointer size={28} className="text-white" />}
+                icon={
+                  <ZoomOutOutlined
+                    style={{ fontSize: 28 }}
+                    className="!text-white"
+                  />
+                }
                 title="One Click Booking"
                 description="You can hassle-free and fast tour & travel package booking by GoFly."
                 gradient="from-teal-500 to-green-400"
@@ -246,7 +258,12 @@ export default function TravelPackagesSingle() {
               />
 
               <FeatureCard
-                icon={<Percent size={28} className="text-white" />}
+                icon={
+                  <PercentageOutlined
+                    style={{ fontSize: 28 }}
+                    className="!text-white"
+                  />
+                }
                 title="Deals & Discounts"
                 description="Agencies have special discounts on flights, hotels, & packages."
                 gradient="from-pink-500 to-red-500"
@@ -254,7 +271,12 @@ export default function TravelPackagesSingle() {
               />
 
               <FeatureCard
-                icon={<Users size={28} className="text-white" />}
+                icon={
+                  <TeamOutlined
+                    style={{ fontSize: 28 }}
+                    className="!text-white"
+                  />
+                }
                 title="Local Guidance"
                 description="Travel agencies have experienced professionals guidance."
                 gradient="from-blue-400 to-cyan-400"

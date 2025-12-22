@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Award, TrendingUp, Users, Target } from "lucide-react";
+import { ArrowRightOutlined } from "@ant-design/icons";
+
 import TrustSection from "../client/components/Ensure";
 import FAQ from "../client/components/FAQ";
 
@@ -205,9 +206,9 @@ export default function AboutUs() {
               <button className="group relative px-8 py-4 bg-black text-white rounded-full font-bold overflow-hidden hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                 <span className="relative z-10 flex items-center gap-2">
                   About More Gofly
-                  <ArrowRight
-                    size={20}
-                    className="group-hover:translate-x-1 transition-transform"
+                  <ArrowRightOutlined
+                    style={{ fontSize: 25 }}
+                    className="!group-hover:translate-x-1 !transition-transform"
                   />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
