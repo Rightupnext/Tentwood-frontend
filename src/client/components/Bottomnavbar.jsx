@@ -167,9 +167,10 @@ const handleNavigate=()=>{
                       type="text"
                       className={`!font-medium !transition ${
                         isScrolled
-                          ? "text-gray-700 hover:text-teal-600"
+                          ? "text-gray-700 hover:text-teal-600 "
                           : "!text-white"
                       }`}
+                      style={{fontSize:15}}
                     >
                       {item.name} <DownOutlined />
                     </Button>

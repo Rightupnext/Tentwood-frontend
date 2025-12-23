@@ -8,14 +8,24 @@ export const fetchPackages = createApiThunk("fetchPackages", {
   method: "get",
   url: "/packages",
 });
+export const PackagesAnalyticsReport = createApiThunk(
+  "PackagesAnalyticsReport",
+  {
+    method: "get",
+    url: "/packages/analytics",
+  }
+);
 export const fetchPackageById = createApiThunk("fetchPackageById", {
   method: "get",
   url: "/packages/:id",
 });
-export const fetchRelatedPackageById = createApiThunk("fetchRelatedPackageById", {
-  method: "get",
-  url: "/packages/related/:id",
-});
+export const fetchRelatedPackageById = createApiThunk(
+  "fetchRelatedPackageById",
+  {
+    method: "get",
+    url: "/packages/related/:id",
+  }
+);
 
 export const createPackage = createApiThunk("createPackage", {
   method: "post",
@@ -44,6 +54,7 @@ const packageSlice = createSlice({
     selected: null,
     loading: false,
     error: null,
+    report: [],
   },
   reducers: {},
 
@@ -54,7 +65,8 @@ const packageSlice = createSlice({
       updatePackage,
       deletePackage,
       fetchPackageById,
-      fetchRelatedPackageById
+      fetchRelatedPackageById,
+      PackagesAnalyticsReport,
     ];
 
     thunks.forEach((thunk) => {
@@ -72,6 +84,9 @@ const packageSlice = createSlice({
           switch (type) {
             case "fetchPackages":
               state.list = action.payload.data; // backend returns { success, data: [] }
+              break;
+            case "PackagesAnalyticsReport":
+              state.report = action.payload.data; // backend returns { success, data: [] }
               break;
 
             case "createPackage":

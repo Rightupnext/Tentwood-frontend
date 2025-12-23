@@ -25,3 +25,12 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+* {
+  -webkit-font-smoothing: antialiased;
+  backface-visibility: hidden;
+}
+
+.smooth-scroll {
+  will-change: transform;
+  transform: translateZ(0);
+}

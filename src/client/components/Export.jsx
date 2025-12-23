@@ -260,10 +260,10 @@ export default function CityExplorer({ packages }) {
                       className="flex items-center gap-3 px-4 py-2 bg-white rounded-xl border shadow-sm"
                     >
                       <div
-                        className={`w-10 h-10 ${cat.iconBg} rounded-lg  sm:rounded-xl flex items-center justify-center`}
+                        className={`w-10 h-10 !${cat.iconBg} rounded-lg  sm:rounded-xl flex items-center justify-center`}
                       >
                         <Icon
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${cat.color}`}
+                          className={`w-4 h-4 sm:w-5 sm:h-5 !${cat.color}`}
                         />
                       </div>
                       <span className="text-gray-700 text-xs sm:text-sm font-medium whitespace-nowrap">

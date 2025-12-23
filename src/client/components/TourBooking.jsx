@@ -467,7 +467,7 @@ ${window.location.href}
                   {activeTab !== "overview" && (
                     <button
                       onClick={goToPrevTab}
-                      className="px-6 py-2 bg-white border-2 border-teal-500 text-teal-600 rounded-lg font-semibold hover:bg-teal-50 transition-all duration-300 hover:scale-105 shadow-md flex items-center gap-2"
+                      className="px-6 py-2 cursor-pointer bg-white border-2 border-teal-500 text-teal-600 rounded-lg font-semibold hover:bg-teal-50 transition-all duration-300 hover:scale-105 shadow-md flex items-center gap-2"
                     >
                       <svg
                         className="w-4 h-4"
@@ -488,7 +488,7 @@ ${window.location.href}
                   {activeTab !== "otherinfo" && (
                     <button
                       onClick={goToNextTab}
-                      className="px-6 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 hover:scale-105 shadow-md flex items-center gap-2"
+                      className="px-6 py-2 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 hover:scale-105 shadow-md flex items-center gap-2"
                     >
                       Next
                       <svg
@@ -544,77 +544,102 @@ ${window.location.href}
                   <h3 className="font-bold text-gray-900">Booking</h3>
 
                   {/* From Date */}
-                  <form onSubmit={handleWhatsAppEnquiry}>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        From
-                      </label>
-                      <input
-                        required
-                        type="date"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                      />
-                    </div>
+                  <Form
+                    layout="vertical"
+                    onFinish={handleWhatsAppEnquiry}
+                    className="space-y-4"
+                  >
+                    {/* From Date */}
+                    <Form.Item
+                      label="From"
+                      name="fromDate"
+                      rules={[
+                        { required: true, message: "Please select From date" },
+                      ]}
+                    >
+                      <DatePicker className="w-full px-4 py-3 border !border-gray-300 !rounded-lg !focus:ring-2 !focus:ring-teal-500 !focus:border-transparent !transition-all" />
+                    </Form.Item>
 
                     {/* To Date */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        To
-                      </label>
-                      <input
-                        required
-                        type="date"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                      />
-                    </div>
+                    <Form.Item
+                      label="To"
+                      name="toDate"
+                      rules={[
+                        { required: true, message: "Please select To date" },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            const from = getFieldValue("fromDate");
+                            if (!value || !from || value.$d > from.$d) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(
+                              new Error("To date must be after From date")
+                            );
+                          },
+                        }),
+                      ]}
+                    >
+                      <DatePicker className="w-full px-4 py-3 border !border-gray-300 !rounded-lg !focus:ring-2 !focus:ring-teal-500 !focus:border-transparent !transition-all" />
+                    </Form.Item>
 
                     {/* Guests */}
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        No. Of Guests
-                      </label>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => setGuests(Math.max(1, guests - 1))}
-                          className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
-                        >
-                          <MinusOutlined className="!w-5 !h-5" />
-                        </button>
-                        <input
-                          type="text"
-                          value={`${guests} Guests`}
-                          readOnly
-                          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-center font-semibold"
-                        />
-                        <button
-                          onClick={() => setGuests(guests + 1)}
-                          className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
-                        >
-                          <PlusOutlined className="!w-5 !h-5" />
-                        </button>
-                      </div>
-                    </div>
+                    <Form.Item
+                      label="No. Of Guests"
+                      name="guests"
+                      initialValue={2}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select number of guests",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={1}
+                        className="flex-1 px-4 py-3 border !border-gray-300 rounded-lg text-center font-semibold"
+                        size="large"
+                      />
+                    </Form.Item>
 
                     {/* Total Price */}
                     <div className="pt-4 border-t border-gray-200">
                       <div className="flex justify-between items-center mb-4">
                         <span className="text-gray-600">Total</span>
-                        <span className="text-3xl font-bold text-teal-600">
+                        <span className="text-3xl font-bold !text-teal-600">
                           ₹ {SelectedPkg?.price}
                         </span>
                       </div>
-                      <button
-                        type="button"
-                        className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-lg hover:from-teal-500 hover:to-teal-600 transition-all duration-300 hover:scale-105 shadow-lg"
+
+                      <Button
+                        htmlType="submit"
+                        size="large"
+                        style={{
+                          width: "100%",
+                          backgroundColor: "oklch(70.4% 0.14 182.503)",
+                          backgroundImage:
+                            "linear-gradient(to right, #2dd4bf, #14b8a6)",
+                          color: "#ffffff",
+                          fontWeight: "700",
+                          border: "0",
+                          boxShadow: "0 10px 20px rgba(20, 184, 166, 0.4)",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundImage =
+                            "linear-gradient(to right, #14b8a6, #0d9488)";
+                          e.currentTarget.style.transform = "scale(1.05)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundImage =
+                            "linear-gradient(to right, #2dd4bf, #14b8a6)";
+                          e.currentTarget.style.transform = "scale(1)";
+                        }}
+                        className="w-full bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold border-0 hover:from-teal-500 hover:to-teal-600"
                       >
                         Confirm Booking
-                      </button>
+                      </Button>
                     </div>
-                  </form>
+                  </Form>
                 </div>
               </div>
             </div>
