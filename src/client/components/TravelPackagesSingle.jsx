@@ -5,8 +5,6 @@ import {
   PercentageOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import phuket from "../../assets/travel/promo7.avif";
-import egypt from "../../assets/travel/promo8.avif";
 import TourBooking from "./TourBooking";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -99,7 +97,7 @@ export default function TravelPackagesSingle() {
                     className="text-4xl md:text-4xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
                     style={{ animationDelay: "100ms" }}
                   >
-                    {selected?.leastPrice2[0].packageTitle}
+                    {selected?.leastPrice2[0]?.packageTitle}
                   </h2>
 
                   <div
@@ -107,7 +105,7 @@ export default function TravelPackagesSingle() {
                     style={{ animationDelay: "200ms" }}
                   >
                     <span className="text-white font-semibold text-sm">
-                      {selected?.leastPrice2[0].durationDays}
+                      {selected?.leastPrice2[0]?.durationDays}
                     </span>
                   </div>
                 </div>
@@ -121,7 +119,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    ₹ {selected?.leastPrice2[0].price}
+                    ₹ {selected?.leastPrice2[0]?.price}
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
@@ -133,7 +131,7 @@ export default function TravelPackagesSingle() {
               <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8 w-60 md:w-80 h-40 md:h-60 rounded-2xl overflow-hidden shadow-2xl animate-float will-change-transform">
                 <img
                   src={`${import.meta.env.VITE_BACKEND_URL}${
-                    selected?.leastPrice2[0].cardMedia?.fileUrl
+                    selected?.leastPrice2[0]?.cardMedia?.fileUrl
                   }`}
                   alt="Phuket Beach"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
@@ -161,7 +159,7 @@ export default function TravelPackagesSingle() {
 
               <div className="absolute top-6 md:top-8 right-6 md:right-8 z-20 bg-yellow-400 text-black px-5 py-3 rounded-2xl shadow-lg animate-pulse-scale">
                 <div className="text-center font-black text-lg md:text-xl leading-tight">
-                  {selected?.leastPrice2[1].durationDays}
+                  {selected?.leastPrice2[1]?.durationDays}
                 </div>
               </div>
 
@@ -175,7 +173,7 @@ export default function TravelPackagesSingle() {
                     className="text-4xl md:text-4xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
                     style={{ animationDelay: "100ms" }}
                   >
-                    {selected?.leastPrice2[1].packageTitle}
+                    {selected?.leastPrice2[1]?.packageTitle}
                   </h2>
                 </div>
 
@@ -188,7 +186,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    ₹ {selected?.leastPrice2[1].price}
+                    ₹ {selected?.leastPrice2[1]?.price}
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
@@ -203,7 +201,7 @@ export default function TravelPackagesSingle() {
               >
                 <img
                   src={`${import.meta.env.VITE_BACKEND_URL}${
-                    selected?.leastPrice2[1].cardMedia?.fileUrl
+                    selected?.leastPrice2[1]?.cardMedia?.fileUrl
                   }`}
                   alt="Egypt Pyramids"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"

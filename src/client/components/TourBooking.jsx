@@ -515,7 +515,7 @@ ${window.location.href}
               onClick={() => setShowCheckout(!showCheckout)}
               className="lg:hidden w-full py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-bold rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
             >
-              Checkout - ${SelectedPkg?.price}
+              Checkout - ₹ {SelectedPkg?.price}
             </button>
           </div>
 

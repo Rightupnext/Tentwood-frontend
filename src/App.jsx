@@ -1,38 +1,53 @@
+// React & Router
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import DashboardLayout from "./admin/DashboardLayout";
-import Auth from "./admin/Auth";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMe } from "./store/slices/userSlice";
+
+// Route Guards
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
+
+// Layouts
+import DashboardLayout from "./admin/DashboardLayout";
+
+// Auth
+import Auth from "./admin/Auth";
+
+// Admin Pages
+import AnalyticsDashboard from "./admin/AnalyticsDashboard";
 import CountryManagement from "./admin/CountryManagement";
 import DestinationManagement from "./admin/DestinationManagement";
+import DestinationUserGuide from "./admin/DestinationUserGuide";
 import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageCreator";
 import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
-import AnalyticsDashboard from "./admin/AnalyticsDashboard";
-import { lazy, useEffect } from "react";
-import Footer from "../src/client/Footer";
-import BottomNavbar from "./client/components/Bottomnavbar";
-import Topnavbar from "./client/components/Topnavbar";
-import DestinationUserGuide from "./admin/DestinationUserGuide";
+
+// Client Pages & Components
+import HomePage from "./pages/homepage";
+import AboutUs from "./pages/Aboutus";
+import ContactUs from "./client/components/Contact";
+import Testimonials from "./client/components/Testimonal";
+import Ensure from "./client/components/Ensure";
+import Thingtodo from "./client/components/Thingtodo";
 import FAQ from "./client/components/FAQ";
-import ScrollToTop from "./ScrollToTop";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchMe } from "./store/slices/userSlice";
-import WhatsAppFloat from "./WhatsAppFloat";
+import Travel from "./client/components/Travel";
+import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
+import TravelShowcase from "./client/components/TravelShowcase";
+import TravelSearch from "./client/components/Travel";
 import TermsAndConditions from "./client/components/TermsAndConditions";
 import PrivacyPolicy from "./client/components/PrivacyPolicy";
-import TravelSearch from "../src/client/components/Travel";
-import TravelShowcase from "./client/components/TravelShowcase";
-const HomePage = lazy(() => import("./pages/homepage"));
-const AboutUs = lazy(() => import("./pages/Aboutus"));
-const Ensure = lazy(() => import("../src/client/components/Ensure"));
-const ContactUs = lazy(() => import("./client/components/Contact"));
-const Testimonials = lazy(() => import("./client/components/Testimonal"));
-const Thingtodo = lazy(() => import("../src/client/components/Thingtodo"));
-const TravelPackagesSingle = lazy(() =>
-  import("./client/components/TravelPackagesSingle")
-);
-const Travel = lazy(() => import("../src/client/components/Travel"));
+
+// Navigation & Layout UI
+import Topnavbar from "./client/components/Topnavbar";
+import BottomNavbar from "./client/components/Bottomnavbar";
+import Footer from "./client/Footer";
+
+// Utilities
+import ScrollToTop from "./ScrollToTop";
+import WhatsAppFloat from "./WhatsAppFloat";
 
 function App() {
   const dispatch = useDispatch();
