@@ -7,6 +7,7 @@ import {
   MinusOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
+import { Form, DatePicker, InputNumber, Button } from "antd";
 
 import { StarOutlined } from "@ant-design/icons";
 import FeaturedDestinations from "./FeaturedDestinations";
@@ -21,6 +22,7 @@ export default function TourBooking({ selected }) {
   const [mainImage, setMainImage] = useState("");
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImage, setModalImage] = useState("");
+  const [showFullOverview, setShowFullOverview] = useState(false);
 
   useEffect(() => {
     if (SelectedPkg?.heroMedia?.fileUrl) {
@@ -63,47 +65,107 @@ export default function TourBooking({ selected }) {
       setActiveTab(tabs[currentIndex - 1].id);
     }
   };
+  const formatDate = (date) =>
+    date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+  const handleWhatsAppEnquiry = (values) => {
+    const phoneNumber = import.meta.env.VITE_PHONE;
+
+    const fromDate = formatDate(values.fromDate.$d);
+    const toDate = formatDate(values.toDate.$d);
+    const enquiryDate = formatDate(new Date());
+
+    const message = `
+*Tour Enquiry*
+
+📍 *Package:* ${SelectedPkg?.packageTitle || "-"}
+📅 *From Date:* ${fromDate}
+📅 *To Date:* ${toDate}
+👥 *Guests:* ${values.guests}
+🕒 *Enquiry Date:* ${enquiryDate}
+
+🔗 *Package URL:*
+${window.location.href}
+  `.trim();
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "overview":
+      case "overview": {
+        const overviewText = SelectedPkg?.overview || "";
+        const isLongText = overviewText.length > 300;
+
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Overview & Highlights
             </h2>
-            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-4 mb-4">
-              <p className="text-gray-700 text-sm leading-relaxed">
-                <span className="font-semibold text-teal-600">
-                  {Array.isArray(SelectedPkg?.highlights)
-                    ? SelectedPkg.highlights.join(" - ")
-                    : ""}
-                </span>
-              </p>
-            </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {SelectedPkg?.overview}
-            </p>
-            <button className="mt-4 text-teal-600 font-semibold text-sm hover:text-teal-700 transition-colors">
-              Read More →
-            </button>
-            <div className="bg-gradient-to-r from-red-50 to-red-50 rounded-lg p-4 mb-4">
-              {Array.isArray(SelectedPkg?.notes) && (
-                <ul className="space-y-2">
-                  {SelectedPkg.notes.map((note, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-gray-700 text-sm"
-                    >
-                      <StarOutlined style={{ color: "#f8bf00" }} />
-                      <span className="font-semibold text-red-600">{note}</span>
-                    </li>
-                  ))}
-                </ul>
+
+            {/* Highlights */}
+            {Array.isArray(SelectedPkg?.highlights) &&
+              SelectedPkg.highlights.some((h) => h?.trim()) && (
+                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-4 mb-4">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    <span className="font-semibold text-teal-600">
+                      {SelectedPkg.highlights
+                        .filter((h) => h?.trim())
+                        .join(" - ")}
+                    </span>
+                  </p>
+                </div>
               )}
-            </div>
+
+            {/* Overview text */}
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {showFullOverview || !isLongText
+                ? overviewText
+                : overviewText.slice(0, 300) + "..."}
+            </p>
+
+            {/* Read more / less */}
+            {isLongText && (
+              <button
+                onClick={() => setShowFullOverview(!showFullOverview)}
+                className="mt-3 text-teal-600 font-semibold text-sm cursor-pointer hover:text-teal-700 transition-colors"
+              >
+                {showFullOverview ? "Read Less ←" : "Read More →"}
+              </button>
+            )}
+
+            {/* Notes */}
+            {Array.isArray(SelectedPkg?.notes) &&
+              SelectedPkg.notes.some((note) => note?.trim()) && (
+                <div className="bg-gradient-to-r from-red-50 to-red-50 rounded-lg p-4 mt-4">
+                  <ul className="space-y-2">
+                    {SelectedPkg.notes
+                      .filter((note) => note?.trim())
+                      .map((note, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2 text-gray-700 text-sm"
+                        >
+                          <StarOutlined style={{ color: "#f8bf00" }} />
+                          <span className="font-semibold text-red-600">
+                            {note}
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
           </div>
         );
+      }
 
       case "itinerary":
         return (
@@ -187,7 +249,7 @@ export default function TourBooking({ selected }) {
           </div>
         );
 
-      case "otherinfo":
+      case "otherinfo": {
         const essentials = SelectedPkg?.travelEssentials || {};
 
         const labels = {
@@ -199,6 +261,15 @@ export default function TourBooking({ selected }) {
           personalAccessories: "Personal Accessories",
         };
 
+        // Keep only categories that have valid (non-empty) items
+        const validEssentials = Object.entries(essentials).filter(
+          ([, items]) =>
+            Array.isArray(items) && items.some((item) => item?.trim())
+        );
+
+        // Hide entire tab if nothing valid
+        if (!validEssentials.length) return null;
+
         return (
           <div className="animate-fade-in">
             {/* Title */}
@@ -208,23 +279,22 @@ export default function TourBooking({ selected }) {
 
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {Object.entries(essentials).map(([key, items]) => {
-                if (!items?.length) return null;
+              {validEssentials.map(([key, items]) => (
+                <div
+                  key={key}
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition"
+                >
+                  {/* Category Title */}
+                  <h3 className="text-lg font-semibold text-teal-600 mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
+                    {labels[key] || key}
+                  </h3>
 
-                return (
-                  <div
-                    key={key}
-                    className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition"
-                  >
-                    {/* Category Title */}
-                    <h3 className="text-lg font-semibold text-teal-600 mb-4 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-teal-500 rounded-full"></span>
-                      {labels[key] || key}
-                    </h3>
-
-                    {/* List */}
-                    <ul className="space-y-3">
-                      {items.map((item, i) => (
+                  {/* List */}
+                  <ul className="space-y-3">
+                    {items
+                      .filter((item) => item?.trim())
+                      .map((item, i) => (
                         <li
                           key={i}
                           className="flex items-start gap-3 text-gray-700 text-sm"
@@ -233,13 +303,13 @@ export default function TourBooking({ selected }) {
                           <span className="leading-relaxed">{item}</span>
                         </li>
                       ))}
-                    </ul>
-                  </div>
-                );
-              })}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         );
+      }
 
       default:
         return null;
@@ -307,7 +377,6 @@ export default function TourBooking({ selected }) {
               />
             </div>
 
-            {/* Thumbnail Gallery */}
             {/* Thumbnail Gallery */}
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 animate-fade-in-up">
               {/* Hero Image Thumbnail */}
@@ -475,70 +544,77 @@ export default function TourBooking({ selected }) {
                   <h3 className="font-bold text-gray-900">Booking</h3>
 
                   {/* From Date */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      From
-                    </label>
-                    <input
-                      type="date"
-                      value={fromDate}
-                      onChange={(e) => setFromDate(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                    />
-                  </div>
-
-                  {/* To Date */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      To
-                    </label>
-                    <input
-                      type="date"
-                      value={toDate}
-                      onChange={(e) => setToDate(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                    />
-                  </div>
-
-                  {/* Guests */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      No. Of Guests
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setGuests(Math.max(1, guests - 1))}
-                        className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
-                      >
-                        <MinusOutlined className="!w-5 !h-5" />
-                      </button>
+                  <form onSubmit={handleWhatsAppEnquiry}>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        From
+                      </label>
                       <input
-                        type="text"
-                        value={`${guests} Guests`}
-                        readOnly
-                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-center font-semibold"
+                        required
+                        type="date"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                       />
+                    </div>
+
+                    {/* To Date */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        To
+                      </label>
+                      <input
+                        required
+                        type="date"
+                        value={toDate}
+                        onChange={(e) => setToDate(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+
+                    {/* Guests */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        No. Of Guests
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => setGuests(Math.max(1, guests - 1))}
+                          className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
+                        >
+                          <MinusOutlined className="!w-5 !h-5" />
+                        </button>
+                        <input
+                          type="text"
+                          value={`${guests} Guests`}
+                          readOnly
+                          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-center font-semibold"
+                        />
+                        <button
+                          onClick={() => setGuests(guests + 1)}
+                          className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
+                        >
+                          <PlusOutlined className="!w-5 !h-5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Total Price */}
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-600">Total</span>
+                        <span className="text-3xl font-bold text-teal-600">
+                          ₹ {SelectedPkg?.price}
+                        </span>
+                      </div>
                       <button
-                        onClick={() => setGuests(guests + 1)}
-                        className="w-10 h-10 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all hover:scale-110 flex items-center justify-center"
+                        type="button"
+                        className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-lg hover:from-teal-500 hover:to-teal-600 transition-all duration-300 hover:scale-105 shadow-lg"
                       >
-                        <PlusOutlined className="!w-5 !h-5" />
+                        Confirm Booking
                       </button>
                     </div>
-                  </div>
-
-                  {/* Total Price */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-gray-600">Total</span>
-                      <span className="text-3xl font-bold text-teal-600">
-                        $ {SelectedPkg?.price}
-                      </span>
-                    </div>
-                    <button className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-lg hover:from-teal-500 hover:to-teal-600 transition-all duration-300 hover:scale-105 shadow-lg">
-                      Confirm Booking
-                    </button>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -598,7 +674,7 @@ export default function TourBooking({ selected }) {
           scrollbar-width: none;
         }
       `}</style>
-      <FeaturedDestinations selected={selected} />
+      {selected?.lenght ? <FeaturedDestinations selected={selected} /> : ""}
     </div>
   );
 }

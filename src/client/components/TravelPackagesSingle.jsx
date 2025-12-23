@@ -5,15 +5,13 @@ import {
   PercentageOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import phuket from '../../assets/travel/promo7.avif'
-import egypt from '../../assets/travel/promo8.avif'
-import Vintagedouble from "./Vintagedouble";
+import phuket from "../../assets/travel/promo7.avif";
+import egypt from "../../assets/travel/promo8.avif";
+import TourBooking from "./TourBooking";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import {
-  fetchPackageById,
-  fetchRelatedPackageById,
-} from "../../store/slices/packageSlice";
+import { fetchRelatedPackageById } from "../../store/slices/packageSlice";
+import ParallelLoadingAnimation from "../../admin/Loading";
 
 export default function TravelPackagesSingle() {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +31,9 @@ export default function TravelPackagesSingle() {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
+  if (loading) {
+    return <ParallelLoadingAnimation />;
+  }
   // FeatureCard merged inside component
   const FeatureCard = ({ icon, title, description, gradient, delay }) => {
     const [show, setShow] = useState(false);
@@ -68,7 +68,7 @@ export default function TravelPackagesSingle() {
 
   return (
     <>
-      <Vintagedouble selected={selected} />
+      <TourBooking selected={selected} />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Package Cards */}
@@ -121,7 +121,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    $299
+                    ₹299
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
@@ -188,7 +188,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    $399
+                    ₹399
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
