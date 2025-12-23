@@ -7,10 +7,11 @@ import {
   TeamOutlined,
   StarOutlined,
   EnvironmentOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+
 const opt = (u) =>
   u.includes("?")
     ? u + "&auto=format&fit=crop&q=80"

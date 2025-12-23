@@ -23,7 +23,7 @@ import PackageItinerary from "./PackageItinerary";
 import PackageInclusions from "./PackageInclusions";
 import PackageEssentials from "./PackageEssentials";
 import PackageGallery from "./PackageGallery";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -54,6 +54,7 @@ const initialValues = {
 export default function TouristPackageCreator() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { list: destinations, loading: destLoading } = useSelector(
     (state) => state.destinations
   );
@@ -188,12 +189,56 @@ export default function TouristPackageCreator() {
       // Dispatch
       if (id) {
         await dispatch(updatePackage({ id: id, data: formData }));
+        // navigate("/admin/package");
       } else {
         await dispatch(createPackage({ data: formData }));
+        navigate("/admin/package");
       }
     } catch (err) {
       console.log("Validation Failed:", err);
       message.error("Please fill required fields!");
+    }
+  };
+  const handleReset = () => {
+    if (id && currentPackage) {
+      // 🔁 Reset back to existing package values (EDIT MODE)
+      form.resetFields();
+      setRemovedGalleryIds([]);
+
+      // Reset previews
+      setBannerPreview(
+        currentPackage.heroMedia
+          ? import.meta.env.VITE_BACKEND_URL + currentPackage.heroMedia.fileUrl
+          : null
+      );
+
+      setCardPreview(
+        currentPackage.cardMedia
+          ? import.meta.env.VITE_BACKEND_URL + currentPackage.cardMedia.fileUrl
+          : null
+      );
+
+      // Reset gallery
+      setGallery(
+        currentPackage.gallery?.map((img) => ({
+          uid: img._id,
+          url: import.meta.env.VITE_BACKEND_URL + img.fileUrl,
+          status: "done",
+          isExisting: true,
+        })) || []
+      );
+
+      setBannerImage(null);
+      setCardImage(null);
+    } else {
+      // 🧹 Completely reset (CREATE MODE)
+      form.resetFields();
+      setGallery([]);
+      setBannerImage(null);
+      setCardImage(null);
+      setBannerPreview(null);
+      setCardPreview(null);
+      setRemovedGalleryIds([]);
     }
   };
 
@@ -227,6 +272,9 @@ export default function TouristPackageCreator() {
         <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
           Create Tourist Package ✈️
         </Title>
+        <Button danger onClick={handleReset}>
+          Reset
+        </Button>
         <Button
           type="primary"
           icon={<SaveOutlined />}

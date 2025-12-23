@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import phuket from '../../assets/travel/promo7.avif'
 import egypt from '../../assets/travel/promo8.avif'
-import Vintagedouble from "../components/Vintagedouble";
+import Vintagedouble from "./Vintagedouble";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import {
