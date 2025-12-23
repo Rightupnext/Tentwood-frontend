@@ -78,9 +78,6 @@ export default function FAQ() {
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4 font-serif italic drop-shadow-2xl animate-pulse-glow">
             Water Rafting
           </h1>
-          <button className="px-5 py-2 text-sm md:text-base text-white font-medium underline hover:text-blue-200 transition-colors">
-            View All Package
-          </button>
         </div>
       </div>
 

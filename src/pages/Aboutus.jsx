@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
-
+import aboutimg from '../assets/about1.jpg'
 import TrustSection from "../client/components/Ensure";
 import FAQ from "../client/components/FAQ";
 
@@ -238,7 +238,7 @@ export default function AboutUs() {
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
               <img
-                src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop&q=80"
+                src={aboutimg}
                 alt="World Map Travel"
                 className="w-full h-[500px] object-cover transform group-hover:scale-110 transition-transform duration-700"
               />

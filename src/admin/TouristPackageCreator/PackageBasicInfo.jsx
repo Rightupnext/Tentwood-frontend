@@ -243,7 +243,7 @@ export default function PackageBasicInfo({
             }
             rules={[{ required: true, message: "Enter duration" }]}
           >
-            <Input placeholder="e.g., 5N - 6D" />
+            <Input placeholder="e.g., 5 Nights / 6 Days" />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -280,7 +280,10 @@ export default function PackageBasicInfo({
           </>
         }
       >
-        <Input.TextArea rows={4} placeholder="Describe the package overview..." />
+        <Input.TextArea
+          rows={4}
+          placeholder="Describe the package overview..."
+        />
       </Form.Item>
     </Card>
   );

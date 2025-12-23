@@ -5,7 +5,6 @@ import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import CountryManagement from "./admin/CountryManagement";
 import DestinationManagement from "./admin/DestinationManagement";
-import TravelForm from "./admin/TravelForm";
 import TouristPackageCreator from "./admin/TouristPackageCreator/TouristPackageCreator";
 import PackagesList from "./admin/TouristPackageCreator/PackagesList";
 import PackageDetails from "./admin/TouristPackageCreator/PackageDetails";
@@ -27,14 +26,12 @@ import TravelShowcase from "./client/components/TravelShowcase";
 const HomePage = lazy(() => import("./pages/homepage"));
 const AboutUs = lazy(() => import("./pages/Aboutus"));
 const Ensure = lazy(() => import("../src/client/components/Ensure"));
-
 const ContactUs = lazy(() => import("./client/components/Contact"));
 const Testimonials = lazy(() => import("./client/components/Testimonal"));
 const Thingtodo = lazy(() => import("../src/client/components/Thingtodo"));
-const VintageDouble = lazy(() =>
-  import("../src/client/components/Vintagedouble")
+const TravelPackagesSingle = lazy(() =>
+  import("./client/components/TravelPackagesSingle")
 );
-const Promotions = lazy(() => import("./client/components/Promotions"));
 const Travel = lazy(() => import("../src/client/components/Travel"));
 
 function App() {
@@ -42,7 +39,7 @@ function App() {
   const location = useLocation();
   const User = useSelector((state) => state.users.auth.user);
   const isAdminRoute = location.pathname.startsWith("/admin");
-  console.log("User", User);
+  // console.log("User", User);
   useEffect(() => {
     dispatch(fetchMe());
   }, [dispatch]);
@@ -64,19 +61,19 @@ function App() {
 
         <Route
           path="/international-trips/:country/:city/:slug"
-          element={<Promotions />}
+          element={<TravelPackagesSingle />}
         />
         <Route
           path="/india-trips/:country/:city/:slug"
-          element={<Promotions />}
+          element={<TravelPackagesSingle />}
         />
         <Route
           path="/group-tours/:country/:city/:slug"
-          element={<Promotions />}
+          element={<TravelPackagesSingle />}
         />
         <Route
           path="/honeymoon-package/:country/:city/:slug"
-          element={<Promotions />}
+          element={<TravelPackagesSingle />}
         />
 
         {/* About Page */}

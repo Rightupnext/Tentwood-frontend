@@ -21,11 +21,11 @@ export default function Auth() {
     const res = await dispatch(loginUser(values));
 
     if (loginUser.fulfilled.match(res)) {
-      const user = res.payload;
+      const { user } = res.payload; // ✅ extract user correctly
       console.log("user", user);
 
       if (user.logout === true && user.role === "admin") {
-        navigate("/admin"); // just call it
+        navigate("/admin"); // 🚀 navigate immediately
       } else {
         notification.error({
           message: "Login blocked",

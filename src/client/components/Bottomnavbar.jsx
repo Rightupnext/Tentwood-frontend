@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Button, Grid, Drawer, Menu } from "antd";
-import {
-  DownOutlined,
-  MenuOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import logo from "../../assets/home/logo.2.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDestinations } from "../../store/slices/destinationSlice";
@@ -20,9 +16,7 @@ export default function BottomNavbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { list: destinations } = useSelector(
-    (state) => state.destinations
-  );
+  const { list: destinations } = useSelector((state) => state.destinations);
 
   /* ---------------- HELPERS ---------------- */
 
@@ -122,7 +116,9 @@ export default function BottomNavbar() {
   }, []);
 
   /* ---------------- JSX ---------------- */
-
+const handleNavigate=()=>{
+  navigate('/login')
+}
   return (
     <nav
       className={`w-full max-w-full sticky top-0 z-50 transition-all duration-500 ${
@@ -134,10 +130,7 @@ export default function BottomNavbar() {
       <div className="mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* LOGO */}
-          <div
-            className="cursor-pointer"
-            onClick={() => navigate("/")}
-          >
+          <div className="cursor-pointer" onClick={() => navigate("/")}>
             <img
               src={logo}
               alt="Logo"
@@ -159,16 +152,12 @@ export default function BottomNavbar() {
                     trigger={["hover"]}
                     placement="bottomLeft"
                     menu={{
-                      items: getDropdownItems(
-                        item.submenu,
-                        item.category
-                      ),
+                      items: getDropdownItems(item.submenu, item.category),
                       style: {
                         maxHeight: 400,
                         overflowY: "auto",
                         display: "grid",
-                        gridTemplateColumns:
-                          "repeat(4, minmax(150px, 1fr))",
+                        gridTemplateColumns: "repeat(4, minmax(150px, 1fr))",
                         gap: 8,
                         padding: 12,
                       },
@@ -201,6 +190,7 @@ export default function BottomNavbar() {
               )}
 
               <Button
+              onClick={handleNavigate}
                 type="primary"
                 className="!bg-yellow-400 !text-gray-900 !font-semibold"
               >
@@ -213,9 +203,7 @@ export default function BottomNavbar() {
           {!screens.xl && (
             <Button
               type="text"
-              icon={
-                drawerVisible ? <CloseOutlined /> : <MenuOutlined />
-              }
+              icon={drawerVisible ? <CloseOutlined /> : <MenuOutlined />}
               onClick={() => setDrawerVisible(!drawerVisible)}
               className={isScrolled ? "text-gray-700" : "text-white"}
             />
@@ -244,20 +232,12 @@ export default function BottomNavbar() {
         <Menu mode="inline" style={{ border: "none" }}>
           {menuItems.map((item) =>
             item.submenu ? (
-              <Menu.SubMenu
-                key={item.name}
-                title={item.name}
-              >
+              <Menu.SubMenu key={item.name} title={item.name}>
                 {item.submenu.map((sub, idx) => (
                   <Menu.Item key={`${sub}-${idx}`}>
                     <Link
-                      to={getDestinationRoute(
-                        sub,
-                        item.category
-                      )}
-                      onClick={() =>
-                        setDrawerVisible(false)
-                      }
+                      to={getDestinationRoute(sub, item.category)}
+                      onClick={() => setDrawerVisible(false)}
                     >
                       {sub}
                     </Link>
@@ -266,12 +246,7 @@ export default function BottomNavbar() {
               </Menu.SubMenu>
             ) : (
               <Menu.Item key={item.name}>
-                <Link
-                  to={item.link}
-                  onClick={() =>
-                    setDrawerVisible(false)
-                  }
-                >
+                <Link to={item.link} onClick={() => setDrawerVisible(false)}>
                   {item.name}
                 </Link>
               </Menu.Item>
@@ -280,6 +255,7 @@ export default function BottomNavbar() {
 
           <Menu.Item>
             <Button
+            onClick={handleNavigate}
               type="primary"
               className="w-full !bg-yellow-400 !text-gray-900"
             >
@@ -288,7 +264,6 @@ export default function BottomNavbar() {
           </Menu.Item>
         </Menu>
       </Drawer>
-      
     </nav>
   );
 }
