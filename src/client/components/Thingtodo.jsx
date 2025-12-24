@@ -18,14 +18,14 @@ const TRIP_ROUTE_MAP = {
   "India Trips": "india-trips",
   "International Trips": "international-trips",
   "Honeymoon Packages": "honeymoon-packages",
-  "Group Tour": "group-tour",
+  "Group Tours": "group-tours",
 };
 
 const tripTypeMap = {
   "india-trips": "India Trips",
   "international-trips": "International Trips",
   "honeymoon-packages": "Honeymoon Packages",
-  "group-tour": "Group Tour",
+  "group-tours": "Group Tours",
 };
 
 const normalize = (v) => v?.toString().trim().toLowerCase();
