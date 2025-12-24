@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import smart1 from "../../assets/smartcity/city1.jpeg";
-import smart2 from "../../assets/smartcity/city2.webp";
-import smart3 from "../../assets/smartcity/city3.jpeg";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { Star } from "lucide-react";
+
 const hotelsData = [
   {
     name: "Hotel Seagull Int.",
@@ -10,7 +8,7 @@ const hotelsData = [
     rating: 4.8,
     reviews: 68,
     price: "$36",
-    image: smart1,
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
     popular: true,
     badge: "NEARBY",
   },
@@ -20,7 +18,7 @@ const hotelsData = [
     rating: 4.7,
     reviews: 28,
     price: "$42",
-    image: smart2,
+    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800",
     popular: false,
     badge: null,
   },
@@ -30,7 +28,7 @@ const hotelsData = [
     rating: 4.9,
     reviews: 46,
     price: "$45",
-    image: smart3,
+    image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800",
     popular: false,
     badge: null,
   },
@@ -64,12 +62,10 @@ const Icon = ({ type, size = "16", color = "currentColor" }) => {
   );
 };
 
-const SmartCityTourApp = ({ packages }) => {
+const SmartCityTourApp = () => {
   const [activeHotel, setActiveHotel] = useState(0);
   const [imageLoaded, setImageLoaded] = useState({});
-  const [width, setWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
-  );
+  const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -84,139 +80,113 @@ const SmartCityTourApp = ({ packages }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const isLg = width >= 1024;
+  const isXs = width < 400;
   const isSm = width >= 640;
-  const [rating] = useState(() =>
-    Number((Math.random() * (5 - 3.5) + 3.5).toFixed(1))
-  );
+  const isLg = width >= 1024;
+  
+  const rating = 4.8;
 
   return (
     <div className="min-h-screen overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-800 to-cyan-500 relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute w-96 h-96 bg-purple-400/20 rounded-full blur-3xl top-10 -left-20 animate-pulse"
+          className="absolute w-64 sm:w-96 h-64 sm:h-96 bg-purple-400/20 rounded-full blur-3xl -top-10 sm:top-10 -left-10 sm:-left-20 animate-pulse"
           style={{ animationDuration: "4s" }}
         />
         <div
-          className="absolute w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl bottom-20 -right-20 animate-pulse"
+          className="absolute w-64 sm:w-96 h-64 sm:h-96 bg-cyan-400/20 rounded-full blur-3xl -bottom-10 sm:bottom-20 -right-10 sm:-right-20 animate-pulse"
           style={{ animationDuration: "5s" }}
         />
         <div
-          className="absolute w-72 h-72 bg-pink-400/10 rounded-full blur-3xl top-1/2 left-1/2 animate-pulse"
+          className="absolute w-48 sm:w-72 h-48 sm:h-72 bg-pink-400/10 rounded-full blur-3xl top-1/2 left-1/2 animate-pulse"
           style={{ animationDuration: "6s" }}
         />
       </div>
 
-      <div
-        className="container mx-auto px-4 py-8 relative z-10"
-        style={{ maxWidth: "1280px", paddingTop: isLg ? "4rem" : "2rem" }}
-      >
-        <div
-          className="grid gap-8 items-center"
-          style={{
-            gridTemplateColumns: isLg ? "1fr 1fr" : "1fr",
-            gap: isLg ? "4rem" : "2rem",
-          }}
-        >
-          <div
-            className="flex justify-center relative"
-            style={{
-              order: isLg ? 1 : 2,
-              justifyContent: isLg ? "flex-start" : "center",
-            }}
-          >
-            <div className="relative transform transition-all duration-700 hover:scale-105 w-full max-w-sm">
-              <div className="relative w-full h-[620px] bg-gray-900 rounded-[3rem] shadow-2xl p-3 animate-float border-8 border-gray-800">
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-b-2xl z-30" />
-                <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                  <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-r from-purple-600 to-cyan-500 flex items-center justify-between px-6 text-white text-xs z-20">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 lg:py-16 relative z-10 max-w-[1280px]">
+        <div className={`grid gap-6 sm:gap-8 lg:gap-16 items-center ${isLg ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          {/* Mobile Phone Preview */}
+          <div className={`flex justify-center relative ${isLg ? 'order-1' : 'order-2'}`}>
+            <div className="relative w-full max-w-[280px] xs:max-w-sm sm:max-w-md">
+              <div className="relative w-full h-[480px] xs:h-[520px] sm:h-[620px] bg-gray-900 rounded-[2rem] xs:rounded-[3rem] shadow-2xl p-2 xs:p-3 animate-float border-4 xs:border-8 border-gray-800">
+                {/* Notch */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 xs:w-32 h-5 xs:h-6 bg-gray-900 rounded-b-2xl z-30" />
+                
+                {/* Screen Content */}
+                <div className="w-full h-full bg-white rounded-[1.5rem] xs:rounded-[2.5rem] overflow-hidden relative">
+                  {/* Status Bar */}
+                  <div className="absolute top-0 left-0 right-0 h-8 xs:h-10 bg-gradient-to-r from-purple-600 to-cyan-500 flex items-center justify-between px-4 xs:px-6 text-white text-[10px] xs:text-xs z-20">
                     <span className="font-semibold">9:41</span>
-                    <div className="flex gap-1.5 items-center">
-                      <Icon type="signal" size="14" color="white" />
-                      <Icon type="wifi" size="14" color="white" />
-                      <div className="w-6 h-3 border-2 border-white rounded-sm relative">
+                    <div className="flex gap-1 xs:gap-1.5 items-center">
+                      <Icon type="signal" size={isXs ? "12" : "14"} color="white" />
+                      <Icon type="wifi" size={isXs ? "12" : "14"} color="white" />
+                      <div className="w-5 xs:w-6 h-2.5 xs:h-3 border-2 border-white rounded-sm relative">
                         <div className="absolute inset-0.5 bg-white rounded-sm" />
                       </div>
                     </div>
                   </div>
-                  <div className="pt-10 px-4 pb-3 bg-gradient-to-r from-purple-600 to-cyan-500">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-white text-xl font-bold tracking-wide">
+
+                  {/* Header */}
+                  <div className="pt-8 xs:pt-10 px-3 xs:px-4 pb-2 xs:pb-3 bg-gradient-to-r from-purple-600 to-cyan-500">
+                    <div className="flex justify-between items-center mb-3 xs:mb-4">
+                      <h2 className="text-white text-base xs:text-xl font-bold tracking-wide">
                         HOTELS
                       </h2>
-                      <div className="w-10 h-10 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center gap-1">
-                        {[...Array(5)].map((_, idx) => {
-                          // Full star
-                          if (idx + 1 <= rating) {
-                            return (
-                              <StarFilled
-                                key={idx}
-                                className="w-4 h-4 !text-yellow-400"
-                              />
-                            );
-                          }
-                          // Half star (optional: use outlined slightly colored)
-                          else if (idx + 0.5 <= rating) {
-                            return (
-                              <StarFilled
-                                key={idx}
-                                className="w-4 h-4 !text-yellow-200"
-                              />
-                            );
-                          }
-                          // Empty star
-                          else {
-                            return (
-                              <StarOutlined
-                                key={idx}
-                                className="w-4 h-4 text-gray-300"
-                              />
-                            );
-                          }
-                        })}
-                        <span className="ml-2 text-sm">{rating}</span>
+                      <div className="flex items-center gap-0.5 xs:gap-1 bg-white/20 rounded-full backdrop-blur-sm px-2 xs:px-3 py-1">
+                        {[...Array(5)].map((_, idx) => (
+                          <Star
+                            key={idx}
+                            className={`w-2.5 xs:w-3 h-2.5 xs:h-3 ${
+                              idx < Math.floor(rating)
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                        <span className="ml-1 text-[10px] xs:text-xs text-white font-medium">
+                          {rating}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex gap-2 mb-3">
-                      <button className="px-4 py-1.5 bg-white/20 text-white text-xs rounded-full backdrop-blur-sm">
+                    
+                    {/* Filter Buttons */}
+                    <div className="flex gap-1.5 xs:gap-2 mb-2 xs:mb-3">
+                      <button className="px-2.5 xs:px-4 py-1 xs:py-1.5 bg-white/20 text-white text-[10px] xs:text-xs rounded-full backdrop-blur-sm whitespace-nowrap">
                         SEARCH
                       </button>
-                      <button className="px-4 py-1.5 bg-white text-cyan-600 text-xs rounded-full font-semibold shadow-lg transform scale-105">
+                      <button className="px-2.5 xs:px-4 py-1 xs:py-1.5 bg-white text-cyan-600 text-[10px] xs:text-xs rounded-full font-semibold shadow-lg transform scale-105 whitespace-nowrap">
                         NEARBY
                       </button>
-                      <button className="px-4 py-1.5 bg-white/20 text-white text-xs rounded-full backdrop-blur-sm">
+                      <button className="px-2.5 xs:px-4 py-1 xs:py-1.5 bg-white/20 text-white text-[10px] xs:text-xs rounded-full backdrop-blur-sm whitespace-nowrap">
                         FAVORITES
                       </button>
                     </div>
-                    <p className="text-white/90 text-xs font-medium">
+                    
+                    <p className="text-white/90 text-[10px] xs:text-xs font-medium">
                       30 HOTELS FOUND NEAR YOU
                     </p>
                   </div>
-                  <div className="px-4 py-4 space-y-3 overflow-y-auto h-[490px] bg-gray-50">
-                    {packages.map((hotel, idx) => (
+
+                  {/* Hotels List */}
+                  <div className="px-3 xs:px-4 py-3 xs:py-4 space-y-2 xs:space-y-3 overflow-y-auto h-[370px] xs:h-[420px] sm:h-[490px] bg-gray-50">
+                    {hotelsData.map((hotel, idx) => (
                       <div
                         key={idx}
-                        className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 ${
-                          activeHotel === idx
-                            ? "ring-2 ring-cyan-400 scale-[1.02]"
-                            : ""
+                        className={`bg-white rounded-xl xs:rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 ${
+                          activeHotel === idx ? "ring-2 ring-cyan-400 scale-[1.02]" : ""
                         }`}
                         style={{
-                          animation: `slideUp 0.6s ease-out ${
-                            idx * 0.15
-                          }s both`,
+                          animation: `slideUp 0.6s ease-out ${idx * 0.15}s both`,
                         }}
                       >
-                        <div className="relative h-40 bg-gray-200 overflow-hidden">
+                        {/* Hotel Image */}
+                        <div className="relative h-28 xs:h-32 sm:h-40 bg-gray-200 overflow-hidden">
                           {!imageLoaded[idx] && (
                             <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer" />
                           )}
                           <img
-                            src={`${import.meta.env.VITE_BACKEND_URL}${
-                              hotel?.cardMedia?.fileUrl
-                            }`}
-                            alt={hotel.packageTitle}
-                           
+                            src={hotel.image}
+                            alt={hotel.name}
                             onLoad={() =>
                               setImageLoaded((prev) => ({
                                 ...prev,
@@ -224,67 +194,56 @@ const SmartCityTourApp = ({ packages }) => {
                               }))
                             }
                             className={`w-full h-full object-cover transition-all duration-700 ${
-                              imageLoaded[idx]
-                                ? "opacity-100 scale-100"
-                                : "opacity-0 scale-95"
+                              imageLoaded[idx] ? "opacity-100 scale-100" : "opacity-0 scale-95"
                             }`}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                          {hotel.Destination?.trip && (
-                            <div className="absolute top-2 left-2 bg-amber-400 text-white text-[10px] px-2 py-1 rounded-full font-bold animate-pulse shadow-lg">
-                              {hotel?.Destination?.trip}
+                          
+                          {hotel.badge && (
+                            <div className="absolute top-1.5 xs:top-2 left-1.5 xs:left-2 bg-amber-400 text-white text-[8px] xs:text-[10px] px-1.5 xs:px-2 py-0.5 xs:py-1 rounded-full font-bold animate-pulse shadow-lg">
+                              {hotel.badge}
                             </div>
                           )}
-                          <button className="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform active:scale-95">
-                            <Icon type="heart" size="16" color="#f87171" />
+                          
+                          <button className="absolute top-1.5 xs:top-2 right-1.5 xs:right-2 w-6 xs:w-8 h-6 xs:h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform active:scale-95">
+                            <Icon type="heart" size={isXs ? "12" : "16"} color="#f87171" />
                           </button>
-                          <div className="absolute bottom-2 right-2 bg-cyan-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg">
+                          
+                          <div className="absolute bottom-1.5 xs:bottom-2 right-1.5 xs:right-2 bg-cyan-500 text-white text-[10px] xs:text-xs px-2 xs:px-3 py-0.5 xs:py-1 rounded-full font-bold shadow-lg">
                             {hotel.price}
                           </div>
                         </div>
-                        <div className="p-3">
-                          <h3 className="font-bold text-gray-800 text-sm mb-1.5">
-                            {hotel.packageTitle}
+
+                        {/* Hotel Info */}
+                        <div className="p-2 xs:p-3">
+                          <h3 className="font-bold text-gray-800 text-xs xs:text-sm mb-1 xs:mb-1.5">
+                            {hotel.name}
                           </h3>
-                          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
-                            <Icon type="mapPin" size="14" color="#06b6d4" />
-                            <span>{hotel.locations}</span>
+                          <div className="flex items-center gap-1 xs:gap-1.5 text-[10px] xs:text-xs text-gray-500 mb-1.5 xs:mb-2">
+                            <Icon type="mapPin" size={isXs ? "12" : "14"} color="#06b6d4" />
+                            <span>{hotel.location}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 xs:gap-1.5">
                               <div className="flex items-center gap-0.5">
-                                {[...Array(5)].map((_, idx) => {
-                                  // Full star
-                                  if (idx + 1 <= rating) {
-                                    return (
-                                      <StarFilled
-                                        key={idx}
-                                        className="w-4 h-4 !text-yellow-400"
-                                      />
-                                    );
-                                  }
-                                  // Half star (optional: use outlined slightly colored)
-                                  else if (idx + 0.5 <= rating) {
-                                    return (
-                                      <StarFilled
-                                        key={idx}
-                                        className="w-4 h-4 !text-yellow-200"
-                                      />
-                                    );
-                                  }
-                                  // Empty star
-                                  else {
-                                    return (
-                                      <StarOutlined
-                                        key={idx}
-                                        className="w-4 h-4 text-gray-300"
-                                      />
-                                    );
-                                  }
-                                })}
-                                <span className="ml-2 text-sm">{rating}</span>
+                                {[...Array(5)].map((_, starIdx) => (
+                                  <Star
+                                    key={starIdx}
+                                    className={`w-2.5 xs:w-3 h-2.5 xs:h-3 ${
+                                      starIdx < Math.floor(hotel.rating)
+                                        ? "fill-yellow-400 text-yellow-400"
+                                        : "text-gray-300"
+                                    }`}
+                                  />
+                                ))}
                               </div>
+                              <span className="text-[10px] xs:text-xs text-gray-600 font-medium">
+                                {hotel.rating}
+                              </span>
                             </div>
+                            <span className="text-[9px] xs:text-[10px] text-gray-400">
+                              ({hotel.reviews} reviews)
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -292,86 +251,71 @@ const SmartCityTourApp = ({ packages }) => {
                   </div>
                 </div>
               </div>
-              <div className="absolute -top-8 -right-8 w-20 h-20 bg-yellow-400 rounded-2xl shadow-2xl animate-bounce flex items-center justify-center text-3xl transform rotate-12">
+
+              {/* Floating Decorations */}
+              <div className="absolute -top-6 xs:-top-8 -right-6 xs:-right-8 w-14 xs:w-20 h-14 xs:h-20 bg-yellow-400 rounded-xl xs:rounded-2xl shadow-2xl animate-bounce flex items-center justify-center text-2xl xs:text-3xl transform rotate-12">
                 ⭐
               </div>
-              <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-cyan-400 rounded-full shadow-2xl animate-pulse flex items-center justify-center">
-                <Icon type="mapPin" size="32" color="white" />
+              <div className="absolute -bottom-4 xs:-bottom-6 -left-4 xs:-left-6 w-12 xs:w-16 h-12 xs:h-16 bg-cyan-400 rounded-full shadow-2xl animate-pulse flex items-center justify-center">
+                <Icon type="mapPin" size={isXs ? "24" : "32"} color="white" />
               </div>
             </div>
           </div>
-          <div className="text-white space-y-8" style={{ order: isLg ? 2 : 1 }}>
-            <div className="space-y-4">
-              <h1
-                className="font-bold leading-tight"
-                style={{
-                  fontSize: isLg ? "3.75rem" : isSm ? "3rem" : "2.25rem",
-                }}
-              >
+
+          {/* Text Content */}
+          <div className={`text-white space-y-4 xs:space-y-6 sm:space-y-8 ${isLg ? 'order-2' : 'order-1'}`}>
+            <div className="space-y-2 xs:space-y-3 sm:space-y-4">
+              <h1 className="font-bold leading-tight text-2xl xs:text-3xl sm:text-5xl lg:text-6xl">
                 Smart City Tour
                 <br />
                 <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent animate-gradient">
                   TentWood Mobile App
                 </span>
               </h1>
-              <p className="text-cyan-100 text-lg font-medium">
+              <p className="text-cyan-100 text-sm xs:text-base sm:text-lg font-medium">
                 Available on iOS & Android
               </p>
             </div>
-            <p className="text-white/90 text-base leading-relaxed max-w-xl">
-              TentWood Mobile App transforms the way you explore cities. From
-              iconic landmarks to local secrets, enjoy curated tours, real-time
-              navigation, and smart travel planning—all crafted to deliver a
-              smooth, immersive travel experience wherever you go.
+
+            <p className="text-white/90 text-xs xs:text-sm sm:text-base leading-relaxed max-w-xl">
+              TentWood Mobile App transforms the way you explore cities. From iconic landmarks to local secrets, enjoy curated tours, real-time navigation, and smart travel planning—all crafted to deliver a smooth, immersive travel experience wherever you go.
             </p>
 
-            <div
-              className="flex gap-4"
-              style={{ flexDirection: isSm ? "row" : "column" }}
-            >
-              <button className="group bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 px-8 py-4 rounded-full font-bold text-sm flex items-center justify-center gap-3 shadow-2xl hover:shadow-yellow-400/50 transform hover:scale-105 active:scale-95 transition-all duration-300">
-                <Icon type="smartphone" size="24" color="currentColor" />
+            {/* Download Buttons */}
+            <div className={`flex gap-3 xs:gap-4 ${isSm ? 'flex-row' : 'flex-col'}`}>
+              <button className="group bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 rounded-full font-bold text-xs xs:text-sm flex items-center justify-center gap-2 xs:gap-3 shadow-2xl hover:shadow-yellow-400/50 transform hover:scale-105 active:scale-95 transition-all duration-300">
+                <Icon type="smartphone" size={isXs ? "20" : "24"} color="currentColor" />
                 <div className="text-left">
-                  <div className="text-xs opacity-80">Download For</div>
-                  <div className="text-base font-bold">iOS</div>
+                  <div className="text-[10px] xs:text-xs opacity-80">Download For</div>
+                  <div className="text-sm xs:text-base font-bold">iOS</div>
                 </div>
               </button>
-              <button className="group bg-gradient-to-r from-green-400 to-cyan-400 text-gray-900 px-8 py-4 rounded-full font-bold text-sm flex items-center justify-center gap-3 shadow-2xl hover:shadow-cyan-400/50 transform hover:scale-105 active:scale-95 transition-all duration-300">
-                <Icon type="smartphone" size="24" color="currentColor" />
+              <button className="group bg-gradient-to-r from-green-400 to-cyan-400 text-gray-900 px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 rounded-full font-bold text-xs xs:text-sm flex items-center justify-center gap-2 xs:gap-3 shadow-2xl hover:shadow-cyan-400/50 transform hover:scale-105 active:scale-95 transition-all duration-300">
+                <Icon type="smartphone" size={isXs ? "20" : "24"} color="currentColor" />
                 <div className="text-left">
-                  <div className="text-xs opacity-80">Download For</div>
-                  <div className="text-base font-bold">Android</div>
+                  <div className="text-[10px] xs:text-xs opacity-80">Download For</div>
+                  <div className="text-sm xs:text-base font-bold">Android</div>
                 </div>
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-6 pt-8">
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 xs:gap-4 sm:gap-6 pt-4 xs:pt-6 sm:pt-8">
               {[
-                {
-                  val: "50K+",
-                  label: "Downloads",
-                  grad: "from-yellow-400 to-orange-400",
-                },
-                {
-                  val: "4.8★",
-                  label: "Rating",
-                  grad: "from-green-400 to-cyan-400",
-                },
-                {
-                  val: "500+",
-                  label: "Hotels",
-                  grad: "from-pink-400 to-purple-400",
-                },
+                { val: "50K+", label: "Downloads", grad: "from-yellow-400 to-orange-400" },
+                { val: "4.8★", label: "Rating", grad: "from-green-400 to-cyan-400" },
+                { val: "500+", label: "Hotels", grad: "from-pink-400 to-purple-400" },
               ].map((stat, i) => (
                 <div
                   key={i}
                   className="text-center transform hover:scale-110 transition-transform duration-300"
                 >
-                  <div
-                    className={`text-4xl font-bold bg-gradient-to-r ${stat.grad} bg-clip-text text-transparent`}
-                  >
+                  <div className={`text-2xl xs:text-3xl sm:text-4xl font-bold bg-gradient-to-r ${stat.grad} bg-clip-text text-transparent`}>
                     {stat.val}
                   </div>
-                  <div className="text-white/80 text-xs mt-1">{stat.label}</div>
+                  <div className="text-white/80 text-[10px] xs:text-xs mt-0.5 xs:mt-1">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -407,6 +351,11 @@ const SmartCityTourApp = ({ packages }) => {
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient 3s ease infinite;
+        }
+        @media (min-width: 400px) {
+          .xs:max-w-sm {
+            max-width: 24rem;
+          }
         }
       `}</style>
     </div>

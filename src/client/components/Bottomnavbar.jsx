@@ -116,9 +116,9 @@ export default function BottomNavbar() {
   }, []);
 
   /* ---------------- JSX ---------------- */
-const handleNavigate=()=>{
-  navigate('/login')
-}
+  const handleNavigate = () => {
+    navigate("/login");
+  };
   return (
     <nav
       className={`w-full max-w-full sticky top-0 z-50 transition-all duration-500 ${
@@ -170,7 +170,7 @@ const handleNavigate=()=>{
                           ? "text-gray-700 hover:text-teal-600 "
                           : "!text-white"
                       }`}
-                      style={{fontSize:15}}
+                      style={{ fontSize: 15 }}
                     >
                       {item.name} <DownOutlined />
                     </Button>
@@ -191,7 +191,7 @@ const handleNavigate=()=>{
               )}
 
               <Button
-              onClick={handleNavigate}
+                onClick={handleNavigate}
                 type="primary"
                 className="!bg-yellow-400 !text-gray-900 !font-semibold"
               >
@@ -204,7 +204,21 @@ const handleNavigate=()=>{
           {!screens.xl && (
             <Button
               type="text"
-              icon={drawerVisible ? <CloseOutlined /> : <MenuOutlined />}
+              icon={
+                drawerVisible ? (
+                  <CloseOutlined
+                    style={{
+                      fontSize: window.innerWidth < 360 ? "20px" : "26px",
+                    }}
+                  />
+                ) : (
+                  <MenuOutlined
+                    style={{
+                      fontSize: window.innerWidth < 360 ? "20px" : "26px",
+                    }}
+                  />
+                )
+              }
               onClick={() => setDrawerVisible(!drawerVisible)}
               className={isScrolled ? "text-gray-700" : "text-white"}
             />
@@ -256,7 +270,7 @@ const handleNavigate=()=>{
 
           <Menu.Item>
             <Button
-            onClick={handleNavigate}
+              onClick={handleNavigate}
               type="primary"
               className="w-full !bg-yellow-400 !text-gray-900"
             >
