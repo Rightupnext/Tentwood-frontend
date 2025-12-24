@@ -8,23 +8,13 @@ import {
   ClockCircleOutlined,
   CarOutlined,
   TeamOutlined,
-  EnvironmentOutlined,
 } from "@ant-design/icons";
-const opt = (u) =>
-  u.includes("?")
-    ? u + "&auto=format&fit=crop&q=80"
-    : u + "?auto=format&fit=crop&q=80";
 
 export default function TourCarousel({
-  packages,
   Title1,
   Title2,
   internationalTrips,
   indiaTrips,
-  Title3,
-  Title4,
-  honeymoonTrips,
-  GroupTrips,
 }) {
   const [sc1, setSc1] = useState(0);
   const [sc2, setSc2] = useState(0);
@@ -84,7 +74,7 @@ export default function TourCarousel({
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
             alt={t.packageTitle}
-            loading="lazy"
+            
             onLoad={() => setImgLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"

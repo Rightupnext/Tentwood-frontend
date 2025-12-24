@@ -26,7 +26,16 @@ export const fetchRelatedPackageById = createApiThunk(
     url: "/packages/related/:id",
   }
 );
+// 🌍 API Thunks
+export const fetchSimplePackages = createApiThunk("fetchSimplePackages", {
+  method: "get",
+  url: "/packages/simple-pkg",
+});
 
+export const fetchTopDestinations = createApiThunk("fetchTopDestinations", {
+  method: "get",
+  url: "/packages/top-destinations",
+});
 export const createPackage = createApiThunk("createPackage", {
   method: "post",
   url: "/packages",
@@ -53,8 +62,10 @@ const packageSlice = createSlice({
     list: [],
     selected: null,
     loading: false,
+    topDestinations: [],
     error: null,
     report: [],
+    simpleList: [],
   },
   reducers: {},
 
@@ -67,6 +78,8 @@ const packageSlice = createSlice({
       fetchPackageById,
       fetchRelatedPackageById,
       PackagesAnalyticsReport,
+      fetchTopDestinations,
+      fetchSimplePackages,
     ];
 
     thunks.forEach((thunk) => {
@@ -88,6 +101,9 @@ const packageSlice = createSlice({
             case "PackagesAnalyticsReport":
               state.report = action.payload.data; // backend returns { success, data: [] }
               break;
+            case "fetchSimplePackages": // ✅ handle response
+              state.simpleList = action.payload;
+              break;
 
             case "createPackage":
               state.list.push(action.payload.data);
@@ -107,6 +123,10 @@ const packageSlice = createSlice({
             case "deletePackage": {
               const deletedId = action.meta.arg;
               state.list = state.list.filter((p) => p._id !== deletedId);
+              break;
+            }
+            case "fetchTopDestinations": {
+              state.topDestinations = action.payload.data || [];
               break;
             }
           }

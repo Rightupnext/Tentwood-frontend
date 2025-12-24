@@ -16,11 +16,11 @@ export default function TravelPackagesSingle() {
   const { slug } = useParams();
   const location = useLocation();
   const packageId = location.state?.id;
-  console.log("packageId", packageId);
+  // console.log("packageId", packageId);
   const dispatch = useDispatch();
 
   const { selected, loading } = useSelector((state) => state.packages);
-  console.log("selected", selected);
+  // console.log("selected", selected);
 
   useEffect(() => {
     dispatch(fetchRelatedPackageById({ id: packageId }));
@@ -135,7 +135,7 @@ export default function TravelPackagesSingle() {
                   }`}
                   alt="Phuket Beach"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  loading="lazy"
+                  
                   decoding="async"
                 />
               </div>
@@ -205,7 +205,7 @@ export default function TravelPackagesSingle() {
                   }`}
                   alt="Egypt Pyramids"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  loading="lazy"
+                
                   decoding="async"
                 />
               </div>

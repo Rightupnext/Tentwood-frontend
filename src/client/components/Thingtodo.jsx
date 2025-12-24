@@ -8,7 +8,10 @@ import {
   StarFilled,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPackages } from "../../store/slices/packageSlice";
+import {
+  fetchPackages,
+  fetchSimplePackages,
+} from "../../store/slices/packageSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
 const TRIP_ROUTE_MAP = {
@@ -37,11 +40,14 @@ export default function LondonActivities() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { tripType, country, city } = useParams();
-  const { list: packages } = useSelector((state) => state.packages);
+
+  const simplePackages = useSelector((state) => state.packages.simpleList);
+  useEffect(() => {
+    dispatch(fetchSimplePackages());
+  }, [dispatch]);
   const [fromDate, setFromDate] = useState("10/12/2021");
   const [toDate, setToDate] = useState("10/12/2021");
   const [themeOpen, setThemeOpen] = useState(true);
-  const [durationOpen, setDurationOpen] = useState(true);
   const [destOpen, setDestOpen] = useState(true);
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
   const mappedTripType = tripTypeMap[tripType];
@@ -50,32 +56,27 @@ export default function LondonActivities() {
   const [selectedThemes, setSelectedThemes] = useState([]);
   const [selectedPrice, setSelectedPrice] = useState(0);
 
-  /* ===================== FETCH ===================== */
-  useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
-
   /* ===================== PRICE ===================== */
   const prices = useMemo(
-    () => packages.map((p) => p.price).filter(Boolean),
-    [packages]
+    () => simplePackages.map((p) => p.price).filter(Boolean),
+    [simplePackages]
   );
   const maxPrice = prices.length ? Math.max(...prices) : 100000;
 
   /* ===================== URL BASE PACKAGES ===================== */
   const urlBasePackages = useMemo(() => {
-    return packages.filter(
+    return simplePackages.filter(
       (p) => normalize(p?.Destination?.trip) === normalize(mappedTripType)
     );
-  }, [packages, mappedTripType]);
+  }, [simplePackages, mappedTripType]);
 
   /* ===================== AUTO APPLY URL FILTERS ===================== */
   const applyUrlBasedFilters = () => {
-    if (!packages.length) return;
+    if (!simplePackages.length) return;
 
     // destination (city)
     if (city) {
-      const matched = packages.find(
+      const matched = simplePackages.find(
         (p) => normalize(p?.Destination?.Destination) === normalize(city)
       )?.Destination?.Destination;
 
@@ -90,9 +91,9 @@ export default function LondonActivities() {
   };
 
   useEffect(() => {
-    if (!packages.length) return;
+    if (!simplePackages.length) return;
     applyUrlBasedFilters();
-  }, [packages, city, mappedTripType, maxPrice]);
+  }, [simplePackages, city, mappedTripType, maxPrice]);
 
   /* ===================== FILTER OPTIONS ===================== */
   const destinations = [

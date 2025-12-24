@@ -8,12 +8,12 @@ import {
   LeftOutlined,
   RightOutlined,
   ClockCircleOutlined,
-  TeamOutlined,
   StarFilled,
-  UserOutlined,
 } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSimplePackages } from "../../store/slices/packageSlice";
 
 const categories = [
   {
@@ -48,14 +48,23 @@ const categories = [
   },
 ];
 
-export default function CityExplorer({ packages }) {
+export default function CityExplorer() {
+  const dispatch = useDispatch();
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filteredPackages, setFilteredPackages] = useState([]);
 
+  const simplePackages = useSelector((state) => state.packages.simpleList);
+  useEffect(() => {
+    if (!simplePackages.length) {
+      dispatch(fetchSimplePackages());
+    }
+  }, [dispatch, simplePackages.length]);
   /* ================= COUNTRY LIST ================= */
   const countryNames = [
     ...new Set(
-      packages.map((item) => item?.Destination?.country?.name).filter(Boolean)
+      simplePackages
+        .map((item) => item?.Destination?.country?.name)
+        .filter(Boolean)
     ),
   ];
 
@@ -70,12 +79,12 @@ export default function CityExplorer({ packages }) {
   useEffect(() => {
     if (!selectedCountry) return;
 
-    const filtered = packages.filter(
+    const filtered = simplePackages.filter(
       (p) => p?.Destination?.country?.name === selectedCountry
     );
 
     setFilteredPackages(filtered);
-  }, [packages, selectedCountry]);
+  }, [simplePackages, selectedCountry]);
   const scrollRef = useRef(null);
 
   const scrollLeft = () => {
@@ -109,6 +118,7 @@ export default function CityExplorer({ packages }) {
         state: { id: a?._id },
       });
     };
+    const rating = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
     return (
       <div
         key={t._id}
@@ -129,7 +139,7 @@ export default function CityExplorer({ packages }) {
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
             alt={t.title}
-            loading="lazy"
+            
             onLoad={() => setImgLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
@@ -182,24 +192,42 @@ export default function CityExplorer({ packages }) {
           <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
             <div>
               <div className="flex items-center gap-1 mb-1">
-                {[...Array(5)].map((_, idx) => (
-                  <StarOutlined
-                    key={idx}
-                    className={`w-4 h-4 transition-all duration-300 ${
-                      idx < t.rating
-                        ? "fill-yellow-400 text-yellow-400 scale-100"
-                        : "text-gray-300 scale-90"
-                    }`}
-                    style={{ transitionDelay: `${idx * 50}ms` }}
-                  />
-                ))}
+                {[...Array(5)].map((_, idx) => {
+                  // Full star
+                  if (idx + 1 <= rating) {
+                    return (
+                      <StarFilled
+                        key={idx}
+                        className="w-4 h-4 !text-yellow-400"
+                      />
+                    );
+                  }
+                  // Half star (optional: use outlined slightly colored)
+                  else if (idx + 0.5 <= rating) {
+                    return (
+                      <StarFilled
+                        key={idx}
+                        className="w-4 h-4 !text-yellow-200"
+                      />
+                    );
+                  }
+                  // Empty star
+                  else {
+                    return (
+                      <StarOutlined
+                        key={idx}
+                        className="w-4 h-4 text-gray-300"
+                      />
+                    );
+                  }
+                })}
               </div>
-              <span className="text-xs text-gray-500">{t.reviews} reviews</span>
+              <span className="text-xs text-gray-500">{rating} reviews</span>
             </div>
 
             <div className="text-right">
               <div className="text-2xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
-                ${t.price}.00
+                ₹ {t.price}.00
               </div>
               <div className="text-xs text-gray-500">per person</div>
             </div>

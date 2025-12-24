@@ -102,20 +102,7 @@ export default function VideoGallery() {
 
   return (
     <div className="min-h-screen bg-black p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-hidden">
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.5; }
-        }
-      `}</style>
+     
 
       {/* Animated Background Effects */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

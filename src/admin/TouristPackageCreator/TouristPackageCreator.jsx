@@ -77,80 +77,40 @@ export default function TouristPackageCreator() {
     }
   }, [id, dispatch]);
 
-  useEffect(() => {
-    if (!currentPackage) return;
+useEffect(() => {
+  if (!id) return;              // ⛔ create mode → skip
+  if (!currentPackage) return;  // ⛔ data not loaded yet
 
-    form.setFieldsValue({
-      packageTitle: currentPackage.packageTitle,
-      pickup: currentPackage.pickup,
-      drop: currentPackage.drop,
-      duration: currentPackage.durationDays,
-      locations: currentPackage.locations,
-      overview: currentPackage.overview,
-      price: currentPackage.price,
-      Destination: currentPackage.Destination?._id,
-      tripCategory: currentPackage?.Destination?.trip,
-      type: currentPackage.Destination?.type,
+  form.setFieldsValue({
+    packageTitle: currentPackage.packageTitle,
+    pickup: currentPackage.pickup,
+    drop: currentPackage.drop,
+    duration: currentPackage.durationDays,
+    locations: currentPackage.locations,
+    overview: currentPackage.overview,
+    price: currentPackage.price,
+    Destination: currentPackage.Destination?._id,
+    tripCategory: currentPackage?.Destination?.trip,
+    type: currentPackage.Destination?.type,
 
-      highlights: currentPackage.highlights?.length
-        ? currentPackage.highlights
-        : [""],
+    highlights: currentPackage.highlights || [""],
+    inclusions: currentPackage.inclusions || [""],
+    exclusions: currentPackage.exclusions || [""],
+    notes: currentPackage.notes || [""],
 
-      inclusions: currentPackage.inclusions?.length
-        ? currentPackage.inclusions
-        : [""],
+    travelEssentials: currentPackage.travelEssentials || {},
 
-      exclusions: currentPackage.exclusions?.length
-        ? currentPackage.exclusions
-        : [""],
-
-      notes: currentPackage.notes?.length ? currentPackage.notes : [""],
-
-      travelEssentials: {
-        mustCarry: currentPackage.travelEssentials?.mustCarry || [""],
-        gears: currentPackage.travelEssentials?.gears || [""],
-        clothes: currentPackage.travelEssentials?.clothes || [""],
-        footwear: currentPackage.travelEssentials?.footwear || [""],
-        medication: currentPackage.travelEssentials?.medication || [""],
-        personalAccessories: currentPackage.travelEssentials
-          ?.personalAccessories || [""],
-      },
-
-      itinerary: currentPackage.itinerary?.map((day) => ({
+    itinerary:
+      currentPackage.itinerary?.map(day => ({
         dayTitle: day.title,
         summary: day.summary,
         details: day.details,
-        activities: day.optionalActivities?.length
-          ? day.optionalActivities
-          : [""],
+        activities: day.optionalActivities || [""],
         meals: day.meals,
-      })) || [{ dayTitle: "", activities: [""] }],
-    });
+      })) || [],
+  });
+}, [id, currentPackage, form]);
 
-    // Media previews
-    if (currentPackage.heroMedia) {
-      setBannerPreview(
-        import.meta.env.VITE_BACKEND_URL + currentPackage.heroMedia.fileUrl
-      );
-    }
-
-    if (currentPackage.cardMedia) {
-      setCardPreview(
-        import.meta.env.VITE_BACKEND_URL + currentPackage.cardMedia.fileUrl
-      );
-    }
-
-    if (currentPackage.gallery?.length) {
-      setGallery(
-        currentPackage.gallery.map((img) => ({
-          uid: img._id,
-          url: import.meta.env.VITE_BACKEND_URL + img.fileUrl,
-          status: "done",
-          isExisting: true,
-        }))
-      );
-    }
-  }, [currentPackage, form]);
   useEffect(() => {
     dispatch(fetchDestinations());
   }, [dispatch]);

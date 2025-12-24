@@ -6,7 +6,7 @@ import {
   CalendarOutlined,
 } from "@ant-design/icons";
 import bannervideo1 from "../../assets/home/bannervideo.1.mp4";
-import bannervideo2 from "../../assets/home/bannervideo.mp3";
+
 
 export default function Banner() {
   const [guests, setGuests] = useState("");
@@ -50,9 +50,6 @@ export default function Banner() {
         playsInline
       />
 
-      {/* AUDIO */}
-      <audio ref={audioRef} src={bannervideo2} loop preload="auto" />
-
       {/* GRADIENT OVERLAYS */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent"></div>
@@ -68,17 +65,14 @@ export default function Banner() {
 
         {/* FLOATING ICONS */}
         <div className="relative w-full max-w-2xl mx-auto mb-16 animate-fade-in-up-delay">
-          {/* LEFT */}
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow z-10">
             <EnvironmentOutlined className="!text-teal-500 !text-lg md:!text-xl" />
           </div>
 
-          {/* TOP */}
           <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay z-10">
             <UserOutlined className="!text-teal-500 !text-lg md:!text-xl" />
           </div>
 
-          {/* RIGHT */}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay-2 z-10">
             <CalendarOutlined className="!text-teal-500 !text-lg md:!text-xl" />
           </div>
@@ -91,7 +85,7 @@ export default function Banner() {
               {/* LOCATION */}
               <div className="space-y-2 pb-4 border-b sm:border-b-0 sm:border-r border-gray-300 sm:pr-4">
                 <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
-                  <EnvironmentOutlined className="!text-teal-600 !text-sm" />
+                  <EnvironmentOutlined />
                   Location
                 </label>
                 <input
@@ -106,7 +100,7 @@ export default function Banner() {
               {/* GUESTS */}
               <div className="space-y-2 pb-4 border-b sm:border-b-0 sm:border-r border-gray-300 sm:pr-4">
                 <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
-                  <UserOutlined className="!text-teal-600 !text-sm" />
+                  <UserOutlined />
                   Guests
                 </label>
                 <input
@@ -121,7 +115,7 @@ export default function Banner() {
               {/* DATE */}
               <div className="space-y-2 pb-4 border-b sm:border-b-0 lg:border-r border-gray-300 lg:pr-4">
                 <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
-                  <CalendarOutlined className="!text-teal-600 !text-sm" />
+                  <CalendarOutlined />
                   Date
                 </label>
                 <input
@@ -148,47 +142,6 @@ export default function Banner() {
 
       {/* BOTTOM FADE */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none"></div>
-
-      {/* CUSTOM ANIMATIONS */}
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0) scale(1);
-          }
-          50% {
-            transform: translateY(-18px) scale(1.05);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 1s ease-out both;
-        }
-        .animate-fade-in-up-delay {
-          animation: fade-in-up 1s ease-out 0.2s both;
-        }
-        .animate-fade-in-up-delay-2 {
-          animation: fade-in-up 1s ease-out 0.4s both;
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-        .animate-bounce-slow-delay {
-          animation: bounce-slow 3s ease-in-out infinite 0.3s;
-        }
-        .animate-bounce-slow-delay-2 {
-          animation: bounce-slow 3s ease-in-out infinite 0.6s;
-        }
-      `}</style>
     </div>
   );
 }

@@ -140,7 +140,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      <Footer />
+      {!isAdminRoute && <Footer />}
       <WhatsAppFloat />
     </>
   );

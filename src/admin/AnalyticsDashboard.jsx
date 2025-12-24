@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PackagesAnalyticsReport } from "../store/slices/packageSlice";
+import Loading from "./Loading";
 function StatCard({ title, value, gradient, icon }) {
   return (
     <div
@@ -61,14 +62,7 @@ export default function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-lg font-semibold text-gray-600 mt-4">
-            Loading Analytics...
-          </p>
-        </div>
-      </div>
+     <Loading/>
     );
   }
 

@@ -8,8 +8,6 @@ import promo3 from "../../assets/travel/promo3.jpg";
 import promo4 from "../../assets/travel/promo4.jpg";
 import promo5 from "../../assets/travel/promo5.jpg";
 import promo6 from "../../assets/travel/promo6.jpg";
-import explore2 from "../../assets/promotion1/explore.2.jpg";
-import explore1 from "../../assets/promotion1/explore.1.jpg";
 
 export default function TravelPromo() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -242,47 +240,7 @@ export default function TravelPromo() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
         <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
       </div>
-
-      <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(40px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
-          50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; }
-        }
-        
-        @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 8s ease infinite;
-        }
-        
-        .animate-blob {
-          animation: blob 15s infinite;
-        }
-        
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
-
+      a
       <div className="relative z-10">
         {/* Hero section with enhanced styling */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-auto md:h-[550px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_25px_80px_rgba(0,0,0,0.25)] mb-10 border border-white/20 backdrop-blur-sm">

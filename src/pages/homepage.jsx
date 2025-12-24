@@ -17,14 +17,18 @@ import Related from "../client/components/Relatedtour";
 import SmartCityTourApp from "../client/components/SmartCityTourApp";
 import Testimonials from "../client/components/Testimonal";
 
-
 function HomePage() {
   const dispatch = useDispatch();
-  const { list: packages = [] } = useSelector((state) => state.packages);
+  const packages = useSelector((state) => state.packages.list || []);
+
   /* ================= FETCH API ================= */
   useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
+    // Fetch only if packages are empty
+    if (!packages.length) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
+
   const Title1 = "InterNational Trip's";
   const Title2 = "India Trip's";
   const Title3 = "Group Trip's";
@@ -46,8 +50,8 @@ function HomePage() {
   return (
     <>
       <Banner />
-      <ExploreDestinations packages={packages} />
-      <Export packages={packages} />
+      <ExploreDestinations />
+      <Export />
       <TravelPromo />
       <VideoGallery />
       <Related
