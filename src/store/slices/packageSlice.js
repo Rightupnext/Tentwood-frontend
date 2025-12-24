@@ -8,15 +8,34 @@ export const fetchPackages = createApiThunk("fetchPackages", {
   method: "get",
   url: "/packages",
 });
+export const PackagesAnalyticsReport = createApiThunk(
+  "PackagesAnalyticsReport",
+  {
+    method: "get",
+    url: "/packages/analytics",
+  }
+);
 export const fetchPackageById = createApiThunk("fetchPackageById", {
   method: "get",
   url: "/packages/:id",
 });
-export const fetchRelatedPackageById = createApiThunk("fetchRelatedPackageById", {
+export const fetchRelatedPackageById = createApiThunk(
+  "fetchRelatedPackageById",
+  {
+    method: "get",
+    url: "/packages/related/:id",
+  }
+);
+// 🌍 API Thunks
+export const fetchSimplePackages = createApiThunk("fetchSimplePackages", {
   method: "get",
-  url: "/packages/related/:id",
+  url: "/packages/simple-pkg",
 });
 
+export const fetchTopDestinations = createApiThunk("fetchTopDestinations", {
+  method: "get",
+  url: "/packages/top-destinations",
+});
 export const createPackage = createApiThunk("createPackage", {
   method: "post",
   url: "/packages",
@@ -43,7 +62,10 @@ const packageSlice = createSlice({
     list: [],
     selected: null,
     loading: false,
+    topDestinations: [],
     error: null,
+    report: [],
+    simpleList: [],
   },
   reducers: {},
 
@@ -54,7 +76,10 @@ const packageSlice = createSlice({
       updatePackage,
       deletePackage,
       fetchPackageById,
-      fetchRelatedPackageById
+      fetchRelatedPackageById,
+      PackagesAnalyticsReport,
+      fetchTopDestinations,
+      fetchSimplePackages,
     ];
 
     thunks.forEach((thunk) => {
@@ -72,6 +97,12 @@ const packageSlice = createSlice({
           switch (type) {
             case "fetchPackages":
               state.list = action.payload.data; // backend returns { success, data: [] }
+              break;
+            case "PackagesAnalyticsReport":
+              state.report = action.payload.data; // backend returns { success, data: [] }
+              break;
+            case "fetchSimplePackages": // ✅ handle response
+              state.simpleList = action.payload;
               break;
 
             case "createPackage":
@@ -92,6 +123,10 @@ const packageSlice = createSlice({
             case "deletePackage": {
               const deletedId = action.meta.arg;
               state.list = state.list.filter((p) => p._id !== deletedId);
+              break;
+            }
+            case "fetchTopDestinations": {
+              state.topDestinations = action.payload.data || [];
               break;
             }
           }

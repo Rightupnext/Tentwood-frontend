@@ -1,29 +1,34 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { useEffect } from "react";
 
-// Load above-the-fold instantly
-import Banner from "../client/components/Banner";
-import ExploreDestinations from "../client/components/Destination";
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPackages } from "../store/slices/packageSlice";
+
+// Above-the-fold components
+import Banner from "../client/components/Banner";
+import ExploreDestinations from "../client/components/Destination";
 import Relatedtours from "../client/components/Relatedtours";
 
-// Lazy Loaded Components – SUPER FAST PERFORMANCE
-const Export = lazy(() => import("../client/components/Export"));
-const TravelPromo = lazy(() => import("../client/components/TravelPromo"));
-const VideoGallery = lazy(() => import("../client/components/VideoGallery"));
-const Related = lazy(() => import("../client/components/Relatedtour"));
-const SmartCityTourApp = lazy(() =>
-  import("../client/components/SmartCityTourApp")
-);
-const Testimonials = lazy(() => import("../client/components/Testimonal"));
-const Outsidethe = lazy(() => import("../client/components/TravelShowcase"));
+// Other components (previously lazy)
+import Export from "../client/components/Export";
+import TravelPromo from "../client/components/TravelPromo";
+import VideoGallery from "../client/components/VideoGallery";
+import Related from "../client/components/Relatedtour";
+import SmartCityTourApp from "../client/components/SmartCityTourApp";
+import Testimonials from "../client/components/Testimonal";
+
 function HomePage() {
   const dispatch = useDispatch();
-  const { list: packages = [] } = useSelector((state) => state.packages);
+  const packages = useSelector((state) => state.packages.list || []);
+
   /* ================= FETCH API ================= */
   useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
+    // Fetch only if packages are empty
+    if (!packages.length) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
+
   const Title1 = "InterNational Trip's";
   const Title2 = "India Trip's";
   const Title3 = "Group Trip's";
@@ -45,8 +50,8 @@ function HomePage() {
   return (
     <>
       <Banner />
-      <ExploreDestinations packages={packages} />
-      <Export packages={packages} />
+      <ExploreDestinations />
+      <Export />
       <TravelPromo />
       <VideoGallery />
       <Related

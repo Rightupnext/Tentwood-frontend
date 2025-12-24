@@ -53,7 +53,7 @@ export const createApiThunk = (
         err.message ||
         "Something went wrong";
 
-      notification.error({ message: backendMsg });
+      // notification.error({ message: backendMsg });
 
       return rejectWithValue({
         message: backendMsg,

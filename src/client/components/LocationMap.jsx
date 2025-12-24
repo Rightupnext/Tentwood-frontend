@@ -103,13 +103,13 @@ export default function LocationMap() {
               height="450"
               style="border:0;"
               allowfullscreen=""
-              loading="lazy"
+             
               referrerpolicy="no-referrer-when-downgrade"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen=""
-              loading="lazy"
+             
               referrerPolicy="no-referrer-when-downgrade"
               className="animate-fade-in"
               title="Tentwood tours and travels location"

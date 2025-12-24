@@ -137,7 +137,7 @@ export default function FeaturedDestinations({ selected }) {
                     className={`w-full h-full object-cover transition-all duration-700 ${
                       hoveredCard === i ? "scale-125 rotate-2" : "scale-100"
                     }`}
-                    loading="lazy"
+                    
                   />
                   <div
                     className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${

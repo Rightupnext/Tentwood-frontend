@@ -82,7 +82,7 @@ export default function Relatedtours({
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
             alt={t.packageTitle}
-            loading="lazy"
+            
             onLoad={() => setImgLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"

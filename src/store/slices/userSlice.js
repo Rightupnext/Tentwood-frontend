@@ -43,10 +43,8 @@ const userSlice = createSlice({
   initialState: {
     list: [], // All users
     auth: {
-      // Login/Register state
-      user: null,
+      user: null, // logged-in user object
       token: localStorage.getItem("token") || null,
-      fetchMe: null,
     },
     loading: {
       fetchUsers: false,
@@ -68,6 +66,7 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Handle standard CRUD thunks
     const thunks = [
       fetchUsers,
       createUser,
@@ -75,8 +74,8 @@ const userSlice = createSlice({
       deleteUser,
       loginUser,
       registerUser,
+      logOutUser,
     ];
-
     thunks.forEach((thunk) => {
       const type = thunk.typePrefix.split("/")[0];
       builder
@@ -104,22 +103,16 @@ const userSlice = createSlice({
               );
               break;
             case "loginUser":
-              state.auth.user = action.payload.user;
+              state.auth.user = action.payload.user; // ✅ store only user
               state.auth.token = action.payload.token;
-
               break;
             case "registerUser":
-              // Optional: push new user to list if admin created it
               state.list.push(action.payload);
               break;
             case "logOutUser":
-              // Optional: push new user to list if admin created it
-              state.list.push(action.payload);
-              break;
-          
-            case "fetchMe":
-              // Optional: push new user to list if admin created it
-              state.list.push(action.payload);
+              state.auth.user = null;
+              state.auth.token = null;
+              localStorage.removeItem("token");
               break;
             default:
               break;
@@ -130,9 +123,8 @@ const userSlice = createSlice({
           state.error[type] = action.payload?.message || "Something went wrong";
         });
     });
-    // -------------------------------------
-    // fetchMe (SPECIAL HANDLING)
-    // -------------------------------------
+
+    // --- fetchMe special handling ---
     builder
       .addCase(fetchMe.pending, (state) => {
         state.loading.fetchMe = true;
@@ -140,7 +132,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchMe.fulfilled, (state, action) => {
         state.loading.fetchMe = false;
-        state.auth.user = action.payload; // ✅ only set user
+        state.auth.user = action.payload.user; // ✅ unwrap user
       })
       .addCase(fetchMe.rejected, (state, action) => {
         state.loading.fetchMe = false;

@@ -216,7 +216,7 @@ const SmartCityTourApp = ({ packages }) => {
                               hotel?.cardMedia?.fileUrl
                             }`}
                             alt={hotel.packageTitle}
-                            loading="lazy"
+                           
                             onLoad={() =>
                               setImageLoaded((prev) => ({
                                 ...prev,

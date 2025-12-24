@@ -1,49 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import api from "./store/api"; // axios withCredentials: true
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMe } from "./store/slices/userSlice";
+import Loading from "./admin/Loading";
 
 const PrivateRoute = ({ children, allowedRoles = [] }) => {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
 
+  // Get the user object and fetchMe loading state
+  const { user } = useSelector((state) => state.users.auth);
+  const loading = useSelector((state) => state.users.loading.fetchMe);
+
+  // Fetch current user only if not already loaded
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await api.get("/users/data/me", { withCredentials: true });
-        setUser(res.data.user); // {name, email, role, id}
-      } catch (err) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, []);
+    if (!user) {
+      dispatch(fetchMe());
+    }
+  }, [dispatch, user]);
 
+  // Show loading spinner while fetching
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center">
-          {/* Spinner */}
-          <div className="relative w-20 h-20 mx-auto mb-6">
-            <div className="absolute inset-0 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
-          </div>
-
-          {/* Loading text */}
-          <p className="text-lg font-medium text-gray-700 mb-2">
-            Authenticating
-          </p>
-          <p className="text-sm text-gray-500">
-            Please wait while we verify your credentials
-          </p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
+  // Redirect if user is not logged in
   if (!user) return <Navigate to="/login" replace />;
 
+  // Redirect if role is not allowed
   if (allowedRoles.length && !allowedRoles.includes(user.role))
     return <Navigate to="/login" replace />;
 

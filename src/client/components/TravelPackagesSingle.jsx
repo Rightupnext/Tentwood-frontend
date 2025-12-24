@@ -5,26 +5,22 @@ import {
   PercentageOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import phuket from '../../assets/travel/promo7.avif'
-import egypt from '../../assets/travel/promo8.avif'
-import Vintagedouble from "./Vintagedouble";
+import TourBooking from "./TourBooking";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import {
-  fetchPackageById,
-  fetchRelatedPackageById,
-} from "../../store/slices/packageSlice";
+import { fetchRelatedPackageById } from "../../store/slices/packageSlice";
+import ParallelLoadingAnimation from "../../admin/Loading";
 
 export default function TravelPackagesSingle() {
   const [isVisible, setIsVisible] = useState(false);
   const { slug } = useParams();
   const location = useLocation();
   const packageId = location.state?.id;
-  console.log("packageId", packageId);
+  // console.log("packageId", packageId);
   const dispatch = useDispatch();
 
   const { selected, loading } = useSelector((state) => state.packages);
-  console.log("selected", selected?.matchedData);
+  // console.log("selected", selected);
 
   useEffect(() => {
     dispatch(fetchRelatedPackageById({ id: packageId }));
@@ -33,7 +29,9 @@ export default function TravelPackagesSingle() {
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
+  if (loading) {
+    return <ParallelLoadingAnimation />;
+  }
   // FeatureCard merged inside component
   const FeatureCard = ({ icon, title, description, gradient, delay }) => {
     const [show, setShow] = useState(false);
@@ -68,7 +66,7 @@ export default function TravelPackagesSingle() {
 
   return (
     <>
-      <Vintagedouble selected={selected} />
+      <TourBooking selected={selected} />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Package Cards */}
@@ -92,14 +90,14 @@ export default function TravelPackagesSingle() {
               <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row justify-between items-start">
                 <div>
                   <span className="text-white/90 text-xl md:text-2xl font-light italic animate-slide-in-left">
-                    Eid Special Offer
+                    Special Offer For
                   </span>
 
                   <h2
-                    className="text-4xl md:text-6xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
+                    className="text-4xl md:text-4xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
                     style={{ animationDelay: "100ms" }}
                   >
-                    PHUKET ISLAND
+                    {selected?.leastPrice2[0]?.packageTitle}
                   </h2>
 
                   <div
@@ -107,7 +105,7 @@ export default function TravelPackagesSingle() {
                     style={{ animationDelay: "200ms" }}
                   >
                     <span className="text-white font-semibold text-sm">
-                      04 Days, 03 Nights
+                      {selected?.leastPrice2[0]?.durationDays}
                     </span>
                   </div>
                 </div>
@@ -121,7 +119,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    $299
+                    ₹ {selected?.leastPrice2[0]?.price}
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
@@ -132,10 +130,12 @@ export default function TravelPackagesSingle() {
               {/* Image */}
               <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8 w-60 md:w-80 h-40 md:h-60 rounded-2xl overflow-hidden shadow-2xl animate-float will-change-transform">
                 <img
-                  src={phuket}
+                  src={`${import.meta.env.VITE_BACKEND_URL}${
+                    selected?.leastPrice2[0]?.cardMedia?.fileUrl
+                  }`}
                   alt="Phuket Beach"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  loading="lazy"
+                  
                   decoding="async"
                 />
               </div>
@@ -159,23 +159,21 @@ export default function TravelPackagesSingle() {
 
               <div className="absolute top-6 md:top-8 right-6 md:right-8 z-20 bg-yellow-400 text-black px-5 py-3 rounded-2xl shadow-lg animate-pulse-scale">
                 <div className="text-center font-black text-lg md:text-xl leading-tight">
-                  04
-                  <br />
-                  Days
+                  {selected?.leastPrice2[1]?.durationDays}
                 </div>
               </div>
 
               <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row justify-between items-start">
                 <div>
                   <span className="text-white/90 text-xl md:text-2xl font-light italic animate-slide-in-left">
-                    Christmas Offer
+                    Special Offer For
                   </span>
 
                   <h2
-                    className="text-4xl md:text-6xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
+                    className="text-4xl md:text-4xl font-black text-white mb-4 drop-shadow-lg animate-slide-in-left"
                     style={{ animationDelay: "100ms" }}
                   >
-                    EGYPT PACKAGE
+                    {selected?.leastPrice2[1]?.packageTitle}
                   </h2>
                 </div>
 
@@ -188,7 +186,7 @@ export default function TravelPackagesSingle() {
                     → Total Price ←
                   </div>
                   <div className="text-white text-4xl md:text-5xl font-black leading-none mb-1 drop-shadow-lg">
-                    $399
+                    ₹ {selected?.leastPrice2[1]?.price}
                   </div>
                   <div className="text-white/90 text-sm">
                     → Per Person Only ←
@@ -202,10 +200,12 @@ export default function TravelPackagesSingle() {
                 style={{ animationDelay: "1s" }}
               >
                 <img
-                  src={egypt}
+                  src={`${import.meta.env.VITE_BACKEND_URL}${
+                    selected?.leastPrice2[1]?.cardMedia?.fileUrl
+                  }`}
                   alt="Egypt Pyramids"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  loading="lazy"
+                
                   decoding="async"
                 />
               </div>
@@ -231,16 +231,13 @@ export default function TravelPackagesSingle() {
                 </span>
               </h2>
 
-              <a
-                href="#"
-                className="flex items-center gap-2 text-purple-600 font-semibold text-lg hover:gap-4 transition-all duration-300 group"
-              >
+              <button className="flex items-center gap-2 text-purple-600 font-semibold text-lg hover:gap-4 transition-all duration-300 group">
                 View All Package.
                 <ArrowRightOutlined
                   className="!group-hover:translate-x-1 !transition-transform"
                   style={{ fontSize: 20 }}
                 />
-              </a>
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
