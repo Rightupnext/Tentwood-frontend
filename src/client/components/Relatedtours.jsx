@@ -168,7 +168,7 @@ export default function Relatedtours({
             </div>
 
             <div className="text-right">
-              <div className="text-1.5xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-2xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
                 ₹{t.price}.00
               </div>
               <div className="text-xs text-gray-500">per person</div>
