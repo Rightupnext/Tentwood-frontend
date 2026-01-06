@@ -1,58 +1,26 @@
-import React, { useEffect, useRef, useState, memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTopDestinations } from "../../store/slices/packageSlice";
+import React, { useEffect, useRef, useState, memo, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function ExploreDestinations() {
-  const dispatch = useDispatch();
-  const { topDestinations = [] } = useSelector((state) => state.packages);
-
+export default function ExploreDestinations({ packages = [] }) {
   const rowRefs = useRef([]);
   const [scrollProgress, setScrollProgress] = useState({});
 
-  /* ================= FETCH DATA ================= */
-useEffect(() => {
-  // Fetch only if topDestinations is empty
-  if (!topDestinations.length) {
-    dispatch(fetchTopDestinations());
-  }
-}, [dispatch, topDestinations.length]);
+  // Get unique countries
+  const uniquePackages = useMemo(() => {
+  return Array.from(
+    new Map(
+      packages
+        .filter((pkg) => pkg?.Destination?.name)
+        .map((pkg) => [pkg.Destination.name.toLowerCase(), pkg])
+    ).values()
+  );
+}, [packages]);
 
-  const row1 = topDestinations;
-  const row2 = [...topDestinations].reverse();
+  // Prepare rows
+  const row1 = uniquePackages;
+  const row2 = [...uniquePackages].reverse();
 
   /* ================= SCROLL SCALE EFFECT ================= */
-  useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          rowRefs.current.forEach((row, index) => {
-            if (!row) return;
-
-            const rect = row.getBoundingClientRect();
-            const progress = Math.max(
-              0,
-              Math.min(1, (window.innerHeight - rect.top) / window.innerHeight)
-            );
-
-            setScrollProgress((prev) => ({
-              ...prev,
-              [index]: progress,
-            }));
-          });
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-teal-50 py-16 overflow-hidden">
@@ -108,7 +76,7 @@ const Row = memo(function Row({
       className="relative overflow-hidden mb-8"
       style={{
         transform: `scale(${scale})`,
-        opacity,
+        // opacity,
         transition: "transform 0.3s ease, opacity 0.3s ease",
       }}
     >
@@ -120,7 +88,7 @@ const Row = memo(function Row({
         }`}
       >
         {[...list, ...list, ...list].map((item, i) => (
-          <DestinationCard key={`${item.name}-${i}`} item={item} />
+          <DestinationCard key={`${item._id}-${i}`} item={item} />
         ))}
       </div>
     </div>
@@ -132,6 +100,26 @@ const Row = memo(function Row({
 /* ===================================================== */
 
 const DestinationCard = memo(function DestinationCard({ item }) {
+  const navigate = useNavigate();
+  const TRIP_ROUTE_MAP = {
+    "India Trips": "india-trips",
+    "International Trips": "international-trips",
+    "Honeymoon Packages": "honeymoon-packages",
+    "Group Tours": "group-tours",
+  };
+  const handleNavigate = (pkg) => {
+    const category = pkg?.tripCategories?.[0];
+    const tripPrefix = TRIP_ROUTE_MAP[category];
+    if (!tripPrefix) return;
+
+    navigate(
+      `/${tripPrefix}/${pkg?.countries || pkg?.Destination?.name}/${
+        pkg?.packageTitle
+      }`,
+      { state: { id: pkg?._id } }
+    );
+  };
+
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -139,14 +127,13 @@ const DestinationCard = memo(function DestinationCard({ item }) {
       className="w-72 h-56 shrink-0 relative cursor-pointer group"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onTouchStart={() => setHovered(true)}
-      onTouchEnd={() => setHovered(false)}
     >
       <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 group-hover:scale-105">
         <img
-          src={`${import.meta.env.VITE_BACKEND_URL}${item.image}`}
-          alt={item.name}
-          
+          src={`${import.meta.env.VITE_BACKEND_URL}${
+            item.cardMedia?.fileUrl || ""
+          }`}
+          alt={item.packageTitle}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
@@ -155,10 +142,11 @@ const DestinationCard = memo(function DestinationCard({ item }) {
 
         {/* Content */}
         <div className="absolute bottom-0 p-4 text-white">
-          <h3 className="text-2xl font-bold">{item.name}</h3>
-          <p className="text-sm opacity-80">{item.tours}</p>
+          <h3 className="text-xl font-bold">{item?.Destination?.name}</h3>
+          <p className="text-sm opacity-80 ">{item.packageTitle}</p>
 
           <button
+            onClick={() => handleNavigate(item)}
             className={`mt-3 flex items-center gap-2 px-4 py-2 bg-white text-teal-600 rounded-full font-semibold transition-all duration-200 ${
               hovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}

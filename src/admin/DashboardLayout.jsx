@@ -75,15 +75,10 @@ const DashboardLayout = () => {
             {
               key: "2",
               icon: <GlobalOutlined />,
-              label: "Country Management",
+              label: "Destination Management",
               onClick: () => navigate("/admin/countries"),
             },
-            {
-              key: "3",
-              icon: <EnvironmentOutlined />,
-              label: "Destinations",
-              onClick: () => navigate("/admin/destinations"),
-            },
+
             {
               key: "4",
               icon: <FormOutlined />,

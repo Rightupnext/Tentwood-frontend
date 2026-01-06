@@ -95,56 +95,40 @@ export default function PackageDetails() {
                     <span className="font-bold text-gray-900 text-base">
                       {day.title || `Day ${index + 1}`}
                     </span>
-                    {day.summary && (
-                      <span className="text-sm text-gray-500 mt-1 line-clamp-1">
-                        {day.summary.substring(0, 60)}...
-                      </span>
-                    )}
                   </div>
                 </div>
               }
               key={day._id}
               className="mb-3 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="pl-16 pr-4 py-2 space-y-4">
-                {day.summary && (
-                  <div className="flex items-start gap-3">
-                    <EnvironmentOutlined className="text-blue-500 text-lg mt-1" />
-                    <p className="text-gray-700 leading-relaxed">
-                      {day.summary}
-                    </p>
-                  </div>
-                )}
+              {day.description.map((point, idx) => (
+                <div key={idx} className="flex gap-3">
+                  <span className="text-sm text-blue-500 font-semibold">
+                    {idx + 1}.
+                  </span>
+                  <p className="text-gray-600 leading-relaxed">{point}</p>
+                </div>
+              ))}
 
-                {day.details && (
-                  <div className="flex items-start gap-3">
-                    <ClockCircleOutlined className="text-gray-400 text-lg mt-1" />
-                    <p className="text-gray-600 leading-relaxed">
-                      {day.details}
-                    </p>
-                  </div>
-                )}
-
-                {day.optionalActivities?.length > 0 && (
-                  <div className="mt-4 bg-blue-50 rounded-lg p-4">
-                    <h4 className="text-sm font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                      <CompassOutlined />
-                      Optional Activities
-                    </h4>
-                    <ul className="space-y-2">
-                      {day.optionalActivities.map((act, i) => (
-                        <li
-                          key={i}
-                          className="flex items-start gap-3 text-gray-700"
-                        >
-                          <RightOutlined className="text-blue-500 mt-1 text-xs" />
-                          <span className="text-sm">{act}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+              {day.optionalActivities?.length > 0 && (
+                <div className="mt-4 bg-blue-50 rounded-lg p-4">
+                  <h4 className="text-sm font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                    <CompassOutlined />
+                    Optional Activities
+                  </h4>
+                  <ul className="space-y-2">
+                    {day.optionalActivities.map((act, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-gray-700"
+                      >
+                        <RightOutlined className="text-blue-500 mt-1 text-xs" />
+                        <span className="text-sm">{act}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </Panel>
           ))}
         </Collapse>
@@ -359,7 +343,7 @@ export default function PackageDetails() {
               <h2 className="text-2xl font-bold mb-4 text-gray-800">
                 Overview
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 leading-relaxed mb-4 whitespace-pre-line">
                 {pkg.overview}
               </p>
               <div className="flex flex-wrap gap-2">

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCountries,
-  createCountry,
-  updateCountry,
-  deleteCountry,
-} from "../store/slices/countrySlice";
+  fetchDestinations,
+  deleteDestination,
+  createDestination,
+  updateDestination,
+} from "../store/slices/destinationSlice";
 import {
   Table,
   Button,
@@ -29,7 +29,9 @@ const { Title } = Typography;
 
 const CountryManagement = () => {
   const dispatch = useDispatch();
-  const { list: countries, loading } = useSelector((state) => state.countries);
+  const { list: destinations, loading } = useSelector(
+    (state) => state.destinations
+  );
 
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +39,7 @@ const CountryManagement = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(fetchCountries());
+    dispatch(fetchDestinations());
   }, [dispatch]);
 
   const handleSearch = (value) => setSearchText(value);
@@ -55,18 +57,18 @@ const CountryManagement = () => {
   const handleSubmit = async () => {
     const values = await form.validateFields();
     if (editingCountry) {
-      await dispatch(updateCountry({ id: editingCountry._id, ...values }));
+      await dispatch(updateDestination({ id: editingCountry._id, ...values }));
     } else {
-      await dispatch(createCountry(values));
+      await dispatch(createDestination(values));
     }
     setModalVisible(false);
   };
 
   const handleDelete = async (id) => {
-    await dispatch(deleteCountry({ id }));
+    await dispatch(deleteDestination({ id }));
   };
 
-  const filteredCountries = countries.filter(
+  const filteredCountries = destinations.filter(
     (c) =>
       (c.name?.toLowerCase() || "").includes(searchText.toLowerCase()) ||
       (c.region?.toLowerCase() || "").includes(searchText.toLowerCase())
@@ -74,16 +76,6 @@ const CountryManagement = () => {
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
-    // { title: "ISO2", dataIndex: "iso2", key: "iso2" },
-    // { title: "ISO3", dataIndex: "iso3", key: "iso3" },
-    // { title: "Currency", dataIndex: "currency", key: "currency" },
-    // { title: "Region", dataIndex: "region", key: "region" },
-    // {
-    //   title: "Languages",
-    //   dataIndex: "languages",
-    //   key: "languages",
-    //   render: (langs) => langs?.join(", "),
-    // },
     {
       title: "Actions",
       key: "actions",
@@ -105,7 +97,7 @@ const CountryManagement = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-4">
         <Title level={3} className="m-0">
-          Country Management
+          Destination Management
         </Title>
         <Button
           type="primary"
@@ -127,7 +119,7 @@ const CountryManagement = () => {
       </div>
 
       <Table
-        key={countries.length} // forces re-render on array length change
+        key={destinations.length} // forces re-render on array length change
         columns={columns}
         dataSource={[...filteredCountries]} // spread to create new array reference
         rowKey="_id"
@@ -151,39 +143,6 @@ const CountryManagement = () => {
           >
             <Input placeholder="India" />
           </Form.Item>
-          {/* <Form.Item name="iso2" label="ISO2" rules={[{ required: true }]}>
-            <Input placeholder="IN" maxLength={2} />
-          </Form.Item>
-          <Form.Item name="iso3" label="ISO3">
-            <Input placeholder="IND" maxLength={3} />
-          </Form.Item>
-          <Form.Item
-            name="currency"
-            label="Currency"
-            rules={[{ required: true }]}
-          >
-            <Input placeholder="INR" />
-          </Form.Item>
-          <Form.Item name="region" label="Region">
-            <Select placeholder="Select Region" allowClear>
-              <Option value="Asia">Asia</Option>
-              <Option value="Europe">Europe</Option>
-              <Option value="Africa">Africa</Option>
-              <Option value="Americas">Americas</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item name="languages" label="Languages (comma separated)">
-            <Input
-              placeholder="English,Hindi"
-              onChange={(e) => {
-                const value = e.target.value;
-                form.setFieldValue(
-                  "languages",
-                  value.split(",").map((v) => v.trim())
-                );
-              }}
-            />
-          </Form.Item> */}
         </Form>
       </Modal>
     </div>

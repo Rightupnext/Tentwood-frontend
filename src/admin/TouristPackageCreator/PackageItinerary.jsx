@@ -1,123 +1,105 @@
 import React from "react";
-import { Card, Form, Input, List, Button, Space, Typography, Checkbox } from "antd";
+import { Card, Form, Input, Button } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const { Title } = Typography;
+const { TextArea } = Input;
 
 export default function PackageItinerary() {
   return (
     <Card title="📅 Itinerary" bordered={false}>
       <Form.List name="itinerary">
-        {(days, { add, remove }) => (
-          <Space direction="vertical" style={{ width: "100%" }}>
-            {days.map(({ key, name }, index) => (
+        {(fields, { add, remove }) => (
+          <div style={{ width: "100%" }}>
+            {fields.map(({ key, name }, index) => (
               <Card
                 key={key}
+                size="small"
                 title={`Day ${index + 1}`}
+                style={{ marginBottom: 16 }}
                 extra={
                   <Button
                     danger
+                    type="text"
                     icon={<DeleteOutlined />}
                     onClick={() => remove(name)}
-                  >
-                    Remove Day
-                  </Button>
+                  />
                 }
               >
-                {/* Day Number */}
-                <Form.Item name={[name, "dayNumber"]} initialValue={index + 1}>
-                  <Input type="number" placeholder="Day Number" />
-                </Form.Item>
-
-                {/* Title */}
+                {/* Day Title */}
                 <Form.Item
-                  name={[name, "dayTitle"]}
+                  name={[name, "title"]}
                   rules={[{ required: true, message: "Enter day title" }]}
                 >
-                  <Input placeholder="Title" />
+                  <Input placeholder="Title (e.g. Arrival & City Tour)" />
                 </Form.Item>
 
-                {/* Summary */}
-                <Form.Item name={[name, "summary"]}>
-                  <Input placeholder="Short summary" />
-                </Form.Item>
-
-                {/* Details */}
-                <Form.Item name={[name, "details"]}>
-                  <Input.TextArea rows={3} placeholder="Full description / details" />
-                </Form.Item>
-
-                {/* Optional Activities */}
-                <Title level={5}>Optional Activities</Title>
-                <Form.List name={[name, "optionalActivities"]}>
-                  {(acts, { add: addAct, remove: removeAct }) => (
-                    <>
-                      <List
-                        dataSource={acts}
-                        renderItem={({ key, name: actName }) => (
-                          <List.Item
-                            key={key}
-                            actions={[
-                              <Button
-                                danger
-                                type="text"
-                                icon={<DeleteOutlined />}
-                                onClick={() => removeAct(actName)}
-                              />,
+                {/* Description */}
+                <Form.List name={[name, "description"]}>
+                  {(descFields, { add: addDesc, remove: removeDesc }) => (
+                    <div style={{ width: "100%" }}>
+                      {descFields.map(({ key, name: descName }) => (
+                        <div
+                          key={key}
+                          style={{
+                            display: "flex",
+                            gap: 8,
+                            width: "100%",
+                            marginBottom: 8,
+                          }}
+                        >
+                          <Form.Item
+                            name={[descName]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter description",
+                              },
                             ]}
+                            style={{ flex: 1, marginBottom: 0 }}
                           >
-                            <Form.Item
-                              name={[actName]}
-                              style={{ flex: 1 }}
-                            >
-                              <Input placeholder="Optional activity" />
-                            </Form.Item>
-                          </List.Item>
-                        )}
-                      />
+                            <TextArea
+                              rows={3}
+                              placeholder="Full description of the day"
+                            />
+                          </Form.Item>
 
-                      <Button type="dashed" icon={<PlusOutlined />} onClick={() => addAct()}>
-                        Add Optional Activity
+                          <Button
+                            danger
+                            type="text"
+                            icon={<DeleteOutlined />}
+                            onClick={() => removeDesc(descName)}
+                          />
+                        </div>
+                      ))}
+
+                      <Button
+                        type="dashed"
+                        icon={<PlusOutlined />}
+                        onClick={() => addDesc("")}
+                      >
+                        Add Description
                       </Button>
-                    </>
+                    </div>
                   )}
                 </Form.List>
-
-                {/* Meals */}
-                <Title level={5}>Meals</Title>
-                <Space>
-                  <Form.Item name={[name, "meals", "breakfast"]} valuePropName="checked">
-                    <Checkbox>Breakfast</Checkbox>
-                  </Form.Item>
-                  <Form.Item name={[name, "meals", "lunch"]} valuePropName="checked">
-                    <Checkbox>Lunch</Checkbox>
-                  </Form.Item>
-                  <Form.Item name={[name, "meals", "dinner"]} valuePropName="checked">
-                    <Checkbox>Dinner</Checkbox>
-                  </Form.Item>
-                </Space>
               </Card>
             ))}
 
             {/* Add Day */}
             <Button
-              type="primary"
+              type="dashed"
               block
               icon={<PlusOutlined />}
               onClick={() =>
                 add({
-                  dayNumber: days.length + 1,
                   title: "",
-                  summary: "",
-                  details: "",
-                  optionalActivities: [],
-                  meals: { breakfast: false, lunch: false, dinner: false }
+                  description: [""],
                 })
               }
             >
               Add Day
             </Button>
-          </Space>
+          </div>
         )}
       </Form.List>
     </Card>

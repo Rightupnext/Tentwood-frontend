@@ -1,42 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  AudioOutlined,
   EnvironmentOutlined,
   UserOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
 import bannervideo1 from "../../assets/home/bannervideo.1.mp4";
 
-
 export default function Banner() {
-  const [guests, setGuests] = useState("");
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [isMuted, setIsMuted] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
-
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = 0.4;
-  }, []);
-
-  const toggleMute = async () => {
-    if (!audioRef.current) return;
-
-    try {
-      if (!isPlaying) {
-        await audioRef.current.play();
-        setIsPlaying(true);
-        setIsMuted(false);
-      } else {
-        const newMutedState = !isMuted;
-        setIsMuted(newMutedState);
-        audioRef.current.muted = newMutedState;
-      }
-    } catch (error) {
-      console.log("Audio play error:", error);
-    }
-  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -51,39 +22,39 @@ export default function Banner() {
       />
 
       {/* GRADIENT OVERLAYS */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/20 via-transparent to-transparent" />
 
       {/* MAIN CONTENT */}
       <div className="relative flex flex-col items-center justify-center px-4 py-16 md:py-24 z-10 min-h-screen">
         {/* HERO TEXT */}
-        <div className="max-w-5xl text-center mb-8 md:mb-12 animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6">
+        <div className="max-w-5xl text-center mb-12 animate-fade-in-up">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl">
             We Find The Best Tours For You
           </h1>
         </div>
 
         {/* FLOATING ICONS */}
         <div className="relative w-full max-w-2xl mx-auto mb-16 animate-fade-in-up-delay">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow z-10">
-            <EnvironmentOutlined className="!text-teal-500 !text-lg md:!text-xl" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow z-10">
+            <EnvironmentOutlined className="!text-teal-500 !text-xl" />
           </div>
 
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay z-10">
-            <UserOutlined className="!text-teal-500 !text-lg md:!text-xl" />
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay z-10">
+            <UserOutlined className="!text-teal-500 !text-xl" />
           </div>
 
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay-2 z-10">
-            <CalendarOutlined className="!text-teal-500 !text-lg md:!text-xl" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay-2 z-10">
+            <CalendarOutlined className="!text-teal-500 !text-xl" />
           </div>
         </div>
 
         {/* SEARCH BAR */}
         <div className="w-full max-w-6xl px-4 animate-fade-in-up-delay-2">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-white/40">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* LOCATION */}
-              <div className="space-y-2 pb-4 border-b sm:border-b-0 sm:border-r border-gray-300 sm:pr-4">
+              <div className="md:col-span-2 space-y-2 pb-4 md:pb-0 md:border-r border-gray-300 md:pr-4">
                 <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
                   <EnvironmentOutlined />
                   Location
@@ -93,38 +64,6 @@ export default function Banner() {
                   placeholder="Search For A Destination"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full py-2 bg-transparent text-gray-700 focus:outline-none"
-                />
-              </div>
-
-              {/* GUESTS */}
-              <div className="space-y-2 pb-4 border-b sm:border-b-0 sm:border-r border-gray-300 sm:pr-4">
-                <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
-                  <UserOutlined />
-                  Guests
-                </label>
-                <input
-                  type="text"
-                  placeholder="How many Guests?"
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="w-full py-2 bg-transparent text-gray-700 focus:outline-none"
-                />
-              </div>
-
-              {/* DATE */}
-              <div className="space-y-2 pb-4 border-b sm:border-b-0 lg:border-r border-gray-300 lg:pr-4">
-                <label className="flex items-center gap-2 text-sm font-bold text-teal-600">
-                  <CalendarOutlined />
-                  Date
-                </label>
-                <input
-                  type="text"
-                  placeholder="Pick a date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  onFocus={(e) => (e.target.type = "date")}
-                  onBlur={(e) => !e.target.value && (e.target.type = "text")}
                   className="w-full py-2 bg-transparent text-gray-700 focus:outline-none"
                 />
               </div>
@@ -141,7 +80,7 @@ export default function Banner() {
       </div>
 
       {/* BOTTOM FADE */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none" />
     </div>
   );
 }

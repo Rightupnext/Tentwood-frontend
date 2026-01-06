@@ -19,7 +19,13 @@ import Testimonials from "../client/components/Testimonal";
 
 function HomePage() {
   const dispatch = useDispatch();
-  const packages = useSelector((state) => state.packages.list || []);
+  const {
+    list: packages,
+    india,
+    international,
+    honeymoon,
+    group,
+  } = useSelector((state) => state.packages);
 
   /* ================= FETCH API ================= */
   useEffect(() => {
@@ -33,41 +39,28 @@ function HomePage() {
   const Title2 = "India Trip's";
   const Title3 = "Group Trip's";
   const Title4 = "HoneyMoon Trip's";
-  const indiaTrips = packages.filter(
-    (pkg) => pkg?.Destination?.trip === "India Trips"
-  );
 
-  const internationalTrips = packages.filter(
-    (pkg) => pkg?.Destination?.trip === "International Trips"
-  );
-
-  const honeymoonTrips = packages.filter(
-    (pkg) => pkg?.Destination?.trip === "Honeymoon Packages"
-  );
-  const GroupTrips = packages.filter(
-    (pkg) => pkg?.Destination?.trip === "Honeymoon Packages"
-  );
   return (
     <>
       <Banner />
-      <ExploreDestinations />
-      <Export />
+      <ExploreDestinations packages={packages} />
+      <Export packages={packages} />
       <TravelPromo />
       <VideoGallery />
       <Related
         packages={packages}
         Title1={Title1}
         Title2={Title2}
-        indiaTrips={indiaTrips}
-        internationalTrips={internationalTrips}
+        indiaTrips={india}
+        internationalTrips={international}
       />
       <SmartCityTourApp packages={packages} />
       <Relatedtours
         packages={packages}
         Title3={Title3}
         Title4={Title4}
-        honeymoonTrips={honeymoonTrips}
-        GroupTrips={GroupTrips}
+        honeymoonTrips={honeymoon}
+        GroupTrips={group}
       />
       {/* <Outsidethe /> */}
       <Testimonials />

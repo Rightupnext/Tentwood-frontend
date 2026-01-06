@@ -45,7 +45,7 @@ export default function Relatedtours({
     setTimeout(() => setfn(c.scrollLeft), 400);
   };
 
-  const TourCard = ({ t, i }) => {
+  const TourCard = ({ t, i, title }) => {
     const navigate = useNavigate();
     const [hov, setHov] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -53,14 +53,22 @@ export default function Relatedtours({
       "India Trips": "india-trips",
       "International Trips": "international-trips",
       "Honeymoon Packages": "honeymoon-packages",
-      "Group Tour": "group-tour",
+      "Group Tours": "group-tours",
     };
+
     const handleNavigate = (a) => {
-      const tripPrefix = TRIP_ROUTE_MAP[a?.Destination?.trip];
+      const category = a?.tripCategories?.[0];
+      const tripPrefix = TRIP_ROUTE_MAP[category];
       if (!tripPrefix) return;
-      navigate(`/${tripPrefix}/${a?.Destination?.route}/${a?.seo?.slug}`, {
-        state: { id: a?._id },
-      });
+
+      navigate(
+        `/${tripPrefix}/${a?.Destination?.name
+          ?.toLowerCase()
+          .replace(/\s+/g, "-")}/${a?.packageTitle
+          ?.toLowerCase()
+          .replace(/\s+/g, "-")}`,
+        { state: { id: a?._id } }
+      );
     };
     const rating = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
     return (
@@ -82,7 +90,6 @@ export default function Relatedtours({
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
             alt={t.packageTitle}
-            
             onLoad={() => setImgLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
@@ -93,7 +100,7 @@ export default function Relatedtours({
 
           <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
             <StarOutlined className="!w-3 !h-3 !fill-white" />
-            {t?.Destination?.trip}
+            {t?.tripCategories ? title : t?.tripCategories}
           </div>
 
           {hov && (
@@ -217,7 +224,7 @@ export default function Relatedtours({
       >
         {tours.map((t, i) => (
           <div key={i} className="snap-start">
-            <TourCard t={t} i={i} />
+            <TourCard t={t} i={i} title={title} />
           </div>
         ))}
       </div>
@@ -235,72 +242,6 @@ export default function Relatedtours({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 sm:p-6 md:p-8">
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-        
-        .animate-shimmer {
-          animation: shimmer 1.5s infinite linear;
-        }
-        
-        .line-clamp-2 {
-          -webkit-line-clamp: 2;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        
-        .scroll-smooth {
-          scroll-behavior: smooth;
-        }
-
-        .snap-x {
-          scroll-snap-type: x mandatory;
-        }
-
-        .snap-start {
-          scroll-snap-align: start;
-        }
-
-        /* Prevent layout shift during scroll */
-        .tour-card {
-          will-change: transform;
-        }
-
-        /* Smooth transitions on mobile */
-        @media (max-width: 640px) {
-          .tour-card:hover {
-            transform: scale(1.02) translateY(-4px);
-          }
-        }
-      `}</style>
-
       <div className="max-w-7xl mx-auto">
         <Section
           title={Title3}
