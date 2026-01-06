@@ -15,6 +15,14 @@ export const PackagesAnalyticsReport = createApiThunk(
     url: "/packages/analytics",
   }
 );
+// ✅ New thunk
+export const fetchCountriesByTripCategory = createApiThunk(
+  "fetchCountriesByTripCategory",
+  {
+    method: "get",
+    url: "/packages/countries-by-trip",
+  }
+);
 export const fetchPackageById = createApiThunk("fetchPackageById", {
   method: "get",
   url: "/packages/:id",
@@ -66,6 +74,12 @@ const packageSlice = createSlice({
     error: null,
     report: [],
     simpleList: [],
+    countriesByTrip: [],
+
+    india: [],
+    international: [],
+    honeymoon: [],
+    group: [],
   },
   reducers: {},
 
@@ -80,6 +94,7 @@ const packageSlice = createSlice({
       PackagesAnalyticsReport,
       fetchTopDestinations,
       fetchSimplePackages,
+      fetchCountriesByTripCategory,
     ];
 
     thunks.forEach((thunk) => {
@@ -95,9 +110,31 @@ const packageSlice = createSlice({
           const type = thunk.typePrefix.split("/")[0];
 
           switch (type) {
-            case "fetchPackages":
-              state.list = action.payload.data; // backend returns { success, data: [] }
+            case "fetchPackages": {
+              const packages = action.payload?.data || [];
+
+              state.list = packages;
+
+              state.india = packages.filter((pkg) =>
+                pkg.tripCategories?.includes("India Trips")
+              );
+
+              state.international = packages.filter((pkg) =>
+                pkg.tripCategories?.includes("International Trips")
+              );
+
+              state.honeymoon = packages.filter((pkg) =>
+                pkg.tripCategories?.includes("Honeymoon Packages")
+              );
+
+              state.group = packages.filter((pkg) =>
+                pkg.tripCategories?.includes("Group Tours")
+              );
+
+              state.loading = false;
               break;
+            }
+
             case "PackagesAnalyticsReport":
               state.report = action.payload.data; // backend returns { success, data: [] }
               break;
@@ -125,6 +162,9 @@ const packageSlice = createSlice({
               state.list = state.list.filter((p) => p._id !== deletedId);
               break;
             }
+            case "fetchCountriesByTripCategory": // ✅ new case
+              state.countriesByTrip = action.payload.data || [];
+              break;
             case "fetchTopDestinations": {
               state.topDestinations = action.payload.data || [];
               break;

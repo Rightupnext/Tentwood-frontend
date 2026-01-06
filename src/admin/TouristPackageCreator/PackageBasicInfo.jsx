@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, Form, Input, Select, Row, Col, Upload, Tag } from "antd";
 import {
   UploadOutlined,
@@ -16,9 +16,6 @@ const TRIP_COLORS = {
   "India Trips": "green",
   "Group Tours": "orange",
   "Honeymoon Packages": "pink",
-  "Adventure Trips": "volcano",
-  "Family Trips": "cyan",
-  "Beach Holidays": "gold",
 };
 
 export default function PackageBasicInfo({
@@ -31,51 +28,7 @@ export default function PackageBasicInfo({
   setBannerImage,
   setCardImage,
   form,
-  currentPackage,
 }) {
-  const [filteredDestinations, setFilteredDestinations] = useState([]);
-  const [filteredTrips, setFilteredTrips] = useState([]);
-  const [selectedType, setSelectedType] = useState(null);
-  const [selectedDestination, setSelectedDestination] = useState(null);
-
-  // Remove duplicate destinations by Destination name
-  const getUniqueDestinations = (destList) => {
-    const map = new Map();
-    destList.forEach((d) => {
-      if (!map.has(d.Destination)) {
-        map.set(d.Destination, d);
-      }
-    });
-    return [...map.values()];
-  };
-
-  // Remove duplicate trips
-  const getUniqueTrips = (trips) => [...new Set(trips)];
-
-  useEffect(() => {
-    if (selectedType) {
-      const filtered = destinations.filter((d) => d.type === selectedType);
-      setFilteredDestinations(filtered);
-
-      // Reset destination & trip if type changes
-      form.setFieldsValue({ Destination: null, tripCategory: null });
-      setSelectedDestination(null);
-      setFilteredTrips([]);
-    }
-  }, [selectedType, destinations, form]);
-
-  useEffect(() => {
-    if (selectedDestination) {
-      const filtered = destinations
-        .filter((d) => d._id === selectedDestination)
-        .map((d) => d.trip);
-      setFilteredTrips(getUniqueTrips(filtered));
-
-      // Reset trip category if destination changes
-      form.setFieldsValue({ tripCategory: null });
-    }
-  }, [selectedDestination, destinations, form]);
-
   const uploadProps = (type) => ({
     name: "file",
     listType: "picture-card",
@@ -108,55 +61,33 @@ export default function PackageBasicInfo({
         <Input placeholder="e.g., Amazing Thailand Tour" />
       </Form.Item>
 
-      {/* Select Type */}
-      <Form.Item
-        name="type"
-        label="Type"
-        rules={[{ required: true, message: "Select type" }]}
-      >
-        <Select
-          placeholder="Select type"
-          allowClear
-          loading={destLoading}
-          onChange={(value) => setSelectedType(value)}
-        >
-          {[...new Set(destinations.map((d) => d.type))].map((type) => (
-            <Option key={type} value={type}>
-              {type}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {/* Select Destination (Filtered by Type, deduplicated) */}
+      {/* Destination */}
       <Form.Item
         name="Destination"
         label="Destination"
         rules={[{ required: true, message: "Select destination" }]}
       >
-        <Select
-          placeholder="Select Destination"
-          loading={destLoading}
-          onChange={(value) => setSelectedDestination(value)}
-        >
-          {getUniqueDestinations(filteredDestinations).map((d) => (
+        <Select placeholder="Select Destination" loading={destLoading}>
+          {destinations.map((d) => (
             <Option key={d._id} value={d._id}>
-              {d.Destination}
+              {d.name}
             </Option>
           ))}
         </Select>
       </Form.Item>
 
-      {/* Trip Category (Filtered by Destination, deduplicated) */}
+      {/* Trip Category */}
       <Form.Item
-        name="tripCategory"
+        name="tripCategories"
         label="Trip Category"
-        rules={[{ required: true, message: "Select Trip Category" }]}
+        rules={[
+          { required: true, message: "Select at least one Trip Category" },
+        ]}
       >
-        <Select placeholder="Select Trip Category" loading={destLoading}>
-          {filteredTrips.map((trip) => (
+        <Select mode="multiple" placeholder="Select Trip Categories" allowClear>
+          {Object.keys(TRIP_COLORS).map((trip) => (
             <Option key={trip} value={trip}>
-              <Tag color={TRIP_COLORS[trip] || "default"}>{trip}</Tag>
+              <Tag color={TRIP_COLORS[trip]}>{trip}</Tag>
             </Option>
           ))}
         </Select>
@@ -174,7 +105,7 @@ export default function PackageBasicInfo({
                   style={{ width: "100%", maxHeight: 100, objectFit: "cover" }}
                 />
               ) : (
-                <div style={{ padding: 20 }}>
+                <div style={{ padding: 20, textAlign: "center" }}>
                   <UploadOutlined />
                   <div>Upload Banner</div>
                 </div>
@@ -192,7 +123,7 @@ export default function PackageBasicInfo({
                   style={{ width: "100%", maxHeight: 100, objectFit: "cover" }}
                 />
               ) : (
-                <div style={{ padding: 20 }}>
+                <div style={{ padding: 20, textAlign: "center" }}>
                   <UploadOutlined />
                   <div>Upload Card</div>
                 </div>
@@ -202,7 +133,7 @@ export default function PackageBasicInfo({
         </Col>
       </Row>
 
-      {/* Other Fields */}
+      {/* Pickup & Drop */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
@@ -232,6 +163,7 @@ export default function PackageBasicInfo({
         </Col>
       </Row>
 
+      {/* Duration & Price */}
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
@@ -261,6 +193,7 @@ export default function PackageBasicInfo({
         </Col>
       </Row>
 
+      {/* Locations Covered */}
       <Form.Item
         name="locations"
         label={
@@ -272,6 +205,7 @@ export default function PackageBasicInfo({
         <Input placeholder="e.g., Phuket - Krabi - Bangkok" />
       </Form.Item>
 
+      {/* Overview */}
       <Form.Item
         name="overview"
         label={

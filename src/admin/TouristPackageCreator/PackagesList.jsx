@@ -45,10 +45,10 @@ export default function PackagesList() {
       const matchSearch =
         !q ||
         pkg?.packageTitle?.toLowerCase().includes(q) ||
-        pkg?.Destination?.Destination?.toLowerCase().includes(q) ||
         pkg?.locations?.toLowerCase().includes(q);
 
-      const matchCategory = !category || pkg?.Destination?.trip === category;
+      const matchCategory =
+        !category || pkg?.tripCategories?.includes(category);
 
       const matchPrice =
         typeof pkg.price === "number" &&

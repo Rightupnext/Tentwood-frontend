@@ -48,58 +48,41 @@ const categories = [
   },
 ];
 
-export default function CityExplorer() {
-  const dispatch = useDispatch();
-  const [selectedCountry, setSelectedCountry] = useState(null);
+export default function CityExplorer({ packages }) {
+  const [selectedDestination, setSelectedDestination] = useState(null);
   const [filteredPackages, setFilteredPackages] = useState([]);
-
-  const simplePackages = useSelector((state) => state.packages.simpleList);
-  useEffect(() => {
-    if (!simplePackages.length) {
-      dispatch(fetchSimplePackages());
-    }
-  }, [dispatch, simplePackages.length]);
-  /* ================= COUNTRY LIST ================= */
-  const countryNames = [
-    ...new Set(
-      simplePackages
-        .map((item) => item?.Destination?.country?.name)
-        .filter(Boolean)
-    ),
+  const [showFullOverview, setShowFullOverview] = useState(false);
+  const scrollRef = useRef(null);
+  const OVERVIEW_LIMIT = 180;
+  const getOverviewText = (text) => {
+    if (!text) return "";
+    return showFullOverview || text.length <= OVERVIEW_LIMIT
+      ? text
+      : text.slice(0, OVERVIEW_LIMIT) + "...";
+  };
+  const destinationNames = [
+    ...new Set(packages.map((p) => p?.Destination?.name).filter(Boolean)),
   ];
 
-  /* ================= AUTO SELECT FIRST COUNTRY ================= */
   useEffect(() => {
-    if (countryNames.length && !selectedCountry) {
-      setSelectedCountry(countryNames[0]);
+    if (destinationNames.length && !selectedDestination) {
+      setSelectedDestination(destinationNames[0]);
     }
-  }, [countryNames, selectedCountry]);
+  }, [destinationNames, selectedDestination]);
 
-  /* ================= FILTER PACKAGES BY COUNTRY ================= */
   useEffect(() => {
-    if (!selectedCountry) return;
-
-    const filtered = simplePackages.filter(
-      (p) => p?.Destination?.country?.name === selectedCountry
+    if (!selectedDestination) return;
+    setFilteredPackages(
+      packages.filter((p) => p?.Destination?.name === selectedDestination)
     );
+    setShowFullOverview(false);
+  }, [packages, selectedDestination]);
 
-    setFilteredPackages(filtered);
-  }, [simplePackages, selectedCountry]);
-  const scrollRef = useRef(null);
+  const scrollLeft = () =>
+    scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  const scrollRight = () =>
+    scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" });
 
-  const scrollLeft = () => {
-    scrollRef.current.scrollBy({
-      left: -300, // adjust scroll distance
-      behavior: "smooth",
-    });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current.scrollBy({
-      left: 300,
-      behavior: "smooth",
-    });
-  };
   const heroPackage = filteredPackages[0];
   const TourCard = ({ t, i }) => {
     const navigate = useNavigate();
@@ -111,13 +94,18 @@ export default function CityExplorer() {
       "Honeymoon Packages": "honeymoon-packages",
       "Group Tour": "group-tour",
     };
-    const handleNavigate = (a) => {
-      const tripPrefix = TRIP_ROUTE_MAP[a?.Destination?.trip];
-      if (!tripPrefix) return;
-      navigate(`/${tripPrefix}/${a?.Destination?.route}/${a?.seo?.slug}`, {
-        state: { id: a?._id },
-      });
+const handleNavigate = (pkg) => {
+      const prefix = TRIP_ROUTE_MAP[pkg?.tripCategory];
+      if (!prefix) return;
+
+      navigate(
+        `/${prefix}/${pkg?.Destination?.name
+          ?.toLowerCase()
+          .replace(/\s+/g, "-")}`,
+        { state: { id: pkg?._id } }
+      );
     };
+
     const rating = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
     return (
       <div
@@ -139,7 +127,6 @@ export default function CityExplorer() {
           <img
             src={`${import.meta.env.VITE_BACKEND_URL}${t?.cardMedia?.fileUrl}`}
             alt={t.title}
-            
             onLoad={() => setImgLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imgLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
@@ -150,7 +137,7 @@ export default function CityExplorer() {
 
           <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
             <StarOutlined className="w-3 h-3 fill-white" />
-            {t?.Destination?.trip}
+            {t.tripCategory}
           </div>
 
           {hov && (
@@ -243,13 +230,13 @@ export default function CityExplorer() {
       <div className="max-w-7xl mx-auto">
         {/* ================= COUNTRY TABS ================= */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 md:mb-12">
-          {countryNames.map((c, i) => (
+          {destinationNames.map((c, i) => (
             <button
               key={c}
-              onClick={() => setSelectedCountry(c)}
+             onClick={() => setSelectedDestination(c)}
               style={{ animationDelay: `${i * 50}ms` }}
               className={`px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-500 animate-fadeIn shadow-sm ${
-                selectedCountry === c
+                selectedDestination === c
                   ? "bg-gradient-to-r from-teal-400 to-teal-500 text-white shadow-lg shadow-teal-300/50 scale-105 hover:shadow-xl"
                   : "bg-white text-gray-700 border border-gray-200 hover:border-teal-300 hover:shadow-md hover:scale-105"
               }`}
@@ -277,7 +264,9 @@ export default function CityExplorer() {
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
                 {heroPackage?.packageTitle}
               </h2>
-              <p className="text-gray-600 max-w-3xl">{heroPackage?.overview}</p>
+              <p className="text-gray-600 max-w-3xl">
+                {getOverviewText(heroPackage.overview)}
+              </p>
 
               <div className="flex flex-wrap gap-3 sm:gap-4">
                 {categories.map((cat, i) => {

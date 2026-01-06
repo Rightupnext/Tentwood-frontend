@@ -70,60 +70,85 @@ export default function TouristPackageCreator() {
   const [cardPreview, setCardPreview] = useState(null);
   // In TouristPackageCreator.jsx
   const [removedGalleryIds, setRemovedGalleryIds] = useState([]);
-
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (id) {
       dispatch(fetchPackageById({ id }));
     }
   }, [id, dispatch]);
 
-useEffect(() => {
-  if (!id) return;              // ⛔ create mode → skip
-  if (!currentPackage) return;  // ⛔ data not loaded yet
+  useEffect(() => {
+    if (!id || !currentPackage) return;
 
-  form.setFieldsValue({
-    packageTitle: currentPackage.packageTitle,
-    pickup: currentPackage.pickup,
-    drop: currentPackage.drop,
-    duration: currentPackage.durationDays,
-    locations: currentPackage.locations,
-    overview: currentPackage.overview,
-    price: currentPackage.price,
-    Destination: currentPackage.Destination?._id,
-    tripCategory: currentPackage?.Destination?.trip,
-    type: currentPackage.Destination?.type,
+    const getMediaUrl = (media) =>
+      media ? `${import.meta.env.VITE_BACKEND_URL}${media.fileUrl}` : null;
 
-    highlights: currentPackage.highlights || [""],
-    inclusions: currentPackage.inclusions || [""],
-    exclusions: currentPackage.exclusions || [""],
-    notes: currentPackage.notes || [""],
+    form.setFieldsValue({
+      packageTitle: currentPackage.packageTitle,
+      pickup: currentPackage.pickup,
+      drop: currentPackage.drop,
+      duration: currentPackage.durationDays,
+      locations: currentPackage.locations,
+      overview: currentPackage.overview,
+      price: currentPackage.price,
 
-    travelEssentials: currentPackage.travelEssentials || {},
+      // ✅ FIXED
+      Destination: currentPackage.Destination || null,
+      tripCategories: currentPackage.tripCategories || [],
 
-    itinerary:
-      currentPackage.itinerary?.map(day => ({
-        dayTitle: day.title,
-        summary: day.summary,
-        details: day.details,
-        activities: day.optionalActivities || [""],
-        meals: day.meals,
-      })) || [],
-  });
-}, [id, currentPackage, form]);
+      inclusions: currentPackage.inclusions || [],
+      exclusions: currentPackage.exclusions || [],
+      notes: currentPackage.notes || [],
+      travelEssentials: currentPackage.travelEssentials || {},
+
+      itinerary:
+        currentPackage.itinerary?.map((day) => ({
+          title: day.title,
+          description:
+            Array.isArray(day.description) && day.description.length
+              ? day.description
+              : [""],
+        })) || [],
+    });
+
+    setBannerPreview(getMediaUrl(currentPackage.heroMedia));
+    setCardPreview(getMediaUrl(currentPackage.cardMedia));
+    setBannerImage(null);
+    setCardImage(null);
+
+    setGallery(
+      currentPackage.gallery?.map((img) => ({
+        uid: img._id,
+        url: getMediaUrl(img),
+        status: "done",
+        isExisting: true,
+      })) || []
+    );
+
+    setRemovedGalleryIds([]);
+  }, [id, currentPackage, form]);
 
   useEffect(() => {
     dispatch(fetchDestinations());
   }, [dispatch]);
 
   const handleSave = async () => {
+    if (saving) return;
     try {
       await form.validateFields();
       const allValues = form.getFieldsValue(true);
-
+      const itineraryPayload = (allValues.itinerary || []).map((day) => ({
+        title: day.title,
+        description: day.description, // array of strings
+      }));
       const formData = new FormData();
 
       // Append regular fields
       Object.keys(allValues).forEach((key) => {
+        if (key === "itinerary") {
+          formData.append("itinerary", JSON.stringify(itineraryPayload));
+          return;
+        }
         if (allValues[key] !== undefined && key !== "gallery") {
           // If field is object or array, stringify it
           if (typeof allValues[key] === "object") {
@@ -152,11 +177,13 @@ useEffect(() => {
         // navigate("/admin/package");
       } else {
         await dispatch(createPackage({ data: formData }));
-        navigate("/admin/package");
       }
+      navigate("/admin/package");
     } catch (err) {
       console.log("Validation Failed:", err);
       message.error("Please fill required fields!");
+    } finally {
+      setSaving(false);
     }
   };
   const handleReset = () => {
