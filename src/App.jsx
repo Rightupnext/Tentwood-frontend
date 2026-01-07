@@ -26,7 +26,7 @@ import HomePage from "./pages/homepage";
 import AboutUs from "./pages/Aboutus";
 import Ensure from "../src/client/components/Ensure";
 import ContactUs from "./client/components/Contact";
-import Testimonials from "./client/components/Testimonal";
+import Testimonials from "./client/components/Testimonials/Testimonials";
 import Thingtodo from "../src/client/components/Thingtodo";
 import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
 import Travel from "../src/client/components/Travel";

@@ -110,23 +110,14 @@ ${window.location.href}
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Overview & Highlights
             </h2>
-
-            {/* Highlights */}
-            {Array.isArray(SelectedPkg?.highlights) &&
-              SelectedPkg.highlights.some((h) => h?.trim()) && (
-                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-4 mb-4">
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    <span className="font-semibold text-teal-600">
-                      {SelectedPkg.highlights
-                        .filter((h) => h?.trim())
-                        .join(" - ")}
-                    </span>
-                  </p>
-                </div>
-              )}
+            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-4 mb-4">
+              <h5 className="font-semibold text-teal-600 ">
+                {SelectedPkg?.locations}
+              </h5>
+            </div>
 
             {/* Overview text */}
-            <p className="text-gray-600 text-sm leading-relaxed">
+            <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line text-justify">
               {showFullOverview || !isLongText
                 ? overviewText
                 : overviewText.slice(0, 300) + "..."}
@@ -163,6 +154,19 @@ ${window.location.href}
                   </ul>
                 </div>
               )}
+            {/* Highlights */}
+            {Array.isArray(SelectedPkg?.highlights) &&
+              SelectedPkg.highlights.some((h) => h?.trim()) && (
+                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-4 mb-4">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    <span className="font-semibold text-teal-600">
+                      {SelectedPkg.highlights
+                        .filter((h) => h?.trim())
+                        .join(" - ")}
+                    </span>
+                  </p>
+                </div>
+              )}
           </div>
         );
       }
@@ -192,15 +196,18 @@ ${window.location.href}
                       </span>
                     </div>
                     <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
-                      {expandedDay === item.summary ? "−" : "+"}
+                      {expandedDay === item.description ? "−" : "+"}
                     </div>
                   </button>
                   {expandedDay === item.day && (
                     <div className="p-4 bg-white border-t animate-fade-in">
-                      <p className="text-gray-600 text-sm font-bold">
-                        {item.summary}
-                      </p>
-                      <p className="text-gray-600 text-sm">{item.details}</p>
+                      <ul className="list-disc pl-5 space-y-2 text-justify">
+                        {item.description.map((point, index) => (
+                          <li key={index} className="text-gray-600 text-sm ">
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </div>
@@ -647,7 +654,6 @@ ${window.location.href}
         </div>
       </div>
 
-     
       {selected?.lenght ? <FeaturedDestinations selected={selected} /> : ""}
     </div>
   );
