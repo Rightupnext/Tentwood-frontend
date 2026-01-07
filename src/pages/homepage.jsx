@@ -11,7 +11,7 @@ import Relatedtours from "../client/components/Relatedtours";
 
 // Other components (previously lazy)
 import Export from "../client/components/CityExplorer/CityExplorer";
-import TravelPromo from "../client/components/TravelPromo";
+import TravelPromo from "../client/components/TravelPromo/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery";
 import Related from "../client/components/Relatedtour";
 import SmartCityTourApp from "../client/components/SmartCityTourApp";
