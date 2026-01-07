@@ -7,14 +7,13 @@ import { fetchPackages } from "../store/slices/packageSlice";
 // Above-the-fold components
 import Banner from "../client/components/Banner";
 import ExploreDestinations from "../client/components/ExploreDestinations/ExploreDestinations";
-import Relatedtours from "../client/components/Relatedtours";
 
 // Other components (previously lazy)
 import Export from "../client/components/CityExplorer/CityExplorer";
 import TravelPromo from "../client/components/TravelPromo/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery/VideoGallery";
 import SmartCityTourApp from "../client/components/SmartCityTourApp/SmartCityTourApp";
-import Testimonials from "../client/components/Testimonal";
+import Testimonials from "../client/components/Testimonials/Testimonials";
 import TourCarousel from "../client/components/TourCarousel/TourCarousel";
 import TourCarousels from "../client/components/TourCarousels/TourCarousels";
 
@@ -63,7 +62,6 @@ function HomePage() {
         honeymoonTrips={honeymoon}
         GroupTrips={group}
       />
-      {/* <Outsidethe /> */}
       <Testimonials />
     </>
   );
