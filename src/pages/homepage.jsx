@@ -13,7 +13,7 @@ import Relatedtours from "../client/components/Relatedtours";
 import Export from "../client/components/CityExplorer/CityExplorer";
 import TravelPromo from "../client/components/TravelPromo/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery/VideoGallery";
-import SmartCityTourApp from "../client/components/SmartCityTourApp";
+import SmartCityTourApp from "../client/components/SmartCityTourApp/SmartCityTourApp";
 import Testimonials from "../client/components/Testimonal";
 import TourCarousel from "../client/components/TourCarousel/TourCarousel";
 
@@ -54,7 +54,7 @@ function HomePage() {
         indiaTrips={india}
         internationalTrips={international}
       />
-      <SmartCityTourApp packages={packages} /> 
+      <SmartCityTourApp packages={packages} />
       <Relatedtours
         packages={packages}
         Title3={Title3}
