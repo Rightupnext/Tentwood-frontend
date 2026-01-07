@@ -22,16 +22,15 @@ import PrivacyPolicy from "./client/components/PrivacyPolicy";
 import TravelSearch from "../src/client/components/Travel";
 import TravelShowcase from "./client/components/TravelShowcase";
 import TourPackagesPage from "./client/components/TourPackagesPage";
-const HomePage = lazy(() => import("./pages/homepage"));
-const AboutUs = lazy(() => import("./pages/Aboutus"));
-const Ensure = lazy(() => import("../src/client/components/Ensure"));
-const ContactUs = lazy(() => import("./client/components/Contact"));
-const Testimonials = lazy(() => import("./client/components/Testimonal"));
-const Thingtodo = lazy(() => import("../src/client/components/Thingtodo"));
-const TravelPackagesSingle = lazy(() =>
-  import("./client/components/TravelPackagesSingle")
-);
-const Travel = lazy(() => import("../src/client/components/Travel"));
+import HomePage from "./pages/homepage";
+import AboutUs from "./pages/Aboutus";
+import Ensure from "../src/client/components/Ensure";
+import ContactUs from "./client/components/Contact";
+import Testimonials from "./client/components/Testimonal";
+import Thingtodo from "../src/client/components/Thingtodo";
+import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
+import Travel from "../src/client/components/Travel";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -113,8 +112,8 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      <Footer />
       <WhatsAppFloat />
+      <Footer />
     </>
   );
 }

@@ -191,12 +191,7 @@ export default function TrustSection() {
           </svg>
         </div>
       </div>
-      <style>{`
-        @keyframes pulse-slow{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.2;transform:scale(1.05)}}
-        @keyframes scale-in{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
-        .animate-pulse-slow{animation:pulse-slow 6s ease-in-out infinite}
-        .animate-scale-in{animation:scale-in 0.5s ease-out forwards;opacity:0}
-      `}</style>
+    
     </div>
   );
 }

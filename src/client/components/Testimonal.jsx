@@ -68,39 +68,7 @@ export default function Testimonials() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-12 sm:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <style>{`
-@keyframes float{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-25px) rotate(3deg)}}
-@keyframes float-reverse{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(25px) rotate(-3deg)}}
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 30px rgba(60,173,155,0.6),0 0 60px rgba(60,173,155,0.4)}50%{box-shadow:0 0 50px rgba(60,173,155,0.8),0 0 100px rgba(60,173,155,0.6)}}
-@keyframes slideInUp{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideInDown{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideInLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideInRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes scaleIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
-@keyframes scaleInBounce{0%{opacity:0;transform:scale(0.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes borderGlow{0%,100%{border-color:rgba(60,173,155,0.3)}50%{border-color:rgba(60,173,155,0.8)}}
-@keyframes ripple{0%{transform:scale(0.8);opacity:1}100%{transform:scale(2.5);opacity:0}}
-@keyframes slideContent{from{opacity:0;transform:translateX(${
-        direction === "right" ? "50px" : "-50px"
-      })}to{opacity:1;transform:translateX(0)}}
-
-.animate-float{animation:float 6s ease-in-out infinite}
-.animate-float-reverse{animation:float-reverse 5s ease-in-out infinite}
-.animate-pulse-glow{animation:pulse-glow 3s ease-in-out infinite}
-.animate-slideInUp{animation:slideInUp 0.8s cubic-bezier(0.25,0.46,0.45,0.94) both}
-.animate-slideInDown{animation:slideInDown 0.8s cubic-bezier(0.25,0.46,0.45,0.94) both}
-.animate-slideInLeft{animation:slideInLeft 0.8s cubic-bezier(0.25,0.46,0.45,0.94) both}
-.animate-slideInRight{animation:slideInRight 0.8s cubic-bezier(0.25,0.46,0.45,0.94) both}
-.animate-fadeIn{animation:fadeIn 1s ease-out both}
-.animate-scaleIn{animation:scaleIn 0.8s cubic-bezier(0.25,0.46,0.45,0.94) both}
-.animate-scaleInBounce{animation:scaleInBounce 0.8s cubic-bezier(0.68,-0.55,0.265,1.55) both}
-.animate-rotate{animation:rotate 20s linear infinite}
-.animate-borderGlow{animation:borderGlow 2s ease-in-out infinite}
-.animate-slideContent{animation:slideContent 0.6s cubic-bezier(0.25,0.46,0.45,0.94) both}
-`}</style>
+      
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 opacity-20">

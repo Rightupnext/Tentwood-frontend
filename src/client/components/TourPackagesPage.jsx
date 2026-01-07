@@ -168,8 +168,10 @@ const TourPackagesPage = ({ slide = true }) => {
   const selectedCategoryLabel = CATEGORY_MAP[tripType] || "";
 
   useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
+    if (packages.length === 0) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
 
   useEffect(() => {
     if (!packages.length) return;

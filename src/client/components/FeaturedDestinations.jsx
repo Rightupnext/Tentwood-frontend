@@ -236,15 +236,7 @@ export default function FeaturedDestinations({ selected }) {
         </div>
       </div>
 
-      <style>{`
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-        .animate-fadeIn{animation:fadeIn 0.6s ease-out forwards}
-        .animate-slideUp{animation:slideUp 0.7s ease-out forwards}
-        .animate-scaleIn{animation:scaleIn 0.6s ease-out forwards}
-        .scrollbar-hide::-webkit-scrollbar{display:none}
-      `}</style>
+    
     </div>
   );
 }

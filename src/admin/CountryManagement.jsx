@@ -39,8 +39,10 @@ const CountryManagement = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(fetchDestinations());
-  }, [dispatch]);
+    if (destinations.length === 0) {
+      dispatch(fetchDestinations());
+    }
+  }, [dispatch, destinations.length]);
 
   const handleSearch = (value) => setSearchText(value);
 

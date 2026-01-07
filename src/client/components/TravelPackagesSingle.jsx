@@ -135,7 +135,6 @@ export default function TravelPackagesSingle() {
                   }`}
                   alt="Phuket Beach"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  
                   decoding="async"
                 />
               </div>
@@ -205,7 +204,6 @@ export default function TravelPackagesSingle() {
                   }`}
                   alt="Egypt Pyramids"
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                
                   decoding="async"
                 />
               </div>
@@ -282,79 +280,6 @@ export default function TravelPackagesSingle() {
             </div>
           </div>
         </div>
-
-        {/* Keyframes */}
-        <style jsx>{`
-          @keyframes slide-in-left {
-            from {
-              opacity: 0;
-              transform: translateX(-20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
-          @keyframes scale-in {
-            from {
-              opacity: 0;
-              transform: scale(0.8);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-          @keyframes float {
-            0%,
-            100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-10px);
-            }
-          }
-          @keyframes pulse-scale {
-            0%,
-            100% {
-              transform: scale(1);
-            }
-            50% {
-              transform: scale(1.05);
-            }
-          }
-          @keyframes spin-slow {
-            from {
-              transform: rotate(0);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-
-          .animate-slide-in-left {
-            animation: slide-in-left 0.6s ease-out both;
-          }
-          .animate-scale-in {
-            animation: scale-in 0.6s ease-out both;
-          }
-          .animate-float {
-            animation: float 3s ease-in-out infinite;
-          }
-          .animate-pulse-scale {
-            animation: pulse-scale 2s ease-in-out infinite;
-          }
-          .animate-spin-slow {
-            animation: spin-slow 20s linear infinite;
-          }
-          .bg-gradient-radial {
-            background: radial-gradient(
-              circle,
-              rgba(255, 255, 255, 0.2),
-              transparent 70%
-            );
-          }
-        `}</style>
       </div>
     </>
   );

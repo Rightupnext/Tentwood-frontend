@@ -77,8 +77,11 @@ export default function TouristPackageCreator() {
   const [bannerPreview, setBannerPreview] = useState(null);
   const [cardPreview, setCardPreview] = useState(null);
   useEffect(() => {
+  if (destinations.length === 0) {
     dispatch(fetchDestinations());
-  }, [dispatch]);
+  }
+}, [dispatch, destinations.length]);
+
 
   const handleMenuClick = (e) => {
     setActiveSection(e.key);
