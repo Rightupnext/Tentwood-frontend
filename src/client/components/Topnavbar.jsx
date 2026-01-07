@@ -16,16 +16,7 @@ export default function TopNavbar() {
         </div>
       </div>
 
-      <style>{`
-        .scroll-text {
-          display: inline-flex;
-          animation: scroll 20s linear infinite;
-        }
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
+     
     </>
   );
 }

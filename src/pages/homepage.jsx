@@ -6,7 +6,7 @@ import { fetchPackages } from "../store/slices/packageSlice";
 
 // Above-the-fold components
 import Banner from "../client/components/Banner";
-import ExploreDestinations from "../client/components/Destination";
+import ExploreDestinations from "../client/components/ExploreDestinations/ExploreDestinations";
 import Relatedtours from "../client/components/Relatedtours";
 
 // Other components (previously lazy)
@@ -54,7 +54,7 @@ function HomePage() {
         indiaTrips={india}
         internationalTrips={international}
       />
-      <SmartCityTourApp packages={packages} />
+      <SmartCityTourApp packages={packages} /> 
       <Relatedtours
         packages={packages}
         Title3={Title3}

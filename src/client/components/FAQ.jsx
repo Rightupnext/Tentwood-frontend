@@ -144,71 +144,7 @@ export default function FAQ() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes ken-burns {
-          0% {
-            transform: scale(1);
-          }
-          100% {
-            transform: scale(1.12);
-          }
-        }
-        @keyframes pulse-glow {
-          0%,
-          100% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
-              0 0 30px rgba(255, 255, 255, 0.3);
-          }
-          50% {
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
-              0 0 50px rgba(255, 255, 255, 0.5),
-              0 0 70px rgba(59, 130, 246, 0.4);
-          }
-        }
-        @keyframes float-slow {
-          0%,
-          100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-25px) translateX(15px);
-          }
-        }
-        @keyframes float-medium {
-          0%,
-          100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-35px) translateX(-20px);
-          }
-        }
-        @keyframes float-fast {
-          0%,
-          100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-20px) translateX(10px);
-          }
-        }
-
-        .animate-ken-burns {
-          animation: ken-burns 25s ease-out infinite alternate;
-        }
-        .animate-pulse-glow {
-          animation: pulse-glow 3s ease-in-out infinite;
-        }
-        .animate-float-slow {
-          animation: float-slow 6s ease-in-out infinite;
-        }
-        .animate-float-medium {
-          animation: float-medium 7s ease-in-out infinite;
-        }
-        .animate-float-fast {
-          animation: float-fast 5s ease-in-out infinite;
-        }
-      `}</style>
+  
     </div>
   );
 }

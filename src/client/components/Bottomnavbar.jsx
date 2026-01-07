@@ -8,7 +8,7 @@ import { fetchPackages } from "../../store/slices/packageSlice";
 
 const { useBreakpoint } = Grid;
 
-export default function BottomNavbar() {
+ function BottomNavbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const screens = useBreakpoint();
@@ -16,7 +16,8 @@ export default function BottomNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { list:packages = [] } = useSelector((state) => state.packages);
+  const packages = useSelector((state) => state.packages.list);
+
 
   // 🔹 Category → Route map
   const categoryRouteMap = {
@@ -28,37 +29,45 @@ export default function BottomNavbar() {
 
   // 🔹 Fetch packages
   useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
+    if (packages.length === 0) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
 
   // 🔹 Scroll effect
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    let last = false;
+
+    const onScroll = () => {
+      const current = window.scrollY > 20;
+      if (current !== last) {
+        last = current;
+        setIsScrolled(current);
+      }
+    };
+
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // 🔹 Group Destinations by Category
-  const destinationsByCategory = useMemo(() => {
-    const map = {};
-
-    packages.forEach((pkg) => {
-      pkg.tripCategories?.forEach((category) => {
-        if (!map[category]) map[category] = new Map();
-
-        if (pkg.Destination?._id) {
-          map[category].set(pkg.Destination._id, pkg.Destination.name);
-        }
-      });
+ const destinationsByCategory = useMemo(() => {
+  const map = {};
+  packages.forEach((pkg) => {
+    pkg.tripCategories?.forEach((category) => {
+      if (!map[category]) map[category] = new Map();
+      if (pkg.Destination?._id) {
+        map[category].set(pkg.Destination._id, pkg.Destination.name);
+      }
     });
+  });
+  Object.keys(map).forEach((key) => {
+    map[key] = Array.from(map[key].values());
+  });
+  return map;
+}, [packages]);
 
-    // Convert Map → Array
-    Object.keys(map).forEach((key) => {
-      map[key] = Array.from(map[key].values());
-    });
 
-    return map;
-  }, [packages]);
 
   // 🔹 Menu structure
   const menuItems = [
@@ -91,7 +100,18 @@ export default function BottomNavbar() {
         </Link>
       ),
     }));
-
+const dropdownCache = useMemo(() => {
+  const cache = {};
+  menuItems.forEach(item => {
+    if (item.submenu) {
+      cache[item.name] = getDropdownItems(
+        item.submenu,
+        item.routeKey
+      );
+    }
+  });
+  return cache;
+}, [menuItems]);
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-500 ${
@@ -121,19 +141,13 @@ export default function BottomNavbar() {
                   <Dropdown
                     key={item.name}
                     trigger={["hover"]}
-                    menu={{
-                      items: getDropdownItems(
-                        item.submenu,
-                        item.routeKey
-                      ),
-                    }}
+                    menu={{ items: dropdownCache[item.name] }}
+
                   >
                     <Button
                       type="text"
                       className={`font-medium ${
-                        isScrolled
-                          ? "text-gray-700"
-                          : "!text-white !font-bold"
+                        isScrolled ? "text-gray-700" : "!text-white !font-bold"
                       }`}
                     >
                       {item.name} <DownOutlined />
@@ -167,13 +181,7 @@ export default function BottomNavbar() {
           {!screens.xl && (
             <Button
               type="text"
-              icon={
-                drawerVisible ? (
-                  <CloseOutlined />
-                ) : (
-                  <MenuOutlined />
-                )
-              }
+              icon={drawerVisible ? <CloseOutlined /> : <MenuOutlined />}
               onClick={() => setDrawerVisible(!drawerVisible)}
               className={isScrolled ? "text-gray-700" : "text-white"}
             />
@@ -204,10 +212,7 @@ export default function BottomNavbar() {
               </Menu.SubMenu>
             ) : (
               <Menu.Item key={item.name}>
-                <Link
-                  to={item.link}
-                  onClick={() => setDrawerVisible(false)}
-                >
+                <Link to={item.link} onClick={() => setDrawerVisible(false)}>
                   {item.name}
                 </Link>
               </Menu.Item>
@@ -218,3 +223,4 @@ export default function BottomNavbar() {
     </nav>
   );
 }
+export default React.memo(BottomNavbar);

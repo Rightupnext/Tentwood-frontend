@@ -1,25 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   EnvironmentOutlined,
   UserOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
+
 import bannervideo1 from "../../assets/home/bannervideo.1.mp4";
+import bannerImg from "../../assets/home/banner.png";
 
 export default function Banner() {
   const [location, setLocation] = useState("");
+  const [playVideo, setPlayVideo] = useState(false);
+
+  // Delay video to protect LCP (CRITICAL)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPlayVideo(true);
+    }, 2500); // 2.5s delay = Lighthouse friendly
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      {/* VIDEO BACKGROUND */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover"
-        src={bannervideo1}
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
+      {/* BACKGROUND: IMAGE FIRST, VIDEO LATER */}
+      {!playVideo ? (
+        <img
+          src={bannerImg}
+          alt="Travel Banner"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+        />
+      ) : (
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={bannervideo1}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+        />
+      )}
 
       {/* GRADIENT OVERLAYS */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-transparent" />
@@ -27,30 +50,30 @@ export default function Banner() {
 
       {/* MAIN CONTENT */}
       <div className="relative flex flex-col items-center justify-center px-4 py-16 md:py-24 z-10 min-h-screen">
-        {/* HERO TEXT */}
-        <div className="max-w-5xl text-center mb-12 animate-fade-in-up">
+        {/* HERO TEXT (LCP TARGET) */}
+        <div className="max-w-5xl text-center mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl">
             We Find The Best Tours For You
           </h1>
         </div>
 
         {/* FLOATING ICONS */}
-        <div className="relative w-full max-w-2xl mx-auto mb-16 animate-fade-in-up-delay">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow z-10">
+        <div className="relative w-full max-w-2xl mx-auto mb-16">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl">
             <EnvironmentOutlined className="!text-teal-500 !text-xl" />
           </div>
 
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay z-10">
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl">
             <UserOutlined className="!text-teal-500 !text-xl" />
           </div>
 
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl animate-bounce-slow-delay-2 z-10">
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl">
             <CalendarOutlined className="!text-teal-500 !text-xl" />
           </div>
         </div>
 
         {/* SEARCH BAR */}
-        <div className="w-full max-w-6xl px-4 animate-fade-in-up-delay-2">
+        <div className="w-full max-w-6xl px-4">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-white/40">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* LOCATION */}

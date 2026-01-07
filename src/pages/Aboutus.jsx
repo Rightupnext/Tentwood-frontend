@@ -336,68 +336,7 @@ export default function AboutUs() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-        }
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes fly-across {
-          0% {
-            transform: translateX(0) translateY(0);
-          }
-          100% {
-            transform: translateX(1000px) translateY(-20px);
-          }
-        }
-        @keyframes gradient {
-          0%,
-          100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        .animate-fly-across {
-          animation: fly-across 15s linear infinite;
-        }
-        .animate-gradient {
-          background-size: 200% auto;
-          animation: gradient 4s ease infinite;
-        }
-      `}</style>
+    
       <TrustSection />
       <FAQ />
     </div>
