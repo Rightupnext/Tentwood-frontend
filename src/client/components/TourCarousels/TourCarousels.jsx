@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import Section from "./Section";
+import Section from "../TourCarousel/Section";
 
 export default function TourCarousels({
   Title4,

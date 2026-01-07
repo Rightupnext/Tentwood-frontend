@@ -121,15 +121,21 @@ export default function CityExplorer({ packages }) {
         )}
 
         {/* Scroll Buttons */}
-        <div className="flex justify-end gap-2 mb-4">
-          <button onClick={scrollLeft} className="btn-circle">
-            <LeftOutlined />
+
+        <div className="flex justify-end gap-2 sm:gap-3">
+          <button
+            onClick={scrollLeft}
+            className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            <LeftOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !!text-white" />
           </button>
-          <button onClick={scrollRight} className="btn-circle">
-            <RightOutlined />
+          <button
+            onClick={scrollRight}
+            className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
+          >
+            <RightOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !text-white" />
           </button>
         </div>
-
         {/* Cards */}
         <div
           ref={scrollRef}

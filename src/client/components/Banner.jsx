@@ -30,7 +30,7 @@ export default function Banner() {
           alt="Travel Banner"
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
-          fetchpriority="high"
+          fetchPriority="high"
         />
       ) : (
         <video
