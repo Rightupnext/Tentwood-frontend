@@ -10,7 +10,7 @@ import ExploreDestinations from "../client/components/ExploreDestinations/Explor
 import Relatedtours from "../client/components/Relatedtours";
 
 // Other components (previously lazy)
-import Export from "../client/components/Export";
+import Export from "../client/components/CityExplorer/CityExplorer";
 import TravelPromo from "../client/components/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery";
 import Related from "../client/components/Relatedtour";
