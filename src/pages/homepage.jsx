@@ -16,6 +16,7 @@ import VideoGallery from "../client/components/VideoGallery/VideoGallery";
 import SmartCityTourApp from "../client/components/SmartCityTourApp/SmartCityTourApp";
 import Testimonials from "../client/components/Testimonal";
 import TourCarousel from "../client/components/TourCarousel/TourCarousel";
+import TourCarousels from "../client/components/TourCarousels/TourCarousels";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ function HomePage() {
         internationalTrips={international}
       />
       <SmartCityTourApp packages={packages} />
-      <Relatedtours
+      <TourCarousels
         packages={packages}
         Title3={Title3}
         Title4={Title4}
