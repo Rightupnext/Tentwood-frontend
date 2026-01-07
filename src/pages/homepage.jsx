@@ -13,9 +13,9 @@ import Relatedtours from "../client/components/Relatedtours";
 import Export from "../client/components/CityExplorer/CityExplorer";
 import TravelPromo from "../client/components/TravelPromo/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery/VideoGallery";
-import Related from "../client/components/Relatedtour";
 import SmartCityTourApp from "../client/components/SmartCityTourApp";
 import Testimonials from "../client/components/Testimonal";
+import TourCarousel from "../client/components/TourCarousel/TourCarousel";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ function HomePage() {
       <Export packages={packages} />
       <TravelPromo />
       <VideoGallery />
-      <Related
+      <TourCarousel
         packages={packages}
         Title1={Title1}
         Title2={Title2}
