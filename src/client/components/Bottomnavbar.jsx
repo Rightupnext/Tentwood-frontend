@@ -4,12 +4,10 @@ import { Dropdown, Button, Grid, Drawer, Menu } from "antd";
 import { DownOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/home/logo.2.png";
-import { fetchPackages } from "../../store/slices/packageSlice";
 
 const { useBreakpoint } = Grid;
 
- function BottomNavbar() {
-  const dispatch = useDispatch();
+function BottomNavbar() {
   const navigate = useNavigate();
   const screens = useBreakpoint();
 
@@ -18,7 +16,6 @@ const { useBreakpoint } = Grid;
 
   const packages = useSelector((state) => state.packages.list);
 
-
   // 🔹 Category → Route map
   const categoryRouteMap = {
     "International Trips": "international-trips",
@@ -26,13 +23,6 @@ const { useBreakpoint } = Grid;
     "Group Tours": "group-tours",
     "Honeymoon Packages": "honeymoon-packages",
   };
-
-  // 🔹 Fetch packages
-  useEffect(() => {
-    if (packages.length === 0) {
-      dispatch(fetchPackages());
-    }
-  }, [dispatch, packages.length]);
 
   // 🔹 Scroll effect
   useEffect(() => {
@@ -51,23 +41,21 @@ const { useBreakpoint } = Grid;
   }, []);
 
   // 🔹 Group Destinations by Category
- const destinationsByCategory = useMemo(() => {
-  const map = {};
-  packages.forEach((pkg) => {
-    pkg.tripCategories?.forEach((category) => {
-      if (!map[category]) map[category] = new Map();
-      if (pkg.Destination?._id) {
-        map[category].set(pkg.Destination._id, pkg.Destination.name);
-      }
+  const destinationsByCategory = useMemo(() => {
+    const map = {};
+    packages.forEach((pkg) => {
+      pkg.tripCategories?.forEach((category) => {
+        if (!map[category]) map[category] = new Map();
+        if (pkg.Destination?._id) {
+          map[category].set(pkg.Destination._id, pkg.Destination.name);
+        }
+      });
     });
-  });
-  Object.keys(map).forEach((key) => {
-    map[key] = Array.from(map[key].values());
-  });
-  return map;
-}, [packages]);
-
-
+    Object.keys(map).forEach((key) => {
+      map[key] = Array.from(map[key].values());
+    });
+    return map;
+  }, [packages]);
 
   // 🔹 Menu structure
   const menuItems = [
@@ -100,18 +88,15 @@ const { useBreakpoint } = Grid;
         </Link>
       ),
     }));
-const dropdownCache = useMemo(() => {
-  const cache = {};
-  menuItems.forEach(item => {
-    if (item.submenu) {
-      cache[item.name] = getDropdownItems(
-        item.submenu,
-        item.routeKey
-      );
-    }
-  });
-  return cache;
-}, [menuItems]);
+  const dropdownCache = useMemo(() => {
+    const cache = {};
+    menuItems.forEach((item) => {
+      if (item.submenu) {
+        cache[item.name] = getDropdownItems(item.submenu, item.routeKey);
+      }
+    });
+    return cache;
+  }, [menuItems]);
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-500 ${
@@ -142,12 +127,11 @@ const dropdownCache = useMemo(() => {
                     key={item.name}
                     trigger={["hover"]}
                     menu={{ items: dropdownCache[item.name] }}
-
                   >
                     <Button
                       type="text"
                       className={`font-medium ${
-                        isScrolled ? "text-gray-700" : "!text-white !font-bold"
+                        isScrolled ? "text-gray-700 !font-medium" : "!text-white !font-medium"
                       }`}
                     >
                       {item.name} <DownOutlined />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import TourCard from "./TourCard";
+import TourCard from "../TourCarousel/TourCard";
 import { categories } from "./categories";
 import { generateRatings } from "./utils";
 
@@ -51,7 +51,7 @@ export default function CityExplorer({ packages }) {
   const heroPackage = filteredPackages[0];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-16 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff] py-16 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Destination Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">

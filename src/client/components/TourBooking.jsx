@@ -593,7 +593,7 @@ ${window.location.href}
                     <Form.Item
                       label="No. Of Guests"
                       name="guests"
-                      initialValue={2}
+                      initialValue={1}
                       rules={[
                         {
                           required: true,

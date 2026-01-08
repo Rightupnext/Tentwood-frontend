@@ -36,7 +36,7 @@ const toggleFilter = (item, selected, setter) => {
   );
 };
 
-export default function LondonActivities() {
+export default function CategoryFilter() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { tripType, country, city } = useParams();

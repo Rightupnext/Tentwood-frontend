@@ -1,13 +1,7 @@
 import React from "react";
 import { RightOutlined } from "@ant-design/icons";
 
-export default function PromoCard({
-  color,
-  bg,
-  title,
-  subtitle,
-  images,
-}) {
+export default function PromoCard({ color, bg, title, subtitle, images,onNavigate }) {
   return (
     <div
       className={`${bg} ${color} rounded-3xl p-8 overflow-hidden relative group cursor-pointer transition-all duration-700 hover:scale-[1.05]`}
@@ -18,9 +12,9 @@ export default function PromoCard({
         </span>
 
         <h3 className="text-4xl font-extrabold mb-3">{title}</h3>
-        <p className="text-3xl font-extrabold mb-8">{subtitle}</p>
+        <p className="text-3xl font-extrabold mb-8 line-clamp-2 pb-1">{subtitle}</p>
 
-        <button className="cursor-pointer group/btn px-7 py-3 bg-black/80 text-white rounded-full font-bold">
+        <button onClick={onNavigate} className="cursor-pointer group/btn px-7 py-3 bg-black/80 text-white rounded-full font-bold">
           <span className="flex items-center gap-3">
             View More
             <RightOutlined />
@@ -33,7 +27,9 @@ export default function PromoCard({
           <div
             key={i}
             className="w-24 h-24 rounded-2xl bg-cover bg-center shadow-2xl"
-            style={{ backgroundImage: `url(${img})` }}
+            style={{
+              backgroundImage: `url(${import.meta.env.VITE_BACKEND_URL}${img})`,
+            }}
           />
         ))}
       </div>

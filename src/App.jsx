@@ -27,20 +27,26 @@ import AboutUs from "./pages/Aboutus";
 import Ensure from "../src/client/components/Ensure";
 import ContactUs from "./client/components/Contact";
 import Testimonials from "./client/components/Testimonials/Testimonials";
-import Thingtodo from "../src/client/components/Thingtodo";
+import Thingtodo from "./client/components/CategoryFilter";
 import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
 import Travel from "../src/client/components/Travel";
-
+import { fetchPackages } from "./store/slices/packageSlice";
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const User = useSelector((state) => state.users.auth.user);
   const isAdminRoute = location.pathname.startsWith("/admin");
+    const packages = useSelector((state) => state.packages.list);
   // console.log("User", User);
   useEffect(() => {
     dispatch(fetchMe());
   }, [dispatch]);
+  useEffect(() => {
+    if (packages.length === 0) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
   return (
     <>
       <ScrollToTop />
@@ -49,7 +55,7 @@ function App() {
 
       <Routes>
         {/* Home Page */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage packages={packages} />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/:tripType/:destination" element={<TourPackagesPage />} />
         <Route path="/travel" element={<TravelSearch />} />
@@ -61,7 +67,6 @@ function App() {
           path="/:tripType/:destination/:packageId"
           element={<TravelPackagesSingle />}
         />
-        
 
         {/* About Page */}
         <Route path="/about-us" element={<AboutUs />} />
@@ -101,8 +106,7 @@ function App() {
           {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
           <Route path="" index element={<AnalyticsDashboard />} />
           <Route path="countries" element={<CountryManagement />} />
-        
-         
+
           {/* <Route path="travel" element={<TravelForm />} /> */}
           <Route path="travel" element={<TouristPackageCreator />} />
           <Route path="package">

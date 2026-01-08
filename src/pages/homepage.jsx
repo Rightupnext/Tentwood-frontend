@@ -9,7 +9,7 @@ import Banner from "../client/components/Banner";
 import ExploreDestinations from "../client/components/ExploreDestinations/ExploreDestinations";
 
 // Other components (previously lazy)
-import Export from "../client/components/CityExplorer/CityExplorer";
+import CityExplorer from "../client/components/CityExplorer/CityExplorer";
 import TravelPromo from "../client/components/TravelPromo/TravelPromo";
 import VideoGallery from "../client/components/VideoGallery/VideoGallery";
 import SmartCityTourApp from "../client/components/SmartCityTourApp/SmartCityTourApp";
@@ -18,7 +18,6 @@ import TourCarousel from "../client/components/TourCarousel/TourCarousel";
 import TourCarousels from "../client/components/TourCarousels/TourCarousels";
 
 function HomePage() {
-  const dispatch = useDispatch();
   const {
     list: packages,
     india,
@@ -27,13 +26,7 @@ function HomePage() {
     group,
   } = useSelector((state) => state.packages);
 
-  /* ================= FETCH API ================= */
-  useEffect(() => {
-    // Fetch only if packages are empty
-    if (!packages.length) {
-      dispatch(fetchPackages());
-    }
-  }, [dispatch, packages.length]);
+
 
   const Title1 = "InterNational Trip's";
   const Title2 = "India Trip's";
@@ -44,8 +37,8 @@ function HomePage() {
     <>
       <Banner />
       <ExploreDestinations packages={packages} />
-      <Export packages={packages} />
-      <TravelPromo />
+      <CityExplorer packages={packages} />
+      <TravelPromo packages={packages}/>
       <VideoGallery />
       <TourCarousel
         packages={packages}

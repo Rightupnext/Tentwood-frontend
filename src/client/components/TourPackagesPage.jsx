@@ -190,9 +190,10 @@ const TourPackagesPage = ({ slide = true }) => {
     const related = packages.filter(
       (pkg) =>
         normalize(pkg.Destination?.name) === normalize(destination) &&
-        !pkg.tripCategories?.some(
+        pkg.tripCategories?.some(
           (cat) => normalize(cat) === normalize(selectedCategory)
-        )
+        ) &&
+        pkg._id !== main[0]?._id
     );
 
     setFilteredPackages(main);
@@ -212,7 +213,7 @@ const TourPackagesPage = ({ slide = true }) => {
       .filter(Boolean) // remove nulls
       .slice(0, 5); // limit to 5 slides
 
-    console.log("heroImages", heroImages);
+  
     if (heroImages.length > 0) {
       setBannerImages(heroImages);
     } else {
@@ -297,7 +298,7 @@ const TourPackagesPage = ({ slide = true }) => {
           <Button
             type="primary"
             size="large"
-            className="w-fit bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+            className="w-fit !bg-yellow-500 !hover:bg-yellow-600 !text-black font-semibold"
           >
             Request a Callback
           </Button>

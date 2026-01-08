@@ -39,7 +39,7 @@ export default function ExploreDestinations({ packages = [] }) {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-teal-50 py-16 overflow-hidden"
+      className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff] py-16 overflow-hidden"
     >
       {/* HEADER – paints immediately */}
       <div className="max-w-7xl mx-auto text-center mb-14">
