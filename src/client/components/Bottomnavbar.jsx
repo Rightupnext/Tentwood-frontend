@@ -129,9 +129,12 @@ function BottomNavbar() {
                     menu={{ items: dropdownCache[item.name] }}
                   >
                     <Button
+                    onClick={() => navigate(`/${item.routeKey}`)}
                       type="text"
                       className={`font-medium ${
-                        isScrolled ? "text-gray-700 !font-medium" : "!text-white !font-medium"
+                        isScrolled
+                          ? "text-gray-700 !font-medium"
+                          : "!text-white !font-medium"
                       }`}
                     >
                       {item.name} <DownOutlined />

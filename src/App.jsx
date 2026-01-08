@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import DashboardLayout from "./admin/DashboardLayout";
 import Auth from "./admin/Auth";
 import PublicRoute from "./PublicRoute";
@@ -14,7 +15,6 @@ import BottomNavbar from "./client/components/Bottomnavbar";
 import Topnavbar from "./client/components/Topnavbar";
 import FAQ from "./client/components/FAQ";
 import ScrollToTop from "./ScrollToTop";
-import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/slices/userSlice";
 import WhatsAppFloat from "./WhatsAppFloat";
 import TermsAndConditions from "./client/components/TermsAndConditions";
@@ -24,20 +24,20 @@ import TravelShowcase from "./client/components/TravelShowcase";
 import TourPackagesPage from "./client/components/TourPackagesPage";
 import HomePage from "./pages/homepage";
 import AboutUs from "./pages/Aboutus";
-import Ensure from "../src/client/components/Ensure";
 import ContactUs from "./client/components/Contact";
 import Testimonials from "./client/components/Testimonials/Testimonials";
-import Thingtodo from "./client/components/CategoryFilter";
 import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
 import Travel from "../src/client/components/Travel";
 import { fetchPackages } from "./store/slices/packageSlice";
+import CategoryFilter from "./client/components/CategoryFilter";
+import EnhancedTourFilters from "./client/components/TourFilters/EnhancedTourFilters";
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const User = useSelector((state) => state.users.auth.user);
   const isAdminRoute = location.pathname.startsWith("/admin");
-    const packages = useSelector((state) => state.packages.list);
+  const packages = useSelector((state) => state.packages.list);
   // console.log("User", User);
   useEffect(() => {
     dispatch(fetchMe());
@@ -62,6 +62,7 @@ function App() {
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/TravelShowcase" element={<TravelShowcase />} />
+        <Route path=":tripType" element={<EnhancedTourFilters />} />
 
         <Route
           path="/:tripType/:destination/:packageId"
@@ -70,9 +71,6 @@ function App() {
 
         {/* About Page */}
         <Route path="/about-us" element={<AboutUs />} />
-
-        {/* Ensure Page */}
-        <Route path="/ensure" element={<Ensure />} />
 
         {/* Contact Page */}
         <Route path="/contact" element={<ContactUs />} />
