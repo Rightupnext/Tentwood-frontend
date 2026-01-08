@@ -12,22 +12,25 @@ const TourCard = memo(({ t, i }) => {
   const [hover, setHover] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
 
-  const handleNavigate = () => {
-    const TRIP_ROUTE_MAP = {
-      "India Trips": "india-trips",
-      "International Trips": "international-trips",
-      "Honeymoon Packages": "honeymoon-packages",
-      "Group Tour": "group-tour",
-    };
+  const TRIP_ROUTE_MAP = {
+    "India Trips": "india-trips",
+    "International Trips": "international-trips",
+    "Honeymoon Packages": "honeymoon-packages",
+    "Group Tour": "group-tour",
+  };
 
-    const prefix = TRIP_ROUTE_MAP[t?.tripCategory];
-    if (!prefix) return;
+  const handleNavigate = (a) => {
+    const category = a?.tripCategories?.[0];
+    const tripPrefix = TRIP_ROUTE_MAP[category];
+    if (!tripPrefix) return;
 
     navigate(
-      `/${prefix}/${t?.Destination?.name
+      `/${tripPrefix}/${a?.Destination?.name
+        ?.toLowerCase()
+        .replace(/\s+/g, "-")}/${a?.packageTitle
         ?.toLowerCase()
         .replace(/\s+/g, "-")}`,
-      { state: { id: t?._id } }
+      { state: { id: a?._id } }
     );
   };
 
@@ -58,15 +61,22 @@ const TourCard = memo(({ t, i }) => {
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
-          <StarOutlined className="w-3 h-3 fill-white" />
-          {t.tripCategory}
+        <div className="absolute top-3 right-3 flex flex-wrap gap-2">
+          {t.tripCategories.map((category, index) => (
+            <div
+              key={index}
+              className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110"
+            >
+              <StarOutlined className="w-3 h-3 fill-white" />
+              {category}
+            </div>
+          ))}
         </div>
 
         {hover && (
           <div className="absolute inset-0 flex items-center justify-center">
             <button
-              onClick={handleNavigate}
+              onClick={() => handleNavigate(t)}
               className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 shadow-2xl"
             >
               <span className="text-sm font-bold text-gray-900">
@@ -104,9 +114,7 @@ const TourCard = memo(({ t, i }) => {
                 )
               )}
             </div>
-            <span className="text-xs text-gray-500">
-              {t.rating} reviews
-            </span>
+            <span className="text-xs text-gray-500">{t.rating} reviews</span>
           </div>
 
           <div className="text-right">

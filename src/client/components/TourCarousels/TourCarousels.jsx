@@ -22,7 +22,7 @@ export default function TourCarousels({
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff] p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <Section
           title={Title3}

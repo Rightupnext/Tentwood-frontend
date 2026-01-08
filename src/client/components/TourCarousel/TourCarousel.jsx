@@ -17,7 +17,7 @@ export default function TourCarousel({ Title1, Title2, internationalTrips, india
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff] p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <Section title={Title1} tours={internationalTrips || []} refEl={r1} sc={sc1} setSc={setSc1} idx={0} />
         <Section title={Title2} tours={indiaTrips || []} refEl={r2} sc={sc2} setSc={setSc2} idx={1} />

@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import DashboardLayout from "./admin/DashboardLayout";
 import Auth from "./admin/Auth";
 import PublicRoute from "./PublicRoute";
@@ -14,7 +15,6 @@ import BottomNavbar from "./client/components/Bottomnavbar";
 import Topnavbar from "./client/components/Topnavbar";
 import FAQ from "./client/components/FAQ";
 import ScrollToTop from "./ScrollToTop";
-import { useDispatch, useSelector } from "react-redux";
 import { fetchMe } from "./store/slices/userSlice";
 import WhatsAppFloat from "./WhatsAppFloat";
 import TermsAndConditions from "./client/components/TermsAndConditions";
@@ -24,23 +24,29 @@ import TravelShowcase from "./client/components/TravelShowcase";
 import TourPackagesPage from "./client/components/TourPackagesPage";
 import HomePage from "./pages/homepage";
 import AboutUs from "./pages/Aboutus";
-import Ensure from "../src/client/components/Ensure";
 import ContactUs from "./client/components/Contact";
 import Testimonials from "./client/components/Testimonials/Testimonials";
-import Thingtodo from "../src/client/components/Thingtodo";
 import TravelPackagesSingle from "./client/components/TravelPackagesSingle";
 import Travel from "../src/client/components/Travel";
-
+import { fetchPackages } from "./store/slices/packageSlice";
+import CategoryFilter from "./client/components/CategoryFilter";
+import EnhancedTourFilters from "./client/components/TourFilters/EnhancedTourFilters";
 
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
   const User = useSelector((state) => state.users.auth.user);
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const packages = useSelector((state) => state.packages.list);
   // console.log("User", User);
   useEffect(() => {
     dispatch(fetchMe());
   }, [dispatch]);
+  useEffect(() => {
+    if (packages.length === 0) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages.length]);
   return (
     <>
       <ScrollToTop />
@@ -49,25 +55,22 @@ function App() {
 
       <Routes>
         {/* Home Page */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage packages={packages} />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/:tripType/:destination" element={<TourPackagesPage />} />
         <Route path="/travel" element={<TravelSearch />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/TravelShowcase" element={<TravelShowcase />} />
+        <Route path=":tripType" element={<EnhancedTourFilters />} />
 
         <Route
           path="/:tripType/:destination/:packageId"
           element={<TravelPackagesSingle />}
         />
-        
 
         {/* About Page */}
         <Route path="/about-us" element={<AboutUs />} />
-
-        {/* Ensure Page */}
-        <Route path="/ensure" element={<Ensure />} />
 
         {/* Contact Page */}
         <Route path="/contact" element={<ContactUs />} />
@@ -101,8 +104,7 @@ function App() {
           {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
           <Route path="" index element={<AnalyticsDashboard />} />
           <Route path="countries" element={<CountryManagement />} />
-        
-         
+
           {/* <Route path="travel" element={<TravelForm />} /> */}
           <Route path="travel" element={<TouristPackageCreator />} />
           <Route path="package">

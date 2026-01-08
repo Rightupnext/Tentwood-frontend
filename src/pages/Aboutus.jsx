@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import aboutimg from '../assets/about1.jpg'
+import aboutimg from "../assets/about1.jpg";
 import TrustSection from "../client/components/Ensure";
 import FAQ from "../client/components/FAQ";
 
@@ -336,7 +336,6 @@ export default function AboutUs() {
         </div>
       </div>
 
-    
       <TrustSection />
       <FAQ />
     </div>

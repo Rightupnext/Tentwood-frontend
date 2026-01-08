@@ -1,5 +1,5 @@
 import React from "react";
-import TourCard from "./TourCard";
+import TourCard from "../../components/TourCarousel/TourCard";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 export default function Section({ title, tours, refEl, sc, setSc, idx }) {
@@ -8,13 +8,17 @@ export default function Section({ title, tours, refEl, sc, setSc, idx }) {
     if (!c) return;
     const viewportWidth = c.offsetWidth;
     const scrollAmount = viewportWidth * 0.8;
-    const targetScroll = d === "left" ? c.scrollLeft - scrollAmount : c.scrollLeft + scrollAmount;
+    const targetScroll =
+      d === "left" ? c.scrollLeft - scrollAmount : c.scrollLeft + scrollAmount;
     c.scrollTo({ left: targetScroll, behavior: "smooth" });
     setTimeout(() => setSc(c.scrollLeft), 400);
   };
 
   return (
-    <div className="mb-12 sm:mb-16" style={{ animation: `fadeInUp 0.8s ease-out ${idx * 200}ms both` }}>
+    <div
+      className="mb-12 sm:mb-16"
+      style={{ animation: `fadeInUp 0.8s ease-out ${idx * 200}ms both` }}
+    >
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#19203c] relative inline-block group cursor-pointer">
           {title}
@@ -37,7 +41,11 @@ export default function Section({ title, tours, refEl, sc, setSc, idx }) {
         </div>
       </div>
 
-      <div ref={refEl} className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth snap-x snap-mandatory" style={{ scrollPaddingLeft: "24px" }}>
+      <div
+        ref={refEl}
+        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth snap-x snap-mandatory"
+        style={{ scrollPaddingLeft: "24px" }}
+      >
         {tours.map((t, i) => (
           <div key={i} className="snap-start">
             <TourCard t={t} i={i} title={title} />

@@ -14,7 +14,7 @@ export default function Testimonials() {
   const prev = () =>
     setActive((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   return (
-    <section className="min-h-screen py-20 px-4">
+    <section className="min-h-screen py-20 px-4 bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff]">
       <div className="max-w-7xl mx-auto">
         <TestimonialsHeader loaded={loaded} />
         <TestimonialsStats stats={stats} loaded={loaded} />

@@ -1,5 +1,6 @@
 import React from "react";
 import { RightOutlined, CompassOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero({
   img,
@@ -13,7 +14,7 @@ export default function Hero({
   const px = isMobile ? 0 : (mousePos.x - window.innerWidth / 2) / 40;
   const py = isMobile ? 0 : (mousePos.y - window.innerHeight / 2) / 40;
   const parallax = scrollY * 0.3;
-
+  const navigate = useNavigate();
   return (
     <div className="relative h-[400px] sm:h-[350px] overflow-hidden group cursor-pointer">
       <div
@@ -65,15 +66,14 @@ export default function Hero({
             PROMOTION
           </span>
 
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-3">
-            Explore
-          </h2>
-
           <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-10">
             {title}
           </h2>
 
-          <button className="group/btn relative cursor-pointer px-8 py-4 bg-white/10 backdrop-blur-xl border-2 border-white/60 rounded-full font-bold transition-all duration-500 hover:bg-white hover:text-gray-900">
+          <button
+            onClick={() => navigate("/honeymoon-packages/europe")}
+            className="group/btn relative cursor-pointer px-8 py-4 bg-white/10 backdrop-blur-xl border-2 border-white/60 rounded-full font-bold transition-all duration-500 hover:bg-white hover:text-gray-900"
+          >
             <span className="relative z-10 flex items-center gap-3">
               View Packages
               <RightOutlined />
