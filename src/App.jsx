@@ -49,6 +49,7 @@ function App() {
   }, [dispatch, packages.length]);
   return (
     <>
+     <WhatsAppFloat />  
       <ScrollToTop />
       {!isAdminRoute && <Topnavbar />}
       {!isAdminRoute && <BottomNavbar />}
@@ -114,8 +115,8 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      <WhatsAppFloat />
       <Footer />
+     
     </>
   );
 }

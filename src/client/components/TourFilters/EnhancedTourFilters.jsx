@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
 import { fetchPackages } from "../../../store/slices/packageSlice";
 
@@ -9,15 +9,23 @@ import ActiveFilters from "./ActiveFilters";
 import SortBar from "./SortBar";
 import PackageList from "./PackageList";
 import EmptyState from "./EmptyState";
-
+const TRIP_TYPE_TO_CATEGORY = {
+  "india-trips": "India Trips",
+  "international-trips": "International Trips",
+  "group-tour": "Group Tour",
+  "honeymoon-packages": "Honeymoon Packages",
+};
 export default function EnhancedTourFilters() {
   const dispatch = useDispatch();
-  const { tripType, country, city } = useParams();
+  const navigate = useNavigate();
+  const { tripType } = useParams();
   const { list: packages = [] } = useSelector((state) => state.packages);
 
   useEffect(() => {
-    dispatch(fetchPackages());
-  }, [dispatch]);
+    if (!packages.length) {
+      dispatch(fetchPackages());
+    }
+  }, [dispatch, packages]);
 
   // ================= FILTER STATES =================
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,6 +43,14 @@ export default function EnhancedTourFilters() {
   const [destOpen, setDestOpen] = useState(true);
   const [highlightsOpen, setHighlightsOpen] = useState(true);
   const [durationOpen, setDurationOpen] = useState(true);
+  useEffect(() => {
+    if (!tripType) return;
+
+    const category = TRIP_TYPE_TO_CATEGORY[tripType];
+    if (category) {
+      setSelectedCategories([category]);
+    }
+  }, [tripType]);
 
   // ================= DERIVED DATA =================
   const categories = useMemo(
@@ -141,7 +157,27 @@ export default function EnhancedTourFilters() {
     selectedDuration,
     sortBy,
   ]);
+  const TRIP_ROUTE_MAP = {
+    "India Trips": "india-trips",
+    "International Trips": "international-trips",
+    "Honeymoon Packages": "honeymoon-packages",
+    "Group Tour": "group-tour",
+  };
 
+  const handleNavigate = (a) => {
+    const category = a?.tripCategories?.[0];
+    const tripPrefix = TRIP_ROUTE_MAP[category];
+    if (!tripPrefix) return;
+
+    navigate(
+      `/${tripPrefix}/${a?.Destination?.name
+        ?.toLowerCase()
+        .replace(/\s+/g, "-")}/${a?.packageTitle
+        ?.toLowerCase()
+        .replace(/\s+/g, "-")}`,
+      { state: { id: a?._id } }
+    );
+  };
   // ================= UI =================
   return (
     <div className="min-h-screen bg-slate-50">
@@ -208,7 +244,11 @@ export default function EnhancedTourFilters() {
             {filteredPackages.length === 0 ? (
               <EmptyState resetFilters={resetFilters} />
             ) : (
-              <PackageList packages={filteredPackages} viewMode={viewMode} />
+              <PackageList
+                packages={filteredPackages}
+                viewMode={viewMode}
+                onNavigate={handleNavigate}
+              />
             )}
           </main>
         </div>

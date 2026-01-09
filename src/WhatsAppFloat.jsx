@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  WhatsAppOutlined,
-  SendOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { WhatsAppOutlined, SendOutlined, CloseOutlined } from "@ant-design/icons";
 
 export default function WhatsAppFloat() {
   const phoneNumber = import.meta.env.VITE_PHONE; // countrycode + number
@@ -24,14 +20,21 @@ export default function WhatsAppFloat() {
 
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-5 cursor-pointer right-5 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
-        aria-label="Chat on WhatsApp"
-      >
-        <WhatsAppOutlined className="text-2xl" />
-      </button>
+      {/* Floating Button with Ping */}
+      <div className="fixed bottom-5 right-5 z-50 flex items-center justify-center">
+        {/* Ping Circle */}
+        <span className="absolute inline-flex h-16 w-16 rounded-full bg-[#25D366] opacity-30 animate-ping"></span>
+        <span className="absolute inline-flex h-16 w-16 rounded-full bg-[#25D366] opacity-20 animate-ping delay-200"></span>
+
+        {/* Actual Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="relative cursor-pointer bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
+          aria-label="Chat on WhatsApp"
+        >
+          <WhatsAppOutlined className="text-2xl" />
+        </button>
+      </div>
 
       {/* Popup Box */}
       {open && (
@@ -65,6 +68,23 @@ export default function WhatsAppFloat() {
           </div>
         </div>
       )}
+
+      {/* Animations */}
+      <style>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
+        }
+      `}</style>
     </>
   );
 }
