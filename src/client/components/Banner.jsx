@@ -253,7 +253,7 @@ export default function Banner() {
 
                 {/* SUGGESTIONS DROPDOWN */}
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+                  <div className="absolute !z-[999] top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
                     <div className="px-4 py-2  bg-gradient-to-r from-teal-50 to-blue-50 border-b border-gray-200">
                       <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                         Suggested Destinations
@@ -406,7 +406,7 @@ export default function Banner() {
       </div>
 
       {/* BOTTOM FADE */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none" />
+      <div className="absolute !z-[9999] bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none" />
     </div>
   );
 }

@@ -30,7 +30,7 @@ body {
   backface-visibility: hidden;
 }
 
-.smooth-scroll {
+/* .smooth-scroll {
   will-change: transform;
   transform: translateZ(0);
-}
+} */

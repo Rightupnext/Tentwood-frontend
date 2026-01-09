@@ -48,7 +48,7 @@ export default function PackageInclusions() {
     <Space direction="vertical" style={{ width: "100%" }}>
       {renderListSection("inclusions", "Inclusions", <CheckCircleOutlined />, "e.g., Flight Tickets")}
       {renderListSection("exclusions", "Exclusions", <CloseCircleOutlined />, "e.g., Visa Fees")}
-      {renderListSection("notes", "Important Notes", <WarningOutlined />, "e.g., Carry ID Proof")}
+      {/* {renderListSection("notes", "Important Notes", <WarningOutlined />, "e.g., Carry ID Proof")} */}
     </Space>
   );
 }

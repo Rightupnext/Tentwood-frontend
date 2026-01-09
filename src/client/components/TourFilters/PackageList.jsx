@@ -1,7 +1,7 @@
 import React from "react";
 import { StarFilled, ClockCircleOutlined } from "@ant-design/icons";
 
-export default function PackageList({ packages, viewMode }) {
+export default function PackageList({ packages, viewMode, onNavigate }) {
   if (!packages.length) return null;
 
   return viewMode === "list" ? (
@@ -70,7 +70,10 @@ export default function PackageList({ packages, viewMode }) {
                     <span className="text-sm text-slate-500">per person</span>
                   </div>
                 </div>
-                <button className="px-6 py-2.5 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30">
+                <button
+                  onClick={() => onNavigate(pkg)}
+                  className="px-6 py-2.5 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30"
+                >
                   View Details
                 </button>
               </div>
@@ -138,7 +141,10 @@ export default function PackageList({ packages, viewMode }) {
                 </span>
                 <span className="text-xs text-slate-500">per person</span>
               </div>
-              <button className="w-full py-2.5 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30">
+              <button
+                onClick={() => onNavigate(pkg)}
+                className="w-full py-2.5 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold text-sm hover:from-teal-600 hover:to-teal-700 active:scale-95 transition-all shadow-lg shadow-teal-500/30"
+              >
                 View Details
               </button>
             </div>

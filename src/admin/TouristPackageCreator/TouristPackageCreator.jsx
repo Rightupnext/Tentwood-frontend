@@ -95,7 +95,7 @@ export default function TouristPackageCreator() {
       // ✅ FIXED
       Destination: currentPackage.Destination || null,
       tripCategories: currentPackage.tripCategories || [],
-
+      highlights: currentPackage.highlights || [],
       inclusions: currentPackage.inclusions || [],
       exclusions: currentPackage.exclusions || [],
       notes: currentPackage.notes || [],
@@ -135,6 +135,7 @@ export default function TouristPackageCreator() {
   const handleSave = async () => {
     if (saving) return;
     try {
+      setSaving(true);
       await form.validateFields();
       const allValues = form.getFieldsValue(true);
       const itineraryPayload = (allValues.itinerary || []).map((day) => ({
@@ -266,6 +267,8 @@ export default function TouristPackageCreator() {
           type="primary"
           icon={<SaveOutlined />}
           onClick={handleSave}
+          disabled={saving} // ✅ disables click
+          loading={saving} // ✅ shows spinner
           style={{
             backgroundColor: id ? "#fa8c16" : "#52c41a", // orange : green
             borderColor: id ? "#fa8c16" : "#52c41a",
