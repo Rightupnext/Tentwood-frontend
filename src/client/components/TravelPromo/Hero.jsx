@@ -66,7 +66,7 @@ export default function Hero({
             PROMOTION
           </span>
 
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-10">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10">
             {title}
           </h2>
 

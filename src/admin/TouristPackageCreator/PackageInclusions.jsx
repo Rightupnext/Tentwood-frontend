@@ -7,7 +7,29 @@ import {
   CloseCircleOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
+const smartSplit = (text) => {
+    if (!text) return [];
 
+    let parts = [];
+
+    if (text.includes(".")) {
+      parts = text.split(".");
+    } else if (text.includes("\n")) {
+      parts = text.split("\n");
+    } else if (text.includes("•")) {
+      parts = text.split("•");
+    } else if (text.includes("- ")) {
+      parts = text.split("- ");
+    } else {
+      // fallback: split every 120 characters
+      const size = 120;
+      for (let i = 0; i < text.length; i += size) {
+        parts.push(text.slice(i, i + size));
+      }
+    }
+
+    return parts.map((p) => p.trim()).filter(Boolean);
+  };
 const renderListSection = (name, title, icon, placeholder) => (
   <Card title={<>{icon} {title}</>} bordered={false}>
     <Form.List name={name}>
@@ -19,7 +41,12 @@ const renderListSection = (name, title, icon, placeholder) => (
               <List.Item
                 key={key}
                 actions={[
-                  <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(name)} />,
+                  <Button
+                    type="text"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => remove(name)}
+                  />,
                 ]}
               >
                 <Form.Item
@@ -28,13 +55,30 @@ const renderListSection = (name, title, icon, placeholder) => (
                   rules={[{ required: true, message: "Required" }]}
                   style={{ flex: 1 }}
                 >
-                  <Input placeholder={placeholder} />
+                  <Input
+                    placeholder={placeholder}
+                    onPaste={(e) => {
+                      const pasted = e.clipboardData.getData("text");
+                      const lines = smartSplit(pasted);
+
+                      if (lines.length > 1) {
+                        e.preventDefault();
+                        remove(name);
+                        lines.forEach((line) => add(line));
+                      }
+                    }}
+                  />
                 </Form.Item>
               </List.Item>
             )}
           />
 
-          <Button type="dashed" block icon={<PlusOutlined />} onClick={() => add()}>
+          <Button
+            type="dashed"
+            block
+            icon={<PlusOutlined />}
+            onClick={() => add("")}
+          >
             Add Item
           </Button>
         </>
@@ -42,6 +86,7 @@ const renderListSection = (name, title, icon, placeholder) => (
     </Form.List>
   </Card>
 );
+
 
 export default function PackageInclusions() {
   return (

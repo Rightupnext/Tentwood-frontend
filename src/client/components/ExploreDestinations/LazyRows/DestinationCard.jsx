@@ -1,9 +1,8 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DestinationCard = memo(function DestinationCard({ item }) {
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState(false);
 
   const TRIP_ROUTE_MAP = {
     "India Trips": "india-trips",
@@ -26,14 +25,9 @@ const DestinationCard = memo(function DestinationCard({ item }) {
   };
 
   return (
-    <div
-      className="w-72 h-56 shrink-0 relative !cursor-pointer group"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <div className="w-72 h-56 shrink-0 relative cursor-pointer group">
       <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
         <img
-          loading="lazy"
           src={`${import.meta.env.VITE_BACKEND_URL}${item?.cardMedia?.fileUrl}`}
           alt={item?.packageTitle}
           className="w-full h-full object-cover"
@@ -43,13 +37,12 @@ const DestinationCard = memo(function DestinationCard({ item }) {
 
         <div className="absolute bottom-0 p-4 text-white">
           <h3 className="text-xl font-bold">{item?.Destination?.name}</h3>
-          <p className="text-sm opacity-80 ">{item.packageTitle}</p>
+          <p className="text-sm opacity-80">{item.packageTitle}</p>
 
           <button
             onClick={handleNavigate}
-            className={`mt-3 px-4 py-2 bg-white text-teal-600 rounded-full font-semibold transition cursor-pointer ${
-              hovered ? "opacity-100" : "opacity-0"
-            }`}
+            className="mt-3 px-4 py-2 bg-white text-teal-600 rounded-full font-semibold transition 
+                       opacity-0 group-hover:opacity-100"
           >
             Explore →
           </button>

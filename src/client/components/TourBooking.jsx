@@ -28,13 +28,13 @@ export default function TourBooking({ selected }) {
     if (SelectedPkg?.heroMedia?.fileUrl) {
       // ✅ Default: Hero Image
       setMainImage(
-        `${import.meta.env.VITE_BACKEND_URL}${SelectedPkg.heroMedia.fileUrl}`
+        `${import.meta.env.VITE_BACKEND_URL}${SelectedPkg.heroMedia.fileUrl}`,
       );
     }
     // Fallback: if hero image not available
     else if (SelectedPkg?.gallery?.length > 0) {
       setMainImage(
-        `${import.meta.env.VITE_BACKEND_URL}${SelectedPkg.gallery[0].fileUrl}`
+        `${import.meta.env.VITE_BACKEND_URL}${SelectedPkg.gallery[0].fileUrl}`,
       );
     }
   }, [SelectedPkg]);
@@ -93,7 +93,7 @@ ${window.location.href}
   `.trim();
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
+      message,
     )}`;
 
     window.open(whatsappUrl, "_blank");
@@ -191,11 +191,11 @@ ${window.location.href}
                       <span className="px-3 py-1 bg-white text-teal-600 font-bold rounded-md shadow-sm">
                         Day {item.dayNumber}
                       </span>
-                      <span className="font-semibold text-gray-800 text-sm">
+                      <span className="font-semibold text-gray-800 text-sm  text-justify ">
                         {item.title}
                       </span>
                     </div>
-                    <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
+                    <div className="w-12 h-8 p-2 bg-teal-600 text-justify whitespace-pre-wrap rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
                       {expandedDay === item.description ? "−" : "+"}
                     </div>
                   </button>
@@ -271,7 +271,7 @@ ${window.location.href}
         // Keep only categories that have valid (non-empty) items
         const validEssentials = Object.entries(essentials).filter(
           ([, items]) =>
-            Array.isArray(items) && items.some((item) => item?.trim())
+            Array.isArray(items) && items.some((item) => item?.trim()),
         );
 
         // Hide entire tab if nothing valid
@@ -400,7 +400,7 @@ ${window.location.href}
                     setMainImage(
                       `${import.meta.env.VITE_BACKEND_URL}${
                         SelectedPkg.heroMedia.fileUrl
-                      }`
+                      }`,
                     )
                   }
                 >
@@ -467,8 +467,8 @@ ${window.location.href}
                     activeTab === "overview"
                       ? "justify-end"
                       : activeTab === "otherinfo"
-                      ? "justify-start"
-                      : "justify-between"
+                        ? "justify-start"
+                        : "justify-between"
                   } mt-6 pt-4 border-t border-gray-200`}
                 >
                   {activeTab !== "overview" && (
@@ -522,7 +522,9 @@ ${window.location.href}
               onClick={() => setShowCheckout(!showCheckout)}
               className="lg:hidden w-full py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-bold rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
             >
-              Checkout - ₹ {SelectedPkg?.price}
+              Checkout - {SelectedPkg?.price === 0
+                        ? "Customized"
+                        : SelectedPkg?.price.toLocaleString("en-IN")}
             </button>
           </div>
 
@@ -580,7 +582,7 @@ ${window.location.href}
                               return Promise.resolve();
                             }
                             return Promise.reject(
-                              new Error("To date must be after From date")
+                              new Error("To date must be after From date"),
                             );
                           },
                         }),
@@ -613,7 +615,10 @@ ${window.location.href}
                       <div className="flex justify-between items-center mb-4">
                         <span className="text-gray-600">Total</span>
                         <span className="text-3xl font-bold !text-teal-600">
-                          ₹ {SelectedPkg?.price}
+                          ₹
+                          {SelectedPkg?.price === 0
+                            ? "Customized"
+                            : SelectedPkg?.price.toLocaleString("en-IN")}
                         </span>
                       </div>
 

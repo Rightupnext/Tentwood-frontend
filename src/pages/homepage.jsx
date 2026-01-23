@@ -47,7 +47,8 @@ function HomePage() {
         indiaTrips={india}
         internationalTrips={international}
       />
-      <SmartCityTourApp packages={packages} />
+     <SmartCityTourApp packages={packages?.slice(0, 5) || []} />
+
       <TourCarousels
         packages={packages}
         Title3={Title3}

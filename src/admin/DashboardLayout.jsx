@@ -91,12 +91,7 @@ const DashboardLayout = () => {
               label: "Packages Management",
               onClick: () => navigate("/admin/package"),
             },
-            {
-              key: "6",
-              icon: <AppstoreOutlined />,
-              label: "Guide",
-              onClick: () => navigate("/admin/guide"),
-            },
+           
           ]}
         />
       </Sider>

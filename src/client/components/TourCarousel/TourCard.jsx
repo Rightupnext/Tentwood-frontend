@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export default function TourCard({ t, i, title }) {
+  
   const navigate = useNavigate();
   const [hov, setHov] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -17,7 +18,7 @@ export default function TourCard({ t, i, title }) {
     "India Trips": "india-trips",
     "International Trips": "international-trips",
     "Honeymoon Packages": "honeymoon-packages",
-    "Group Tour": "group-tour",
+    "Group Tours": "group-tours",
   };
 
   const handleNavigate = (a) => {
@@ -65,7 +66,7 @@ export default function TourCard({ t, i, title }) {
 
         <div className="absolute top-3 right-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-xl transform transition-all duration-300 group-hover:scale-110">
           <StarFilled className="w-3 h-3 fill-white" />
-          {t?.tripCategories ? title : t?.tripCategories}
+          {t?.tripCategories ? t?.tripCategories:title  }
         </div>
 
         {hov && (
@@ -128,10 +129,13 @@ export default function TourCard({ t, i, title }) {
             </div>
             <span className="text-xs text-gray-500">{t.reviews} reviews</span>
           </div>
-
+              
           <div className="text-right">
-            <div className="text-2xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
-              ₹{t.price}.00
+            <div className="text-sm md:text-xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
+            
+               {t.price === 0
+                        ? "Customized"
+                        : t.price.toLocaleString("en-IN")}
             </div>
             <div className="text-xs text-gray-500">per person</div>
           </div>

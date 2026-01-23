@@ -51,7 +51,7 @@ function App() {
     <>
      <WhatsAppFloat />  
       <ScrollToTop />
-      {!isAdminRoute && <Topnavbar />}
+      {/* {!isAdminRoute && <Topnavbar />} */}
       {!isAdminRoute && <BottomNavbar />}
 
       <Routes>
@@ -109,7 +109,7 @@ function App() {
           {/* <Route path="travel" element={<TravelForm />} /> */}
           <Route path="travel" element={<TouristPackageCreator />} />
           <Route path="package">
-            <Route index element={<PackagesList />} />
+            <Route index element={<EnhancedTourFilters />} />
             <Route path="edit/:id" element={<TouristPackageCreator />} />
             <Route path=":id" element={<PackageDetails />} />
           </Route>

@@ -51,15 +51,15 @@ export default function CityExplorer({ packages }) {
   const heroPackage = filteredPackages[0];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#ffffff] py-16 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-white via-white to-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Destination Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {destinationNames.map((c, i) => (
+        <div className="flex overflow-x-auto no-scrollbar justify-start sm:justify-center gap-3 mb-6 sm:mb-12 px-2 sm:px-0">
+          {destinationNames.map((c) => (
             <button
               key={c}
               onClick={() => setSelectedDestination(c)}
-              className={`px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-500 animate-fadeIn shadow-sm ${
+              className={`flex-shrink-0 px-4 sm:px-7 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-500 animate-fadeIn shadow-sm ${
                 selectedDestination === c
                   ? "bg-gradient-to-r from-teal-400 to-teal-500 text-white shadow-lg shadow-teal-300/50 scale-105 hover:shadow-xl"
                   : "bg-white text-gray-700 border border-gray-200 hover:border-teal-300 hover:shadow-md hover:scale-105"
@@ -70,46 +70,45 @@ export default function CityExplorer({ packages }) {
           ))}
         </div>
 
-        {/* Hero */}
         {/* Hero Section */}
         {heroPackage && (
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 sm:mb-14 md:mb-16 group animate-scaleIn">
-            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-8 sm:mb-12 md:mb-16 group animate-scaleIn">
+            {/* Hero Image */}
+            <div className="relative h-[220px] sm:h-[350px] md:h-[450px] lg:h-[600px] w-full overflow-hidden">
               <img
                 loading="lazy"
-                src={`${import.meta.env.VITE_BACKEND_URL}${
-                  heroPackage?.heroMedia?.fileUrl
-                }`}
+                src={`${import.meta.env.VITE_BACKEND_URL}${heroPackage?.heroMedia?.fileUrl}`}
                 alt={heroPackage?.packageTitle}
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
 
-            <div className="absolute bottom-10 left-10 right-10 bg-white/95 backdrop-blur-md rounded-2xl p-8 shadow-xl">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            {/* Overlay Content */}
+            <div className="sm:absolute bottom-2 sm:bottom-6 md:bottom-10 left-2 sm:left-6 md:left-10 right-2 sm:right-6 md:right-10 bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-6 md:p-8 shadow-xl">
+              <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-gray-900 mb-1 sm:mb-2 md:mb-4">
                 {heroPackage?.packageTitle}
               </h2>
-              <p className="text-gray-600 max-w-3xl">
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 max-w-full sm:max-w-3xl">
                 {getOverviewText(heroPackage.overview)}
               </p>
 
-              <div className="flex flex-wrap gap-3 sm:gap-4">
+              <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 mt-2 sm:mt-4">
                 {categories.map((cat, i) => {
                   const Icon = cat.icon;
                   return (
                     <div
                       key={i}
-                      className="flex items-center gap-3 px-4 py-2 bg-white rounded-xl border shadow-sm"
+                      className="flex items-center gap-1 sm:gap-2 md:gap-3 px-2 sm:px-3 md:px-4 py-1 sm:py-2 bg-white rounded-xl border shadow-sm"
                     >
                       <div
-                        className={`w-10 h-10 ${cat.iconBg} rounded-lg sm:rounded-xl flex items-center justify-center`}
+                        className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 ${cat.iconBg} rounded-lg sm:rounded-xl flex items-center justify-center`}
                       >
                         <Icon
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${cat.color}`}
+                          className={`w-3 h-3 sm:w-4 sm:h-5 md:w-5 md:h-5 ${cat.color}`}
                         />
                       </div>
-                      <span className="text-gray-700 text-xs sm:text-sm font-medium whitespace-nowrap">
+                      <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 font-medium whitespace-nowrap">
                         {cat.label}
                       </span>
                     </div>
@@ -121,25 +120,25 @@ export default function CityExplorer({ packages }) {
         )}
 
         {/* Scroll Buttons */}
-
-        <div className="flex justify-end gap-2 sm:gap-3">
+        <div className="flex justify-end gap-2 sm:gap-3 mb-4">
           <button
             onClick={scrollLeft}
-            className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="w-8 h-8 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <LeftOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !!text-white" />
+            <LeftOutlined className="!w-4 !h-4 sm:!w-6 sm:!h-6 text-white" />
           </button>
           <button
             onClick={scrollRight}
-            className="w-10 h-10 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
+            className="w-8 h-8 sm:w-12 sm:h-12 cursor-pointer bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
           >
-            <RightOutlined className="!w-5 !h-5 !sm:w-6 !sm:h-6 !text-white" />
+            <RightOutlined className="!w-4 !h-4 sm:!w-6 sm:!h-6 text-white" />
           </button>
         </div>
+
         {/* Cards */}
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto no-scrollbar"
+          className="flex gap-3 sm:gap-5 overflow-x-auto no-scrollbar pb-5"
         >
           {filteredPackages.map((pkg, i) => (
             <TourCard key={pkg._id} t={pkg} i={i} />
