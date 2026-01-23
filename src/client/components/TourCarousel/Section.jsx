@@ -43,7 +43,7 @@ export default function Section({ title, tours, refEl, sc, setSc, idx }) {
 
       <div
         ref={refEl}
-        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth snap-x snap-mandatory"
+        className="flex gap-4 sm:gap-6 overflow-x-hidden pb-4 scrollbar-hide scroll-smooth snap-x snap-mandatory"
         style={{ scrollPaddingLeft: "24px" }}
       >
         {tours.map((t, i) => (

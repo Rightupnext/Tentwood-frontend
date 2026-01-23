@@ -16,7 +16,7 @@ const TourCard = memo(({ t, i }) => {
     "India Trips": "india-trips",
     "International Trips": "international-trips",
     "Honeymoon Packages": "honeymoon-packages",
-    "Group Tour": "group-tour",
+    "Group Tours": "group-tours",
   };
 
   const handleNavigate = (a) => {

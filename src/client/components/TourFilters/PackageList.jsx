@@ -65,9 +65,16 @@ export default function PackageList({ packages, viewMode, onNavigate }) {
                 <div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold text-teal-600">
-                      ₹{pkg.price.toLocaleString()}
+                      ₹
+                      {pkg.price === 0
+                        ? "Customized"
+                        : pkg.price.toLocaleString("en-IN")}
                     </span>
-                    <span className="text-sm text-slate-500">per person</span>
+                    {!pkg.price === 0 ? (
+                      <span className="text-xs text-slate-500">per person</span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <button
@@ -137,9 +144,16 @@ export default function PackageList({ packages, viewMode, onNavigate }) {
             <div className="pt-4 border-t border-slate-100">
               <div className="flex items-baseline gap-1.5 mb-3">
                 <span className="text-2xl font-bold text-teal-600">
-                  ₹{pkg.price.toLocaleString()}
+                  ₹
+                  {pkg.price === 0
+                    ? "Customized"
+                    : pkg.price.toLocaleString("en-IN")}
                 </span>
-                <span className="text-xs text-slate-500">per person</span>
+                {!pkg.price === 0 ? (
+                  <span className="text-xs text-slate-500">per person</span>
+                ) : (
+                  ""
+                )}
               </div>
               <button
                 onClick={() => onNavigate(pkg)}

@@ -5,6 +5,30 @@ import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 export default function PackageItinerary() {
+  const smartSplit = (text) => {
+    if (!text) return [];
+
+    let parts = [];
+
+    if (text.includes(".")) {
+      parts = text.split(".");
+    } else if (text.includes("\n")) {
+      parts = text.split("\n");
+    } else if (text.includes("•")) {
+      parts = text.split("•");
+    } else if (text.includes("- ")) {
+      parts = text.split("- ");
+    } else {
+      // fallback: split every 120 characters
+      const size = 120;
+      for (let i = 0; i < text.length; i += size) {
+        parts.push(text.slice(i, i + size));
+      }
+    }
+
+    return parts.map((p) => p.trim()).filter(Boolean);
+  };
+
   return (
     <Card title="📅 Itinerary" bordered={false}>
       <Form.List name="itinerary">
@@ -60,6 +84,16 @@ export default function PackageItinerary() {
                             <TextArea
                               rows={3}
                               placeholder="Full description of the day"
+                              onPaste={(e) => {
+                                const pasted = e.clipboardData.getData("text");
+                                const lines = smartSplit(pasted);
+
+                                if (lines.length > 1) {
+                                  e.preventDefault();
+                                  removeDesc(descName);
+                                  lines.forEach((line) => addDesc(line));
+                                }
+                              }}
                             />
                           </Form.Item>
 

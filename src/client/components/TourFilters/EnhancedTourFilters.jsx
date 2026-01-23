@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
 import { fetchPackages } from "../../../store/slices/packageSlice";
 
@@ -35,7 +35,7 @@ export default function EnhancedTourFilters() {
   const [selectedPrice, setSelectedPrice] = useState(0);
   const [selectedDuration, setSelectedDuration] = useState([0, 20]);
   const [sortBy, setSortBy] = useState("popularity");
-  const [viewMode, setViewMode] = useState("list");
+  const [viewMode, setViewMode] = useState("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Accordion states
@@ -55,7 +55,7 @@ export default function EnhancedTourFilters() {
   // ================= DERIVED DATA =================
   const categories = useMemo(
     () => [...new Set(packages.flatMap((p) => p.tripCategories || []))],
-    [packages]
+    [packages],
   );
 
   const destinations = useMemo(() => {
@@ -70,12 +70,12 @@ export default function EnhancedTourFilters() {
 
   const allHighlights = useMemo(
     () => [...new Set(packages.flatMap((p) => p.highlights || []))],
-    [packages]
+    [packages],
   );
 
   const prices = useMemo(
     () => packages.map((p) => p.price).filter(Boolean),
-    [packages]
+    [packages],
   );
 
   const maxPrice = prices.length ? Math.max(...prices) : 250000;
@@ -92,7 +92,7 @@ export default function EnhancedTourFilters() {
 
   const toggleFilter = (item, setter) => {
     setter((prev) =>
-      prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]
+      prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item],
     );
   };
 
@@ -114,25 +114,27 @@ export default function EnhancedTourFilters() {
       filtered = filtered.filter(
         (p) =>
           p.packageTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.Destination?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+          p.Destination?.name
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       );
     }
 
     if (selectedCategories.length) {
       filtered = filtered.filter((p) =>
-        selectedCategories.some((cat) => p.tripCategories?.includes(cat))
+        selectedCategories.some((cat) => p.tripCategories?.includes(cat)),
       );
     }
 
     if (selectedDestinations.length) {
       filtered = filtered.filter((p) =>
-        selectedDestinations.includes(p.Destination?._id)
+        selectedDestinations.includes(p.Destination?._id),
       );
     }
 
     if (selectedHighlights.length) {
       filtered = filtered.filter((p) =>
-        selectedHighlights.some((h) => p.highlights?.includes(h))
+        selectedHighlights.some((h) => p.highlights?.includes(h)),
       );
     }
 
@@ -161,23 +163,34 @@ export default function EnhancedTourFilters() {
     "India Trips": "india-trips",
     "International Trips": "international-trips",
     "Honeymoon Packages": "honeymoon-packages",
-    "Group Tour": "group-tour",
+    "Group Tours": "group-tours",
   };
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+const handleNavigate = (a) => {
+  if (!a?._id) return; // safety check
 
-  const handleNavigate = (a) => {
-    const category = a?.tripCategories?.[0];
-    const tripPrefix = TRIP_ROUTE_MAP[category];
-    if (!tripPrefix) return;
+  if (isAdminRoute) {
+    // Admin route doesn't need tripPrefix
+    navigate(`/admin/package/${a._id}`);
+    return;
+  }
 
-    navigate(
-      `/${tripPrefix}/${a?.Destination?.name
-        ?.toLowerCase()
-        .replace(/\s+/g, "-")}/${a?.packageTitle
-        ?.toLowerCase()
-        .replace(/\s+/g, "-")}`,
-      { state: { id: a?._id } }
-    );
-  };
+  // Frontend route
+  const category = a?.tripCategories?.[0];
+  const tripPrefix = TRIP_ROUTE_MAP[category];
+  if (!tripPrefix) return; // only needed for frontend
+
+  navigate(
+    `/${tripPrefix}/${a?.Destination?.name
+      ?.toLowerCase()
+      .replace(/\s+/g, "-")}/${a?.packageTitle
+      ?.toLowerCase()
+      .replace(/\s+/g, "-")}`,
+    { state: { id: a._id } }
+  );
+};
+
   // ================= UI =================
   return (
     <div className="min-h-screen bg-slate-50">

@@ -12,7 +12,7 @@ import {
   Divider,
   Popconfirm,
 } from "antd";
-import { packagesMock } from "./mockData";
+
 import {
   ArrowLeftOutlined,
   EnvironmentOutlined,
@@ -371,7 +371,7 @@ export default function PackageDetails() {
               <div className="text-center mb-6">
                 <span className="text-gray-500 text-sm">Starting from</span>
                 <div className="text-4xl font-bold text-blue-600 mb-1">
-                  ₹{pkg.price.toLocaleString()}
+                  ₹{pkg.price.toLocaleString("en-IN")}
                 </div>
                 <span className="text-gray-500 text-sm">per person</span>
               </div>

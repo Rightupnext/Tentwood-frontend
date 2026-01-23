@@ -45,12 +45,14 @@ export default function PackagesList() {
       const matchSearch =
         !q ||
         pkg?.packageTitle?.toLowerCase().includes(q) ||
-        pkg?.locations?.toLowerCase().includes(q);
+        pkg?.locations?.toLowerCase().includes(q) ||
+        pkg?.price?.toString().includes(q);
 
       const matchCategory =
         !category || pkg?.tripCategories?.includes(category);
 
       const matchPrice =
+        pkg.price != null &&
         typeof pkg.price === "number" &&
         pkg.price >= priceRange[0] &&
         pkg.price <= priceRange[1];
@@ -97,7 +99,7 @@ export default function PackagesList() {
               key={cat}
               color={category === cat ? "blue" : "default"}
               className="cursor-pointer px-4 py-1 rounded-full"
-              onClick={() => setCategory(cat)}
+              onClick={() => setCategory(category === cat ? "" : cat)}
             >
               {cat}
             </Tag>

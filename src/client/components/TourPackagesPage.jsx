@@ -143,8 +143,10 @@ const TourCard = ({ t, i }) => {
           </div>
 
           <div className="text-right">
-            <div className="text-2xl font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
-              ₹{t.price?.toLocaleString("en-IN")}
+            <div className="text-md font-bold text-teal-600 group-hover:scale-110 transition-transform duration-300">
+              ₹{t.price === 0
+                        ? "Customized"
+                        : t.price.toLocaleString("en-IN")}
             </div>
             <div className="text-xs text-gray-500">per person</div>
           </div>
